@@ -20,6 +20,7 @@ void Personajes::initSprite()
     this->currentFrame = sf::IntRect(20, 0, 18, 40);
     this->sprite.setTextureRect(this->currentFrame);
     this->sprite.setScale(sf::Vector2f(2.5f, 2.5f));
+    this->sprite.setOrigin(10, 10);
 }
 
 void Personajes::initAnimations()
@@ -74,11 +75,13 @@ void Jugador::updateMovement()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
+        this->sprite.setScale(-2.5f, 2.5f);
         mover(-1.f, 0.f);
         this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
+        this->sprite.setScale(2.5f, 2.5f);
         mover(1.f, 0.f);
         this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
     }
@@ -86,17 +89,19 @@ void Jugador::updateMovement()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         mover(0.f, -1.f);
+        this->animState = PLAYER_ANIMATION_STATES::MOVING_UP;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
         mover(0.f, 1.f);
+        this->animState = PLAYER_ANIMATION_STATES::MOVING_DOWN;
     }
 
 }
 
 void Jugador::updateAnimations()
 {
-    if(this->animState = PLAYER_ANIMATION_STATES::IDLE)
+    if(this->animState == PLAYER_ANIMATION_STATES::IDLE)
     {
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.5f)
         {
@@ -106,8 +111,10 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
+        return;
     }
-    else if(this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT)
+
+    if(this->animState == PLAYER_ANIMATION_STATES::MOVING_RIGHT)
     {
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.5f)
         {
@@ -119,7 +126,39 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
+        return;
     }
+
+    if(this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
+    {
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.5f)
+        {
+            this->currentFrame.top = 0.f;
+            this->currentFrame.left += 20.f;
+            if(this->currentFrame.left >= 80.f)
+                this->currentFrame.left = 0;
+
+            this->animationTimer.restart();
+            this->sprite.setTextureRect(this->currentFrame);
+        }
+        return;
+    }
+
+    if(this->animState == PLAYER_ANIMATION_STATES::MOVING_UP)
+    {
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.5f)
+        {
+            this->currentFrame.top = 43.f;
+            this->currentFrame.left += 20.f;
+            if(this->currentFrame.left >= 184.f)
+                this->currentFrame.left = 124.f;
+
+            this->animationTimer.restart();
+            this->sprite.setTextureRect(this->currentFrame);
+        }
+        return;
+    }
+
 }
 
 void Jugador::update()
