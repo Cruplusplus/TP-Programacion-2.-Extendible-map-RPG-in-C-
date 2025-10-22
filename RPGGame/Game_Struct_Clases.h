@@ -2,7 +2,7 @@
 
 #include "Visual_Clases.h"
 
-enum PLAYER_ANIMATION_STATES {IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN};
+enum PLAYER_ANIMATION_STATES {IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN, ATTACK};
 
 class Personajes
 {
@@ -25,9 +25,6 @@ protected:
     //
     enum class TipoPersonaje {Jugador, Enemigos, Boss};
     TipoPersonaje tipo;
-
-    enum class EstadoPersonaje {Normal, Atacando, Moviendose};
-    EstadoPersonaje estado;
     //
 
     void initVariables();
