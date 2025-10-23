@@ -67,7 +67,6 @@ Jugador::getHp()
     return this->hp;
 }
 
-
 void Jugador::updateMovement()
 {
     this->animState = PLAYER_ANIMATION_STATES::IDLE;

@@ -44,22 +44,9 @@ public:
     virtual void dibujar(sf::RenderWindow& window);*/
 };
 
-class Inventario
-{
-private:
-    int idJugador;
-    int idObjeto;
-    int cantidad;
-public:
-
-};
-
 class Jugador : public Personajes
 {
 private:
-    /*
-    vector<Inventario> inventario;
-    */
 public:
     Jugador();
 
