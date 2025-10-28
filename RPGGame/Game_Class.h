@@ -34,11 +34,12 @@ public:
     const bool getFinalizarJuego() const;
 
     //{Funcs
-    void spawnEnemigo();
+    //void spawnEnemigo();
 
     void pollEvents();
 
     void updatePersonajes();
+    void updateCollision();
     void update();
 
     void renderPersonajes(sf::RenderTarget& target);

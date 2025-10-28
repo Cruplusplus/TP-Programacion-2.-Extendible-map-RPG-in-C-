@@ -15,8 +15,10 @@ protected:
 
     sf::Texture textureSheet;
     sf::Sprite sprite;
+
     float velocidad;
     sf::Clock animationTimer;
+    bool animationSwitch;
 
     //Animacion
     short animState;
@@ -50,6 +52,13 @@ private:
 public:
     Jugador();
 
+    const bool&  getAnimSwitch();
+    const sf::FloatRect getGlobalBounds() const;
+    const sf::Vector2f getPosition() const;
+
+    //setters
+    void resetAnimTimer();
+    void setPosition(const float x, const float y);
 
     int getHp();
 
@@ -73,6 +82,31 @@ public:
 
 };
 
+class Tile
+{
+private:
+    sf::Sprite sprite;
+
+public:
+    Tile(sf::Texture& textureSheet, sf::IntRect textureRect);
+
+    const sf::FloatRect getGlobalBounds() const;
+
+    void update();
+    void render(sf::RenderTarget& target);
+};
+
+
+class TileMap
+{
+private:
+
+public:
+    TileMap();
+    ~TileMap();
+};
+
+
 class Mazmorras
 {
 private:
@@ -85,29 +119,6 @@ private:
     vector<Enemigos> enemigos;
     vector<Objetos> tesoros;
     */
-public:
-
-};
-
-class Mapa
-{
-private:
-    int idMapa;
-    int seed;
-    int pisoActual;
-    int totalPisos;
-    int chunksTotales;
-    int enemigosTotales;
-public:
-
-};
-
-class Objetos
-{
-private:
-    int idObjeto;
-    std::string nombre;
-    int tipo;
 public:
 
 };

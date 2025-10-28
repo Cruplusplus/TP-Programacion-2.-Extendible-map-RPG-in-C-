@@ -16,7 +16,7 @@ void Juego::initWindow()
     this->videoMode.width = visualConfig.getResolucionY();
 
     this->window = new sf::RenderWindow(this->videoMode,
-                    "The Fallen Knight", sf::Style::Titlebar | sf::Style::Close);
+                                        "The Fallen Knight", sf::Style::Titlebar | sf::Style::Close);
 
     this->window->setFramerateLimit(visualConfig.getFramerate());
 }
@@ -40,17 +40,18 @@ Juego::~Juego()
 }
 
 //Accesors
-const bool Juego::gameRunning() const {return this->window->isOpen();}
+const bool Juego::gameRunning() const
+{
+    return this->window->isOpen();
+}
 
-const bool Juego::getFinalizarJuego() const {return this->finalizarJuego;}
+const bool Juego::getFinalizarJuego() const
+{
+    return this->finalizarJuego;
+}
 
 
 //Functions
-
-void Juego::spawnEnemigo()
-{
-
-}
 
 void Juego::pollEvents()
 {
@@ -66,6 +67,15 @@ void Juego::pollEvents()
                 this->window->close();
             break;
         }
+
+        if(this->ev.type == sf::Event::KeyReleased &&
+                (this->ev.key.code == sf::Keyboard::W ||
+                 this->ev.key.code == sf::Keyboard::A ||
+                 this->ev.key.code == sf::Keyboard::S ||
+                 this->ev.key.code == sf::Keyboard::D ))
+        {
+            this->jugador->resetAnimTimer();
+        }
     }
 }
 
@@ -74,13 +84,25 @@ void Juego::updatePersonajes()
     jugador->update();
 }
 
+void Juego::updateCollision()
+{
+    if(this->jugador->getPosition().y + this->jugador->getGlobalBounds().height > this->window->getSize().y)
+    {
+        this->jugador->setPosition(
+            this->jugador->getPosition().x,
+            this->window->getSize().y - this->jugador->getGlobalBounds().height
+        );
+    }
+}
+
 void Juego::update()
 {
     this->pollEvents();
 
     if (!this->finalizarJuego)
     {
-    this->updatePersonajes();
+        this->updatePersonajes();
+        this->updateCollision();
     }
 
     //cuando termina el juego

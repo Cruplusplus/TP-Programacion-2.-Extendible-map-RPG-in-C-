@@ -20,12 +20,12 @@ void Personajes::initSprite()
     this->currentFrame = sf::IntRect(20, 0, 19, 44);
     this->sprite.setTextureRect(this->currentFrame);
     this->sprite.setScale(sf::Vector2f(2.5f, 2.5f));
-    this->sprite.setOrigin(10, 10);
 }
 
 void Personajes::initAnimations()
 {
     this->animationTimer.restart();
+    this->animationSwitch = true;
 }
 
 Personajes::Personajes(int _id, int _hp, int _dmg, int _lvl,
@@ -62,9 +62,39 @@ Jugador::Jugador()
     this->velocidad = 2.f;
 }
 
+const bool&  Jugador::getAnimSwitch()
+{
+    bool animSwitch = this->animationSwitch;
+
+    if(this->animationSwitch)
+        this->animationSwitch = false;
+    return animSwitch;
+}
+
+const sf::FloatRect Jugador::getGlobalBounds() const
+{
+    return this->sprite.getGlobalBounds();
+}
+
+const sf::Vector2f Jugador::getPosition() const
+{
+    return this->sprite.getPosition();
+}
+
+void Jugador::setPosition(const float x, const float y)
+{
+    this->sprite.setPosition(x, y);
+}
+
 Jugador::getHp()
 {
     return this->hp;
+}
+
+void Jugador::resetAnimTimer()
+{
+    this->animationTimer.restart();
+    this->animationSwitch = true;
 }
 
 void Jugador::updateMovement()
@@ -105,9 +135,9 @@ void Jugador::updateAnimations()
 {
     if(this->animState == PLAYER_ANIMATION_STATES::IDLE)
     {
-        this->currentFrame.top = 0.f;
-        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.f)
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.f || getAnimSwitch())
         {
+            this->currentFrame.top = 0.f;
             this->currentFrame.left = 20.f;
 
             this->animationTimer.restart();
@@ -119,9 +149,9 @@ void Jugador::updateAnimations()
 
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
     {
-        this->sprite.setScale(-2.5f, 2.5f);
-        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || getAnimSwitch())
         {
+            this->sprite.setScale(-2.5f, 2.5f);
             this->currentFrame.top = 0.f;
             this->currentFrame.left += 20.f;
             if(this->currentFrame.left >= 80.f)
@@ -136,7 +166,7 @@ void Jugador::updateAnimations()
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_RIGHT)
     {
         this->sprite.setScale(2.5f, 2.5f);
-        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || getAnimSwitch())
         {
             this->currentFrame.top = 0.f;
             this->currentFrame.left += 20.f;
@@ -211,3 +241,26 @@ void Jugador::render(sf::RenderTarget& target)
 }
 
 //}
+
+//=============MAPA================
+
+Tile::Tile(sf::Texture& textureSheet, sf::IntRect textureRect)
+{
+    this->sprite.setTexture(textureSheet);
+    this->sprite.setTextureRect(textureRect);
+}
+
+const sf::FloatRect Tile::getGlobalBounds() const
+{
+    return this->sprite.getGlobalBounds();
+}
+
+void Tile::update()
+{
+
+}
+
+void Tile::render(sf::RenderTarget& target)
+{
+    target.draw(this->sprite);
+}
