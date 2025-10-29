@@ -17,7 +17,7 @@ void Personajes::initTexture()
 void Personajes::initSprite()
 {
     this->sprite.setTexture(this->textureSheet);
-    this->currentFrame = sf::IntRect(20, 0, 19, 44);
+    this->currentFrame = sf::IntRect(20, 45, 19, 44);
     this->sprite.setTextureRect(this->currentFrame);
     this->sprite.setScale(sf::Vector2f(2.5f, 2.5f));
 }
@@ -97,6 +97,8 @@ void Jugador::resetAnimTimer()
     this->animationSwitch = true;
 }
 
+//================MOVIMIENTO==================
+
 void Jugador::updateMovement()
 {
     this->animState = PLAYER_ANIMATION_STATES::IDLE;
@@ -131,13 +133,15 @@ void Jugador::updateMovement()
 
 }
 
+//================ANIMACIONES==================
+
 void Jugador::updateAnimations()
 {
     if(this->animState == PLAYER_ANIMATION_STATES::IDLE)
     {
-        this->currentFrame.top = 0.f;
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
         {
+            this->currentFrame.top = 45.f;
             this->currentFrame.left = 20.f;
 
             this->animationTimer.restart();
@@ -149,7 +153,6 @@ void Jugador::updateAnimations()
 
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
     {
-        this->sprite.setScale(-2.5f, 2.5f);
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
         {
             this->currentFrame.top = 0.f;
@@ -160,12 +163,15 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
+
+        this->sprite.setScale(-2.5f, 2.5f);
+        this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 2.5f, 0.f);
+
         return;
     }
 
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_RIGHT)
     {
-        this->sprite.setScale(2.5f, 2.5f);
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || getAnimSwitch())
         {
             this->currentFrame.top = 0.f;
@@ -176,14 +182,19 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
+
+        this->sprite.setScale(2.5f, 2.5f);
+        this->sprite.setOrigin(0.f, 0.f);
+
         return;
     }
 
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_UP)
     {
-        this->currentFrame.top = 89.f;
+
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
         {
+            this->currentFrame.top = 89.f;
             this->currentFrame.left += 20.f;
             if(this->currentFrame.left >= 78.f)
                 this->currentFrame.left = 0.f;
@@ -196,9 +207,9 @@ void Jugador::updateAnimations()
 
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_DOWN)
     {
-        this->currentFrame.top = 45.f;
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
         {
+            this->currentFrame.top = 45.f;
             this->currentFrame.left += 20.f;
             if(this->currentFrame.left >= 78.f)
                 this->currentFrame.left = 0.f;
@@ -229,6 +240,8 @@ void Jugador::updateAnimations()
     }
 }
 
+//=============UPDATE Y RENDER=============
+
 void Jugador::update()
 {
     this->updateMovement();
@@ -238,6 +251,15 @@ void Jugador::update()
 void Jugador::render(sf::RenderTarget& target)
 {
     target.draw(this->sprite);
+
+    //testeando
+
+    sf::CircleShape circ;
+    circ.setFillColor(sf::Color::Red);
+    circ.setRadius(2.f);
+    circ.setPosition(this->sprite.getPosition());
+
+    target.draw(circ);
 }
 
 //}
