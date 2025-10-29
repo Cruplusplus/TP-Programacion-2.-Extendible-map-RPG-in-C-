@@ -52,7 +52,7 @@ private:
 public:
     Jugador();
 
-    const bool&  getAnimSwitch();
+    const bool getAnimSwitch();
     const sf::FloatRect getGlobalBounds() const;
     const sf::Vector2f getPosition() const;
 

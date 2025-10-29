@@ -93,6 +93,28 @@ void Juego::updateCollision()
             this->window->getSize().y - this->jugador->getGlobalBounds().height
         );
     }
+
+    if(this->jugador->getPosition().y < 0)
+    {
+        this->jugador->setPosition(
+            this->jugador->getPosition().x, 0
+        );
+    }
+
+    if(this->jugador->getPosition().x + this->jugador->getGlobalBounds().width > this->window->getSize().x)
+    {
+        this->jugador->setPosition(
+            this->window->getSize().x - this->jugador->getGlobalBounds().width,
+            this->jugador->getPosition().y
+        );
+    }
+
+    if(this->jugador->getPosition().x < 0)
+    {
+        this->jugador->setPosition(
+            0, this->jugador->getPosition().y
+        );
+    }
 }
 
 void Juego::update()

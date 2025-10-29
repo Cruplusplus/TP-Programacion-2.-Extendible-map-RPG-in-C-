@@ -62,12 +62,12 @@ Jugador::Jugador()
     this->velocidad = 2.f;
 }
 
-const bool&  Jugador::getAnimSwitch()
+const bool Jugador::getAnimSwitch()
 {
     bool animSwitch = this->animationSwitch;
 
     if(this->animationSwitch)
-        this->animationSwitch = false;
+        {this->animationSwitch = false;}
     return animSwitch;
 }
 
@@ -135,9 +135,9 @@ void Jugador::updateAnimations()
 {
     if(this->animState == PLAYER_ANIMATION_STATES::IDLE)
     {
-        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.f || getAnimSwitch())
+        this->currentFrame.top = 0.f;
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
         {
-            this->currentFrame.top = 0.f;
             this->currentFrame.left = 20.f;
 
             this->animationTimer.restart();
@@ -149,9 +149,9 @@ void Jugador::updateAnimations()
 
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
     {
-        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f || getAnimSwitch())
+        this->sprite.setScale(-2.5f, 2.5f);
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
         {
-            this->sprite.setScale(-2.5f, 2.5f);
             this->currentFrame.top = 0.f;
             this->currentFrame.left += 20.f;
             if(this->currentFrame.left >= 80.f)
