@@ -21,22 +21,39 @@ void Juego::initWindow()
     this->window->setFramerateLimit(visualConfig.getFramerate());
 }
 
+void Juego::initTileSheet()
+{
+    if(!this->tileSheet.loadFromFile("Sprites ejemplo/player_sprites.png"))
+    {
+        std::cout << "ERROR CON LA CARGA DE TILES TEXTURE: Juego::initTileSheet";
+    }
+}
+
 void Juego::initPersonajes()
 {
     this->jugador = new Jugador();
+}
+
+void Juego::initTileMap()
+{
+    this->tileMap = new TileMap(20, 20, &this->tileSheet, 50);
+    this->tileMap->addTile(0, 0);
 }
 
 Juego::Juego()
 {
     this->initVariables();
     this->initWindow();
+    this->initTileSheet();
     this->initPersonajes();
+    this->initTileMap();
 }
 
 Juego::~Juego()
 {
     delete this->window;
     delete this->jugador;
+    delete this->tileMap;
 }
 
 //Accesors
@@ -117,6 +134,11 @@ void Juego::updateCollision()
     }
 }
 
+void Juego::updateTileMap()
+{
+    this->tileMap->update();
+}
+
 void Juego::update()
 {
     this->pollEvents();
@@ -125,6 +147,7 @@ void Juego::update()
     {
         this->updatePersonajes();
         this->updateCollision();
+        this->updateTileMap();
     }
 
     //cuando termina el juego
@@ -138,10 +161,16 @@ void Juego::renderPersonajes(sf::RenderTarget& target)
     jugador->render(target);
 }
 
+void Juego::renderTileMap()
+{
+    this->tileMap->render(*this->window);
+}
+
 void Juego::render()
 {
     this->window->clear();
 
+    this->renderTileMap();
     this->renderPersonajes(*this->window);
 
     this->window->display();

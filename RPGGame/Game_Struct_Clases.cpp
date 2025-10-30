@@ -109,15 +109,15 @@ void Jugador::updateMovement()
         return;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-    {
-        mover(-1.f, 0.f);
-        this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         mover(1.f, 0.f);
         this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
+        mover(-1.f, 0.f);
+        this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -147,25 +147,9 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
-        return;
-    }
 
-
-    if(this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
-    {
-        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
-        {
-            this->currentFrame.top = 0.f;
-            this->currentFrame.left += 20.f;
-            if(this->currentFrame.left >= 80.f)
-                this->currentFrame.left = 0;
-
-            this->animationTimer.restart();
-            this->sprite.setTextureRect(this->currentFrame);
-        }
-
-        this->sprite.setScale(-2.5f, 2.5f);
-        this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 2.5f, 0.f);
+        this->sprite.setScale(2.5f, 2.5f);
+        this->sprite.setOrigin(0.f, 0.f);
 
         return;
     }
@@ -189,6 +173,25 @@ void Jugador::updateAnimations()
         return;
     }
 
+    if(this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
+    {
+        if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2f)
+        {
+            this->currentFrame.top = 0.f;
+            this->currentFrame.left += 20.f;
+            if(this->currentFrame.left >= 80.f)
+                this->currentFrame.left = 0;
+
+            this->animationTimer.restart();
+            this->sprite.setTextureRect(this->currentFrame);
+        }
+
+        this->sprite.setScale(-2.5f, 2.5f);
+        this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 2.5f, 0.f);
+
+        return;
+    }
+
     if(this->animState == PLAYER_ANIMATION_STATES::MOVING_UP)
     {
 
@@ -202,6 +205,10 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
+
+        this->sprite.setScale(2.5f, 2.5f);
+        this->sprite.setOrigin(0.f, 0.f);
+
         return;
     }
 
@@ -217,6 +224,10 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
+
+        this->sprite.setScale(2.5f, 2.5f);
+        this->sprite.setOrigin(0.f, 0.f);
+
         return;
     }
 
@@ -224,7 +235,7 @@ void Jugador::updateAnimations()
     {
         if(this->animationTimer.getElapsedTime().asSeconds() >= 0.2)
         {
-            /*
+            /* no se que hacer con esto
             this->currentFrame = sf::IntRect(0, 148, 27, 37);
 
             this->currentFrame = sf::IntRect(29, 148, 18, 49);
@@ -236,7 +247,7 @@ void Jugador::updateAnimations()
             this->animationTimer.restart();
             this->sprite.setTextureRect(this->currentFrame);
         }
-        this->currentFrame = sf::IntRect(20, 0, 19, 44);
+        this->currentFrame = sf::IntRect(20, 45, 19, 44);
     }
 }
 
@@ -263,26 +274,3 @@ void Jugador::render(sf::RenderTarget& target)
 }
 
 //}
-
-//=============MAPA================
-
-Tile::Tile(sf::Texture& textureSheet, sf::IntRect textureRect)
-{
-    this->sprite.setTexture(textureSheet);
-    this->sprite.setTextureRect(textureRect);
-}
-
-const sf::FloatRect Tile::getGlobalBounds() const
-{
-    return this->sprite.getGlobalBounds();
-}
-
-void Tile::update()
-{
-
-}
-
-void Tile::render(sf::RenderTarget& target)
-{
-    target.draw(this->sprite);
-}

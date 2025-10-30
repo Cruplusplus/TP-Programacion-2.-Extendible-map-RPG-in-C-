@@ -82,30 +82,6 @@ public:
 
 };
 
-class Tile
-{
-private:
-    sf::Sprite sprite;
-
-public:
-    Tile(sf::Texture& textureSheet, sf::IntRect textureRect);
-
-    const sf::FloatRect getGlobalBounds() const;
-
-    void update();
-    void render(sf::RenderTarget& target);
-};
-
-
-class TileMap
-{
-private:
-
-public:
-    TileMap();
-    ~TileMap();
-};
-
 
 class Mazmorras
 {
