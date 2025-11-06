@@ -25,9 +25,9 @@ const bool Jugador::getAnimSwitch()
     return animSwitch;
 }
 
-
-
-int Jugador::getHp() { return this->hp; }
+void Jugador::recibirDanio(int danio) { this->hp -= danio; }
+int Jugador::getDmg() const { return this->dmg; }
+int Jugador::getHp() const { return this->hp; }
 
 void Jugador::resetAnimTimer()
 {
