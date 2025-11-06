@@ -2,23 +2,22 @@
 
 //=============MAPA================
 
-Tile::Tile(sf::Texture* textureSheet, sf::IntRect textureRect, bool damaging)
-    : damaging(damaging)
+Tile::Tile(const int& grid_pos_x, const int& grid_pos_y, const int& tile_size,
+         sf::Texture* textureSheet, sf::IntRect textureRect)
 {
-    damaging = false;
+    this->colision = false;
     this->sprite.setTexture(*textureSheet);
     this->sprite.setTextureRect(textureRect);
+    this->sprite.setPosition(float(grid_pos_x * tile_size), float(grid_pos_y * tile_size));
 }
 
 const sf::FloatRect Tile::getGlobalBounds() const
-{
-    return this->sprite.getGlobalBounds();
-}
+{ return this->sprite.getGlobalBounds(); }
+
+const bool Tile::getColision() const { return this->colision; }
 
 void Tile::update()
-{
-
-}
+{}
 
 void Tile::render(sf::RenderTarget& target)
 {
@@ -57,16 +56,43 @@ TileMap::~TileMap()
     }
 }
 
-void TileMap::addTile(unsigned x, unsigned y)
+void TileMap::addTile(unsigned x, unsigned y, int tileType)
 {
-    if(x < this->tiles.size())
+    if(x < this->tiles.size() && x >= 0)
     {
-        if(y < this->tiles[x].size())
+        if(y < this->tiles[x].size() && y >= 0)
         {
-            if(this->tiles[x][y] == nullptr){
-                this->tiles[x][y] = new Tile(this->tileSheet, sf::IntRect(0,0,
-                                            this->tileSize, this->tileSize), false);
-                                            //ya esta el false pero quiero remarcarlo
+            if(this->tiles[x][y] == nullptr)
+            {
+                sf::IntRect textureRect;
+
+                switch (tileType)
+                {
+                case 0:
+                    // 0 seria bg
+                    break;
+                case tipoTiles::PISO:
+                    textureRect = sf::IntRect(63, 52, this->tileSize, this->tileSize);
+                    break;
+                case tipoTiles::PARED_LEFT:
+                    textureRect = sf::IntRect(89, 89, this->tileSize, this->tileSize);
+                    break;
+                case tipoTiles::PARED_TOP:
+                    textureRect = sf::IntRect(62, 0, this->tileSize, this->tileSize);
+                    break;
+                case tipoTiles::PARED_CORNER:
+                    textureRect = sf::IntRect(0, 0, this->tileSize, this->tileSize);
+                    break;
+                case tipoTiles::ROCA:
+                    textureRect = sf::IntRect(256, 0, this->tileSize, this->tileSize);
+                    break;
+                default:
+                    textureRect = sf::IntRect(0, 0, this->tileSize, this->tileSize);
+                    break;
+                }
+
+                this->tiles[x][y] = new Tile(x, y, tileSize, this->tileSheet,
+                                             textureRect);
             }
         }
     }
@@ -85,6 +111,39 @@ void TileMap::removeTile(unsigned x, unsigned y)
             }
         }
     }
+}
+
+
+bool TileMap::checkCollision(sf::FloatRect rect)
+{
+    if (this->tiles.empty()) return false;
+
+    int left = rect.left / this->tileSize;
+    int right = (rect.left + rect.width) / this->tileSize;
+    int top = rect.top / this->tileSize;
+    int bottom = (rect.top + rect.height) / this->tileSize;
+
+    //x si acaso
+    left = std::max(0, left);
+    right = std::min((int)this->tiles.size() - 1, right);
+    top = std::max(0, top);
+    bottom = std::min((int)this->tiles[0].size() - 1, bottom);
+
+    for (int x = left; x <= right; ++x)
+    {
+        for (int y = top; y <= bottom; ++y)
+        {
+            if (this->tiles[x][y] != nullptr)
+            {
+                //chequear tile
+                if (rect.intersects(this->tiles[x][y]->getGlobalBounds()))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 void TileMap::update()

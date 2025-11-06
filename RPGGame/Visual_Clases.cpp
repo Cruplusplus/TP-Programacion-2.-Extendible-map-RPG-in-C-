@@ -2,8 +2,8 @@
 
 VisualConfig::VisualConfig()
 {
-    this->resolucionX = 800;
-    this->resolucionY = 800;
+    this->resolucionX = 540;
+    this->resolucionY = 960;
     this->frameRate = 61;
     this->volumenMusica = 100;
 }

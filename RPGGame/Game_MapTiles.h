@@ -5,17 +5,20 @@ class Tile
 {
 private:
     sf::Sprite sprite;
-    const bool damaging;
+    bool colision;
 
 public:
-    Tile(sf::Texture* textureSheet, sf::IntRect textureRect, bool damaging = false);
+    Tile(const int& grid_pos_x, const int& grid_pos_y, const int& tile_size,
+         sf::Texture* textureSheet, sf::IntRect textureRect);
 
     const sf::FloatRect getGlobalBounds() const;
+    const bool getColision() const;
 
     void update();
     void render(sf::RenderTarget& target);
 };
 
+enum tipoTiles {PISO = 1, PARED_LEFT, PARED_TOP, PARED_CORNER, ROCA};
 
 class TileMap
 {
@@ -30,9 +33,13 @@ public:
     TileMap(unsigned width, unsigned height, sf::Texture* tile_sheet, unsigned tile_size);
     ~TileMap();
 
-    void addTile(unsigned x, unsigned y);
+    //inline funcs
+    inline const unsigned& getTileSize() const {return this->tileSize; };
+
+    void addTile(unsigned x, unsigned y, int tileType);
     void removeTile(unsigned x, unsigned y);
 
+    bool checkCollision(sf::FloatRect rect);
     void update();
     void render(sf::RenderTarget& target);
 };

@@ -21,9 +21,23 @@ void Juego::initWindow()
     this->window->setFramerateLimit(visualConfig.getFramerate());
 }
 
+void Juego::initInput()
+{
+    //mouse
+    this->mouseMappings["BTN_ADD_TILE"] = sf::Mouse::Button::Left;
+    this->mouseMappings["BTN_REMOVE_TILE"] = sf::Mouse::Button::Right;
+
+    //keyboard
+    this->keyboardMappings["KEY_MOVE_LEFT"] = sf::Keyboard::Key::A;
+    this->keyboardMappings["KEY_MOVE_RIGHT"] = sf::Keyboard::Key::D;
+    this->keyboardMappings["KEY_MOVE_UP"] = sf::Keyboard::Key::W;
+    this->keyboardMappings["KEY_MOVE_DOWN"] = sf::Keyboard::Key::S;
+    this->keyboardMappings["KEY_MOVE_ATTACK"] = sf::Keyboard::Key::K;
+}
+
 void Juego::initTileSheet()
 {
-    if(!this->tileSheet.loadFromFile("Sprites ejemplo/player_sprites.png"))
+    if(!this->tileSheet.loadFromFile("Sprites ejemplo/dungeon_tile.png"))
     {
         std::cout << "ERROR CON LA CARGA DE TILES TEXTURE: Juego::initTileSheet";
     }
@@ -31,44 +45,66 @@ void Juego::initTileSheet()
 
 void Juego::initPersonajes()
 {
-    this->jugador = new Jugador();
+    this->jugador = new Jugador(590.f, 230.f);
 }
 
-void Juego::initTileMap()
+void Juego::initHabitacion()
 {
-    this->tileMap = new TileMap(20, 20, &this->tileSheet, 50);
-    this->tileMap->addTile(0, 0);
+    this->habitacionActual = new Habitacion(&this->tileSheet);
 }
 
 Juego::Juego()
 {
     this->initVariables();
     this->initWindow();
+    this->initInput();
     this->initTileSheet();
     this->initPersonajes();
-    this->initTileMap();
+    this->initHabitacion();
 }
 
 Juego::~Juego()
 {
     delete this->window;
     delete this->jugador;
-    delete this->tileMap;
+    delete this->habitacionActual;
 }
 
 //Accesors
-const bool Juego::gameRunning() const
-{
-    return this->window->isOpen();
-}
+const bool Juego::gameRunning() const { return this->window->isOpen(); }
 
-const bool Juego::getFinalizarJuego() const
-{
-    return this->finalizarJuego;
-}
+const bool Juego::getFinalizarJuego() const { return this->finalizarJuego; }
 
+const sf::RenderWindow& Juego::getWindow() const { return *this->window; }
 
 //Functions
+
+void Juego::updateInput()
+{ /*
+    //Mouse
+    std::cout << int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->tileMap->getTileSize())
+                     << " " << int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->tileMap->getTileSize())
+                     << std::endl;
+
+    const int mouseX = int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->tileMap->getTileSize());
+    const int mouseY = int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->tileMap->getTileSize());
+
+    //Player movement
+    if(sf::Keyboard::isKeyPressed(this->keyboardMappings["KEY_MOVE_LEFT"]))
+    {
+
+    }
+
+    //Tile funcs
+    if(sf::Mouse::isButtonPressed(this->mouseMappings["BTN_ADD_TILE"]))
+    {
+        this->tileMap->addTile(mouseX, mouseY, 1);
+    }
+    else if(sf::Mouse::isButtonPressed(this->mouseMappings["BTN_REMOVE_TILE"]))
+    {
+        this->tileMap->removeTile(mouseX, mouseY);
+    }
+*/}
 
 void Juego::pollEvents()
 {
@@ -132,11 +168,22 @@ void Juego::updateCollision()
             0, this->jugador->getPosition().y
         );
     }
-}
 
-void Juego::updateTileMap()
-{
-    this->tileMap->update();
+    //Agregar logica para colision con objetos del mapa
+    TileMap* mapa = this->habitacionActual->getTileMap();
+
+    this->jugador->mover(this->jugador->getVelocidadVector().x, 0.f);
+    if (mapa->checkCollision(this->jugador->getGlobalBounds()))
+    {
+        this->jugador->mover(-this->jugador->getVelocidadVector().x, 0.f);
+    }
+
+    this->jugador->mover(0.f, this->jugador->getVelocidadVector().y);
+    if (mapa->checkCollision(this->jugador->getGlobalBounds()))
+    {
+        this->jugador->mover(0.f, -this->jugador->getVelocidadVector().y);
+    }
+
 }
 
 void Juego::update()
@@ -145,9 +192,11 @@ void Juego::update()
 
     if (!this->finalizarJuego)
     {
+        this->updateInput();
         this->updatePersonajes();
         this->updateCollision();
-        this->updateTileMap();
+
+        this->habitacionActual->update(this->jugador->getPosition());
     }
 
     //cuando termina el juego
@@ -156,22 +205,31 @@ void Juego::update()
 
 }
 
-void Juego::renderPersonajes(sf::RenderTarget& target)
-{
-    jugador->render(target);
-}
-
-void Juego::renderTileMap()
-{
-    this->tileMap->render(*this->window);
-}
-
 void Juego::render()
 {
     this->window->clear();
 
-    this->renderTileMap();
-    this->renderPersonajes(*this->window);
+    this->habitacionActual->renderFondo(*this->window);
+
+    //junto todo en el maldito vector
+    std::vector<Personajes*> personajesParaRender;
+    personajesParaRender.push_back(this->jugador);
+    for (auto* enemigo : this->habitacionActual->getEnemigos())
+    {
+        personajesParaRender.push_back(enemigo);
+    }
+
+    //orden
+    std::sort(personajesParaRender.begin(), personajesParaRender.end(),
+        [](Personajes* a, Personajes* b) {
+            return a->getPosition().y < b->getPosition().y;
+        });
+
+    //draw
+    for (auto* personaje : personajesParaRender)
+    {
+        personaje->render(*this->window);
+    }
 
     this->window->display();
 }

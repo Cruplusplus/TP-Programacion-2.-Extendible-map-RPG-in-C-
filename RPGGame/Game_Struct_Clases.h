@@ -20,6 +20,9 @@ protected:
     sf::Clock animationTimer;
     bool animationSwitch;
 
+    //fisicas
+    sf::Vector2f velocidadVector;
+
     //Animacion
     short animState;
     sf::IntRect currentFrame;
@@ -39,62 +42,25 @@ public:
                std::string _nombre);
     virtual ~Personajes();
 
-    virtual void mover(const float dx, const float dy);
-    /*
-    virtual void atacar(Personajes& objetivo);
-    virtual void recibirDanio(int cantidad);
-    virtual void dibujar(sf::RenderWindow& window);*/
-};
-
-class Jugador : public Personajes
-{
-private:
-public:
-    Jugador();
-
-    const bool getAnimSwitch();
-    const sf::FloatRect getGlobalBounds() const;
-    const sf::Vector2f getPosition() const;
-
-    //setters
-    void resetAnimTimer();
+    //acc
     void setPosition(const float x, const float y);
 
-    int getHp();
+    const sf::Vector2f getPosition() const;
+    const sf::FloatRect getGlobalBounds() const;
+    sf::Vector2f& getVelocidadVector();
+    //
 
-    void updateMovement();
-    void updateAnimations();
-    void update();
-    //Visual
-    void render(sf::RenderTarget& target);
+    virtual void mover(const float dx, const float dy);
+
+    virtual void update() = 0;
+    virtual void render(sf::RenderTarget& target) = 0; //Esto quiere decir que obliga a sus hijos a tener las fx
 };
 
-class Enemigos : public Personajes
+class Objetos
 {
 private:
-    int idEnemigo;
-    int hpBase;
-    int dmgBase;
-    int lvlMin;
-    int lvlMax;
-public:
-    Enemigos();
-
-};
-
-
-class Mazmorras
-{
-private:
-    int idChunk;
-    int chanceAparicion;
-    int dificultad;
-
-    /*
-    vector<Mazmorras> chunks;
-    vector<Enemigos> enemigos;
-    vector<Objetos> tesoros;
-    */
+    int idObjeto;
+    enum tipoDeObjeto {Pickup = 0, PowerUp};
 public:
 
 };

@@ -1,10 +1,13 @@
 #pragma once
 #include "Game_MapTiles.h"
+#include "Jugador.h"
+#include "Habitacion.h"
+
+#include <algorithm>
 
 //{Motor grafico del juego
 class Juego{
 private:
-    //{----VARIABLES----
 //ventana
     VisualConfig visualConfig;
     sf::RenderWindow *window;
@@ -19,15 +22,19 @@ private:
 
 //objetos del juego
     Jugador* jugador;
-    TileMap* tileMap;
+    Habitacion* habitacionActual;
+
+    std::map<std::string, sf::Keyboard::Key> keyboardMappings;
+    std::map<std::string, sf::Mouse::Button> mouseMappings;
 
 //Inicializadores
     void initVariables();
     void initWindow();
+    void initInput();
     void initTileSheet();
     void initPersonajes();
-    void initTileMap();
-//}
+    void initHabitacion();
+//
 public:
     //Constrc - Destrc
     Juego();
@@ -36,28 +43,24 @@ public:
     //Accesors
     const bool gameRunning() const;
     const bool getFinalizarJuego() const;
+    const sf::RenderWindow& getWindow() const;
 
     //{Funcs
     //void spawnEnemigo();
+    void updateInput();
 
     void pollEvents();
 
     //Updates
     void updatePersonajes();
     void updateCollision();
-    void updateTileMap();
 
     void update();
-
-    //Renders
-    void renderPersonajes(sf::RenderTarget& target);
-    void renderTileMap();
 
     void render();
 
     //Getters
     int getPuntos();
-    const sf::RenderWindow& getWindow() const;
     //}
 };
 //}

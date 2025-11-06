@@ -13,7 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="C:/GameLibs/SFML-2.6.2/include" />
+					<Add directory="Librerias/SFML-2.6.2/include" />
 				</Compiler>
 				<Linker>
 					<Add library="sfml-graphics-d" />
@@ -21,7 +21,7 @@
 					<Add library="sfml-system-d" />
 					<Add library="sfml-audio-d" />
 					<Add library="sfml-network-d" />
-					<Add directory="C:/GameLibs/SFML-2.6.2/lib" />
+					<Add directory="Librerias/SFML-2.6.2/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -50,11 +50,18 @@
 		<Linker>
 			<Add directory="C:/GameLibs/SFML-2.6.2/lib" />
 		</Linker>
+		<Unit filename="Enemigos.cpp" />
+		<Unit filename="Enemigos.h" />
 		<Unit filename="Game_Class.cpp" />
 		<Unit filename="Game_Class.h" />
+		<Unit filename="Game_MapTiles.cpp" />
+		<Unit filename="Game_MapTiles.h" />
 		<Unit filename="Game_Struct_Clases.cpp" />
 		<Unit filename="Game_Struct_Clases.h" />
-		<Unit filename="Logic_Clases.h" />
+		<Unit filename="Habitacion.cpp" />
+		<Unit filename="Habitacion.h" />
+		<Unit filename="Jugador.cpp" />
+		<Unit filename="Jugador.h" />
 		<Unit filename="Sprites ejemplo/player_sprites_ejemplo.png" />
 		<Unit filename="Visual_Clases.cpp" />
 		<Unit filename="Visual_Clases.h" />
