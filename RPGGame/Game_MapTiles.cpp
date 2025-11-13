@@ -123,7 +123,7 @@ bool TileMap::checkCollision(sf::FloatRect rect)
     int top = rect.top / this->tileSize;
     int bottom = (rect.top + rect.height) / this->tileSize;
 
-    //x si acaso
+    //x si acaso seteo los parametros que deberia cumplir
     left = std::max(0, left);
     right = std::min((int)this->tiles.size() - 1, right);
     top = std::max(0, top);
