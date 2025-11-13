@@ -46,6 +46,7 @@ void Juego::initTileSheet()
 void Juego::initPersonajes()
 {
     this->jugador = new Jugador(590.f, 230.f);
+    this->duende = new Duende(500.f, 90.f);
 }
 
 void Juego::initHabitacion()
@@ -67,6 +68,7 @@ Juego::~Juego()
 {
     delete this->window;
     delete this->jugador;
+    delete this->duende;
     delete this->habitacionActual;
 }
 
@@ -80,14 +82,15 @@ const sf::RenderWindow& Juego::getWindow() const { return *this->window; }
 //Functions
 
 void Juego::updateInput()
-{ /*
+{
     //Mouse
-    std::cout << int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->tileMap->getTileSize())
-                     << " " << int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->tileMap->getTileSize())
-                     << std::endl;
+    /*
+    std::cout << int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize())
+                     << " " << int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize())
+                     << std::endl;*/
 
-    const int mouseX = int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->tileMap->getTileSize());
-    const int mouseY = int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->tileMap->getTileSize());
+    const int mouseX = int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize());
+    const int mouseY = int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize());
 
     //Player movement
     if(sf::Keyboard::isKeyPressed(this->keyboardMappings["KEY_MOVE_LEFT"]))
@@ -98,13 +101,13 @@ void Juego::updateInput()
     //Tile funcs
     if(sf::Mouse::isButtonPressed(this->mouseMappings["BTN_ADD_TILE"]))
     {
-        this->tileMap->addTile(mouseX, mouseY, 1);
+        this->habitacionActual->getTileMap()->addTile(mouseX, mouseY, 1);
     }
     else if(sf::Mouse::isButtonPressed(this->mouseMappings["BTN_REMOVE_TILE"]))
     {
-        this->tileMap->removeTile(mouseX, mouseY);
+        this->habitacionActual->getTileMap()->removeTile(mouseX, mouseY);
     }
-*/}
+}
 
 void Juego::pollEvents()
 {
@@ -135,6 +138,7 @@ void Juego::pollEvents()
 void Juego::updatePersonajes()
 {
     jugador->update();
+    duende->update();
 }
 
 void Juego::updateCollision()
@@ -197,6 +201,8 @@ void Juego::update()
         this->updateCollision();
 
         this->habitacionActual->update(this->jugador->getPosition());
+        this->habitacionActual->update(this->duende->getPosition());
+        this->duende->updateIA(this->jugador->getPosition(), jugador);
     }
 
     //cuando termina el juego
@@ -214,6 +220,7 @@ void Juego::render()
     //junto todo en el maldito vector
     std::vector<Personajes*> personajesParaRender;
     personajesParaRender.push_back(this->jugador);
+    personajesParaRender.push_back(this->duende);
     for (auto* enemigo : this->habitacionActual->getEnemigos())
     {
         personajesParaRender.push_back(enemigo);

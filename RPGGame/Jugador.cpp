@@ -6,7 +6,6 @@ Jugador::Jugador(const float x, const float y)
     : Personajes(1, 10, 1, 1, "Knight")
 {
     TipoPersonaje::Jugador;
-    this->initVariables();
     this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
 

@@ -3,7 +3,7 @@
 //=============MAPA================
 
 Tile::Tile(const int& grid_pos_x, const int& grid_pos_y, const int& tile_size,
-         sf::Texture* textureSheet, sf::IntRect textureRect)
+           sf::Texture* textureSheet, sf::IntRect textureRect)
 {
     this->colision = false;
     this->sprite.setTexture(*textureSheet);
@@ -12,9 +12,14 @@ Tile::Tile(const int& grid_pos_x, const int& grid_pos_y, const int& tile_size,
 }
 
 const sf::FloatRect Tile::getGlobalBounds() const
-{ return this->sprite.getGlobalBounds(); }
+{
+    return this->sprite.getGlobalBounds();
+}
 
-const bool Tile::getColision() const { return this->colision; }
+const bool Tile::getColision() const
+{
+    return this->colision;
+}
 
 void Tile::update()
 {}
@@ -58,59 +63,66 @@ TileMap::~TileMap()
 
 void TileMap::addTile(unsigned x, unsigned y, int tileType)
 {
-    if(x < this->tiles.size() && x >= 0)
+    if(x >= this->tiles.size() && x >= 0)
     {
-        if(y < this->tiles[x].size() && y >= 0)
-        {
-            if(this->tiles[x][y] == nullptr)
-            {
-                sf::IntRect textureRect;
-
-                switch (tileType)
-                {
-                case 0:
-                    // 0 seria bg
-                    break;
-                case tipoTiles::PISO:
-                    textureRect = sf::IntRect(63, 52, this->tileSize, this->tileSize);
-                    break;
-                case tipoTiles::PARED_LEFT:
-                    textureRect = sf::IntRect(89, 89, this->tileSize, this->tileSize);
-                    break;
-                case tipoTiles::PARED_TOP:
-                    textureRect = sf::IntRect(62, 0, this->tileSize, this->tileSize);
-                    break;
-                case tipoTiles::PARED_CORNER:
-                    textureRect = sf::IntRect(0, 0, this->tileSize, this->tileSize);
-                    break;
-                case tipoTiles::ROCA:
-                    textureRect = sf::IntRect(256, 0, this->tileSize, this->tileSize);
-                    break;
-                default:
-                    textureRect = sf::IntRect(0, 0, this->tileSize, this->tileSize);
-                    break;
-                }
-
-                this->tiles[x][y] = new Tile(x, y, tileSize, this->tileSheet,
-                                             textureRect);
-            }
-        }
+        return;
     }
+    if(y >= this->tiles[x].size() && y >= 0)
+    {
+        return;
+    }
+    if(this->tiles[x][y] != nullptr)
+    {
+        return;
+    }
+
+    sf::IntRect textureRect;
+    switch (tileType)
+    {
+    case 0:
+        // 0 seria bg
+        break;
+    case tipoTiles::PISO:
+        textureRect = sf::IntRect(63, 52, this->tileSize, this->tileSize);
+        break;
+    case tipoTiles::PARED_LEFT:
+        textureRect = sf::IntRect(89, 89, this->tileSize, this->tileSize);
+        break;
+    case tipoTiles::PARED_TOP:
+        textureRect = sf::IntRect(62, 0, this->tileSize, this->tileSize);
+        break;
+    case tipoTiles::PARED_CORNER:
+        textureRect = sf::IntRect(0, 0, this->tileSize, this->tileSize);
+        break;
+    case tipoTiles::ROCA:
+        textureRect = sf::IntRect(256, 0, this->tileSize, this->tileSize);
+        break;
+    default:
+        textureRect = sf::IntRect(0, 0, this->tileSize, this->tileSize);
+        break;
+    }
+
+    this->tiles[x][y] = new Tile(x, y, tileSize, this->tileSheet,
+                                 textureRect);
 }
 
 void TileMap::removeTile(unsigned x, unsigned y)
 {
-    if(x < this->tiles.size())
+    if(x >= this->tiles.size())
     {
-        if(y < this->tiles[x].size())
-        {
-            if(this->tiles[x][y] != nullptr)
-            {
-                delete this->tiles[x][y];
-                this->tiles[x][y] = nullptr;
-            }
-        }
+        return;
     }
+    if(y >= this->tiles[x].size())
+    {
+        return;
+    }
+    if(this->tiles[x][y] == nullptr)
+    {
+        return;
+    }
+
+    delete this->tiles[x][y];
+    this->tiles[x][y] = nullptr;
 }
 
 

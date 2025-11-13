@@ -46,6 +46,7 @@ Personajes::Personajes(int _id, int _hp, int _dmg, int _lvl,
     this->lvl = _lvl;
     this->nombre = _nombre;
 
+    this->initVariables();
 }
 
 Personajes::~Personajes()

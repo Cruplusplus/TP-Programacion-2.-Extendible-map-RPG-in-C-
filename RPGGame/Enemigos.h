@@ -1,5 +1,6 @@
 #include "Game_Struct_Clases.h"
 #pragma once
+#include "Jugador.h"
 
 class Enemigos : public Personajes
 {
@@ -20,6 +21,6 @@ class Duende : public Enemigos
     virtual ~Duende();
 
     //Funciones
-    void updateIA(sf::Vector2f playerPos);
+    void updateIA(sf::Vector2f playerPos, Jugador* jugador);
     void update() override;
 };

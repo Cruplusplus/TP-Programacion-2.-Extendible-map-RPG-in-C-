@@ -13,7 +13,7 @@ Enemigos::~Enemigos()
 
 void Enemigos::update()
 {
-    //IA
+
 }
 
 void Enemigos::render(sf::RenderTarget& target)
@@ -25,29 +25,24 @@ Duende::Duende(float x, float y)
         : Enemigos(2, 3, 1, 1, "Duende")
 {
     this->tipo = TipoPersonaje::Enemigos;
-    /*
-    if (!this->textureSheet.loadFromFile("Sprites ejemplo/duende_sprites.png"))
-    {
-        std::cout << "ERROR CON LA CARGA DE TEXTURA: Duende" << std::endl;
-    }
 
-    this->textureSheet.setSmooth(false);
+    this->initTexture("Sprites ejemplo/player_sprites.png");
+    this->initSprite();
 
-    this->sprite.setTexture(this->textureSheet);
-    this->currentFrame = sf::IntRect(0, 0, 16, 16);*/
-    this->sprite.setTextureRect(this->currentFrame);
-    this->sprite.setScale(sf::Vector2f(2.5f, 2.5f));
-    this->sprite.setPosition(x, y);
+    this->initHitbox(19.f, 20.f);
+    this->hitbox.setOrigin(this->sprite.getOrigin());
+    this->hitbox.setScale(this->sprite.getScale());
 
     this->velocidad = 1.f;
     //this->initAnimations();
+    this->setPosition(x, y);
 }
 
 Duende::~Duende()
 {
 }
 
-void Duende::updateIA(sf::Vector2f playerPos)
+void Duende::updateIA(sf::Vector2f playerPos, Jugador* jugador)
 {
     sf::Vector2f direction = playerPos - this->sprite.getPosition();
     float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
@@ -56,14 +51,20 @@ void Duende::updateIA(sf::Vector2f playerPos)
         direction = direction / distance;
     }
 
-    float SIGHT_RANGE = 300.f;
-    float ATTACK_RANGE = 50.f;
+    float SIGHT_RANGE = 100.f;
+    float ATTACK_RANGE = 20.f;
 
     if (distance < ATTACK_RANGE)
     {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;
 
         //logica de ataque que no se hacer
+        if (this->animationTimer.getElapsedTime().asSeconds() >= 1.f)
+        {
+            std::cout << "ataca enemigo" << std::endl;
+            jugador->recibirDanio(1);
+            this->animationTimer.restart();
+        }
 
     }
     else if (distance < SIGHT_RANGE)
