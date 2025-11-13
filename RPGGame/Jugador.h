@@ -18,7 +18,7 @@ public:
 
     void updateMovement();
     void updateAnimations();
-    void update();
+    void update() override;
     //Visual
-    void render(sf::RenderTarget& target);
+    void render(sf::RenderTarget& target) override;
 };

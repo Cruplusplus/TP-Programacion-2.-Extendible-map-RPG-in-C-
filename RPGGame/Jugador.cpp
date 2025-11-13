@@ -7,8 +7,13 @@ Jugador::Jugador(const float x, const float y)
 {
     TipoPersonaje::Jugador;
     this->initVariables();
-    this->initTexture();
+    this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
+
+    this->initHitbox(19.f, 20.f);
+    this->hitbox.setOrigin(this->sprite.getOrigin());
+    this->hitbox.setScale(this->sprite.getScale());
+
     this->initAnimations();
     this->velocidad = 2.f;
 

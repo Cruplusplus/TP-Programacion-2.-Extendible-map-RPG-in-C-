@@ -5,9 +5,9 @@ void Personajes::initVariables()
     this->animState = PLAYER_ANIMATION_STATES::IDLE;
 }
 
-void Personajes::initTexture()
+void Personajes::initTexture(const std::string ubicacionSprite)
 {
-    if(!this->textureSheet.loadFromFile("Sprites ejemplo/player_sprites.png"))
+    if(!this->textureSheet.loadFromFile(ubicacionSprite))
     {
         std::cout << "ERROR CON LA CARGA DE TEXTURA: Personajes::initTexture";
     }
@@ -20,6 +20,15 @@ void Personajes::initSprite()
     this->currentFrame = sf::IntRect(20, 45, 19, 44);
     this->sprite.setTextureRect(this->currentFrame);
     this->sprite.setScale(sf::Vector2f(2.5f, 2.5f));
+}
+
+void Personajes::initHitbox(float width, float height)
+{
+    this->hitbox.setSize(sf::Vector2f(width, height));
+
+    this->hitbox.setFillColor(sf::Color::Transparent);
+    this->hitbox.setOutlineColor(sf::Color::Red);
+    this->hitbox.setOutlineThickness(1.f);
 }
 
 void Personajes::initAnimations()
@@ -47,7 +56,10 @@ Personajes::~Personajes()
 void Personajes::mover(const float dx, const float dy)
 {
     this->sprite.move(this->velocidad * dx, this->velocidad * dy);
+    this->hitbox.move(this->velocidad * dx, this->velocidad * dy);
 }
+
+const sf::FloatRect Personajes::getHitboxBounds() const { return this->hitbox.getGlobalBounds(); }
 
 const sf::Vector2f Personajes::getPosition() const { return this->sprite.getPosition(); }
 
@@ -55,4 +67,11 @@ const sf::FloatRect Personajes::getGlobalBounds() const { return this->sprite.ge
 
 sf::Vector2f& Personajes::getVelocidadVector() { return this->velocidadVector; }
 
-void Personajes::setPosition(const float x, const float y) { this->sprite.setPosition(x, y); }
+void Personajes::setPosition(const float x, const float y)
+{
+    this->sprite.setPosition(x, y);
+    this->hitbox.setPosition(x, y+60);
+}
+
+//Render y update
+void Personajes::renderHitbox(sf::RenderTarget& target) { target.draw(this->hitbox); }

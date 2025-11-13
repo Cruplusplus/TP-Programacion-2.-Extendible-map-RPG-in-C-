@@ -21,6 +21,7 @@ protected:
     bool animationSwitch;
 
     //fisicas
+    sf::RectangleShape hitbox;
     sf::Vector2f velocidadVector;
 
     //Animacion
@@ -33,8 +34,11 @@ protected:
     //
 
     void initVariables();
-    void initTexture();
+    void initTexture(const std::string ubicacionSprite);
     void initSprite();
+
+    void initHitbox(float width, float height);
+
     void initAnimations();
 
 public:
@@ -45,15 +49,18 @@ public:
     //acc
     void setPosition(const float x, const float y);
 
+    const sf::FloatRect getHitboxBounds() const;
     const sf::Vector2f getPosition() const;
     const sf::FloatRect getGlobalBounds() const;
     sf::Vector2f& getVelocidadVector();
-    //
 
     virtual void mover(const float dx, const float dy);
 
     virtual void update() = 0;
-    virtual void render(sf::RenderTarget& target) = 0; //Esto quiere decir que obliga a sus hijos a tener las fx
+    virtual void render(sf::RenderTarget& target) = 0; //quiere decir que obliga a sus hijos a tener las fx
+
+    void renderHitbox(sf::RenderTarget& target);
+
 };
 
 class Objetos

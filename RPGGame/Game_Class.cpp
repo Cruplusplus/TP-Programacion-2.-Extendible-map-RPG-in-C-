@@ -173,13 +173,13 @@ void Juego::updateCollision()
     TileMap* mapa = this->habitacionActual->getTileMap();
 
     this->jugador->mover(this->jugador->getVelocidadVector().x, 0.f);
-    if (mapa->checkCollision(this->jugador->getGlobalBounds()))
+    if (mapa->checkCollision(this->jugador->getHitboxBounds()))
     {
         this->jugador->mover(-this->jugador->getVelocidadVector().x, 0.f);
     }
 
     this->jugador->mover(0.f, this->jugador->getVelocidadVector().y);
-    if (mapa->checkCollision(this->jugador->getGlobalBounds()))
+    if (mapa->checkCollision(this->jugador->getHitboxBounds()))
     {
         this->jugador->mover(0.f, -this->jugador->getVelocidadVector().y);
     }
@@ -229,6 +229,8 @@ void Juego::render()
     for (auto* personaje : personajesParaRender)
     {
         personaje->render(*this->window);
+
+        //personaje->renderHitbox(*this->window);
     }
 
     this->window->display();
