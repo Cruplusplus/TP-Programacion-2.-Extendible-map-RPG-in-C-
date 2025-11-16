@@ -1,5 +1,5 @@
 #pragma once
-#include "Game_Struct_Clases.h"
+#include "Visual_Clases.h"
 
 class Tile
 {

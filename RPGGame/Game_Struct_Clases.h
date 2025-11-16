@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Visual_Clases.h"
+#include "Game_MapTiles.h"
 
 enum PLAYER_ANIMATION_STATES {IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN, ATTACK};
 
