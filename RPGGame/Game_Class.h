@@ -22,7 +22,6 @@ private:
 
 //objetos del juego
     Jugador* jugador;
-    Duende* duende;
     Habitacion* habitacionActual;
 
     std::map<std::string, sf::Keyboard::Key> keyboardMappings;

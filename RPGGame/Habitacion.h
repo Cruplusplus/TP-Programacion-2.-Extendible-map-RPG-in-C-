@@ -23,7 +23,7 @@ public:
     Habitacion(sf::Texture* tile_sheet);
     virtual ~Habitacion();
 
-    void update(sf::Vector2f playerPos); // Pasar la pos del jugador para la IA
+    void update(Jugador* jugador); // Pasar la pos del jugador para la IA
 
     void renderFondo(sf::RenderTarget& target);
 

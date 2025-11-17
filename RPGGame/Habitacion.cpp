@@ -1,5 +1,6 @@
 #include "Habitacion.h"
 #include "Enemigos.h"
+#include "Jugador.h"
 
 Habitacion::Habitacion(sf::Texture* tile_sheet)
 {
@@ -66,19 +67,24 @@ void Habitacion::initTileMap()
 void Habitacion::initEnemigos()
 {
     // this->enemigos.push_back(new Duende(300.f, 300.f, &this->texturaDuende));
-    // this->enemigos.push_back(new Duende(400.f, 500.f, &this->texturaDuende));
+    this->enemigos.push_back(new Duende(200.f, 200.f));
 }
 
-void Habitacion::update(sf::Vector2f playerPos)
+void Habitacion::update(Jugador* jugador)
 {
     this->tileMap->update();
 
     for (auto* enemigo : this->enemigos)
     {
-        //IA
-        // enemigo->updateIA(playerPos);
+        Duende* duende = dynamic_cast<Duende*>(enemigo);
+        if (duende)
+        {
+            duende->updateIA(jugador);
+        }
 
-        enemigo->update(); //update virtual
+        //animaciones y etc
+
+        enemigo->update();
     }
 }
 
@@ -87,10 +93,4 @@ void Habitacion::renderFondo(sf::RenderTarget& target)
     target.draw(this->backgroundSprite);
 
     this->tileMap->render(target);
-
-    /*
-    for (auto* objeto : this->objetos)
-    {
-        // objeto->render(target);
-    }*/
 }

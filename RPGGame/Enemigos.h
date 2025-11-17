@@ -21,6 +21,6 @@ class Duende : public Enemigos
     virtual ~Duende();
 
     //Funciones
-    void updateIA(sf::Vector2f playerPos, Jugador* jugador);
+    void updateIA(Jugador* jugador);
     void update() override;
 };

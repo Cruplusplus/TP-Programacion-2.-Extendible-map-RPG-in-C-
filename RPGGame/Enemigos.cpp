@@ -42,9 +42,9 @@ Duende::~Duende()
 {
 }
 
-void Duende::updateIA(sf::Vector2f playerPos, Jugador* jugador)
+void Duende::updateIA(Jugador* jugador)
 {
-    sf::Vector2f direction = playerPos - this->sprite.getPosition();
+    sf::Vector2f direction = jugador->getPosition() - this->sprite.getPosition();
     float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
     if (distance != 0) {
@@ -58,7 +58,7 @@ void Duende::updateIA(sf::Vector2f playerPos, Jugador* jugador)
     {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;
 
-        //logica de ataque que no se hacer
+        //logica de ataque
         if (this->animationTimer.getElapsedTime().asSeconds() >= 1.f)
         {
             std::cout << "ataca enemigo" << std::endl;
@@ -69,7 +69,8 @@ void Duende::updateIA(sf::Vector2f playerPos, Jugador* jugador)
     }
     else if (distance < SIGHT_RANGE)
     {
-        this->mover(direction.x, direction.y);
+        this->velocidadVector.x = direction.x;
+        this->velocidadVector.y = direction.y;
 
         //Animacion
         if (direction.x > 0)
@@ -80,6 +81,8 @@ void Duende::updateIA(sf::Vector2f playerPos, Jugador* jugador)
     else
     {
         this->animState = PLAYER_ANIMATION_STATES::IDLE;
+        this->velocidadVector.x = 0.f;
+        this->velocidadVector.y = 0.f;
     }
 }
 
