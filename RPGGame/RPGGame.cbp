@@ -45,10 +45,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="C:/GameLibs/SFML-2.6.2/include" />
+			<Add directory="Librerias/SFML-2.6.2/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="C:/GameLibs/SFML-2.6.2/lib" />
+			<Add directory="Librerias/SFML-2.6.2/lib" />
 		</Linker>
 		<Unit filename="Enemigos.cpp" />
 		<Unit filename="Enemigos.h" />
