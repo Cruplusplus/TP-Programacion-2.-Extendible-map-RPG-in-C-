@@ -46,7 +46,6 @@ void Juego::initTileSheet()
 void Juego::initPersonajes()
 {
     this->jugador = new Jugador(590.f, 230.f);
-    this->duende = new Duende(500.f, 90.f);
 }
 
 void Juego::initHabitacion()
@@ -68,7 +67,6 @@ Juego::~Juego()
 {
     delete this->window;
     delete this->jugador;
-    delete this->duende;
     delete this->habitacionActual;
 }
 
@@ -138,11 +136,11 @@ void Juego::pollEvents()
 void Juego::updatePersonajes()
 {
     jugador->update();
-    duende->update();
 }
 
 void Juego::updateCollision()
 {
+    //bordes de la ventana
     if(this->jugador->getPosition().y + this->jugador->getGlobalBounds().height > this->window->getSize().y)
     {
         this->jugador->setPosition(
@@ -173,9 +171,34 @@ void Juego::updateCollision()
         );
     }
 
-    //Agregar logica para colision con objetos del mapa
+    //colision con objetos del mapa
     TileMap* mapa = this->habitacionActual->getTileMap();
+    if (mapa == nullptr) return; //ya veo que hacemos cagada
 
+    std::vector<Personajes*> personajes;
+    personajes.push_back(this->jugador);
+    for (auto* enemigo : this->habitacionActual->getEnemigos())
+    {
+        personajes.push_back(enemigo);
+    }
+
+    for (auto* p : personajes)
+    {
+        sf::Vector2f vel = p->getVelocidadVector();
+
+        p->mover(vel.x, 0.f);
+        if (mapa->checkCollision(p->getHitboxBounds()))
+        {
+            p->mover(-vel.x, 0.f);
+        }
+
+        p->mover(0.f, vel.y);
+        if (mapa->checkCollision(p->getHitboxBounds()))
+        {
+            p->mover(0.f, -vel.y);
+        }
+    }
+    /*
     this->jugador->mover(this->jugador->getVelocidadVector().x, 0.f);
     if (mapa->checkCollision(this->jugador->getHitboxBounds()))
     {
@@ -186,7 +209,7 @@ void Juego::updateCollision()
     if (mapa->checkCollision(this->jugador->getHitboxBounds()))
     {
         this->jugador->mover(0.f, -this->jugador->getVelocidadVector().y);
-    }
+    }*/
 
 }
 
@@ -197,11 +220,13 @@ void Juego::update()
     if (!this->finalizarJuego)
     {
         this->updateInput();
+
         this->updatePersonajes();
-        this->updateCollision();
 
         this->habitacionActual->update(this->jugador);
-        this->duende->updateIA(this->jugador);
+
+        this->updateCollision();
+
     }
 
     //cuando termina el juego
@@ -216,10 +241,10 @@ void Juego::render()
 
     this->habitacionActual->renderFondo(*this->window);
 
-    //junto todo en el maldito vector
+    //todos en el vector
     std::vector<Personajes*> personajesParaRender;
     personajesParaRender.push_back(this->jugador);
-    personajesParaRender.push_back(this->duende);
+
     for (auto* enemigo : this->habitacionActual->getEnemigos())
     {
         personajesParaRender.push_back(enemigo);
