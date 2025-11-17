@@ -200,9 +200,8 @@ void Juego::update()
         this->updatePersonajes();
         this->updateCollision();
 
-        this->habitacionActual->update(this->jugador->getPosition());
-        this->habitacionActual->update(this->duende->getPosition());
-        this->duende->updateIA(this->jugador->getPosition(), jugador);
+        this->habitacionActual->update(this->jugador);
+        this->duende->updateIA(this->jugador);
     }
 
     //cuando termina el juego

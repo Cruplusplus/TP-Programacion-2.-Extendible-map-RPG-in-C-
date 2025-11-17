@@ -66,17 +66,15 @@ void Habitacion::initTileMap()
 void Habitacion::initEnemigos()
 {
     // this->enemigos.push_back(new Duende(300.f, 300.f, &this->texturaDuende));
-    // this->enemigos.push_back(new Duende(400.f, 500.f, &this->texturaDuende));
+    this->enemigos.push_back(new Duende(400.f, 500.f));
 }
 
-void Habitacion::update(sf::Vector2f playerPos)
+void Habitacion::update(Jugador* jugador)
 {
     this->tileMap->update();
 
     for (auto* enemigo : this->enemigos)
     {
-        //IA
-        // enemigo->updateIA(playerPos);
 
         enemigo->update(); //update virtual
     }
