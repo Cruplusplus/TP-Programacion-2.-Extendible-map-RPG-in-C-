@@ -4,7 +4,12 @@
 
 class Enemigos : public Personajes
 {
-private:
+protected:
+    sf::Clock stuckTimerX;
+    sf::Clock stuckTimerY;
+    sf::Vector2f lastPosition;
+    bool isStuckX;
+    bool isStuckY;
 public:
     Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre);
     virtual ~Enemigos();

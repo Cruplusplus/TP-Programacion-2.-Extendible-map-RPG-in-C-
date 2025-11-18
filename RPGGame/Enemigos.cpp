@@ -5,6 +5,15 @@ Enemigos::Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre)
     : Personajes(_id, _hp, _dmg, _lvl, _nombre)
 {
     this->tipo = TipoPersonaje::Enemigos;
+
+    this->velocidad = 1.f;
+
+    this->isStuckX = false;
+    this->isStuckY = false;
+    this->lastPosition = this->getPosition();
+    this->stuckTimerX.restart();
+    this->stuckTimerY.restart();
+
 }
 
 Enemigos::~Enemigos()
@@ -22,10 +31,8 @@ void Enemigos::render(sf::RenderTarget& target)
 }
 
 Duende::Duende(float x, float y)
-        : Enemigos(2, 3, 1, 1, "Duende")
+    : Enemigos(2, 3, 1, 1, "Duende")
 {
-    this->tipo = TipoPersonaje::Enemigos;
-
     this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
 
@@ -33,8 +40,6 @@ Duende::Duende(float x, float y)
     this->hitbox.setOrigin(this->sprite.getOrigin());
     this->hitbox.setScale(this->sprite.getScale());
 
-    this->velocidad = 1.f;
-    //this->initAnimations();
     this->setPosition(x, y);
 }
 
@@ -44,19 +49,59 @@ Duende::~Duende()
 
 void Duende::updateIA(Jugador* jugador)
 {
-    sf::Vector2f direction = jugador->getPosition() - this->sprite.getPosition();
-    float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    float distMovidaX = std::abs(this->getPosition().x - this->lastPosition.x);
+    float distMovidaY = std::abs(this->getPosition().y - this->lastPosition.y);
 
-    if (distance != 0) {
-        direction = direction / distance;
+    //variables de direccion y distancia
+    sf::Vector2f direction = jugador->getPosition() - this->sprite.getPosition();
+    float distancia = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    if (distancia != 0) { direction = direction / distancia; }
+
+    //=X=
+    if (std::abs(this->velocidadVector.x) > 0.1f && distMovidaX < 0.1f)
+    {
+        this->isStuckX = true;
+        this->stuckTimerX.restart();
+    }
+    else
+    {
+        this->isStuckX = false;
+    }
+    //=Y=
+    if (std::abs(this->velocidadVector.y) > 0.1f && distMovidaY < 0.1f)
+    {
+        this->isStuckY = true;
+        this->stuckTimerY.restart();
+    }
+    else
+    {
+        this->isStuckY = false;
     }
 
-    float SIGHT_RANGE = 100.f;
-    float ATTACK_RANGE = 20.f;
+    float stuckThreshold = 0.1f;
 
-    if (distance < ATTACK_RANGE)
+    if (this->isStuckX && this->stuckTimerX.getElapsedTime().asSeconds() > stuckThreshold)
+    {
+        this->velocidadVector.x = 0.f;
+        this->velocidadVector.y = direction.y;
+        return;
+    }
+    else if (this->isStuckY && this->stuckTimerY.getElapsedTime().asSeconds() > stuckThreshold)
+    {
+        this->velocidadVector.y = 0.f;
+        this->velocidadVector.x = direction.x;
+        return;
+    }
+
+    //LOGICA DE IA
+
+    float SIGHT_RANGE = 300.f;
+    float ATTACK_RANGE = this->getHitboxBounds().width;
+
+    if (distancia < ATTACK_RANGE)
     {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;
+        this->velocidadVector = sf::Vector2f(0.f, 0.f);
 
         //logica de ataque
         if (this->animationTimer.getElapsedTime().asSeconds() >= 1.f)
@@ -65,25 +110,19 @@ void Duende::updateIA(Jugador* jugador)
             jugador->recibirDanio(1);
             this->animationTimer.restart();
         }
-
     }
-    else if (distance < SIGHT_RANGE)
+    else if (distancia < SIGHT_RANGE)
     {
-        this->velocidadVector.x = direction.x;
-        this->velocidadVector.y = direction.y;
-
-        //Animacion
-        if (direction.x > 0)
-            this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
-        else
-            this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
+        this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
+        this->velocidadVector = direction;
     }
     else
     {
         this->animState = PLAYER_ANIMATION_STATES::IDLE;
-        this->velocidadVector.x = 0.f;
-        this->velocidadVector.y = 0.f;
+        this->velocidadVector = sf::Vector2f(0.f, 0.f);
     }
+
+    this->lastPosition = this->getPosition();
 }
 
 void Duende::update()
