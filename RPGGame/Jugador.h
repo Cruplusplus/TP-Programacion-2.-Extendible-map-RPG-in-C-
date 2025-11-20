@@ -12,11 +12,10 @@ public:
 
     const bool getAnimSwitch();
 
-    virtual void recibirDanio(int danio);
-    int getDmg() const;
     int getHp() const;
 
     void updateMovement();
+    void atacar(Personajes *enemigo);
     void updateAnimations();
     void update() override;
     //Visual

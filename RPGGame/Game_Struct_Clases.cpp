@@ -60,6 +60,8 @@ void Personajes::mover(const float dx, const float dy)
     this->hitbox.move(this->velocidad * dx, this->velocidad * dy);
 }
 
+void Personajes::recibirDanio(int danio) { this->hp -= danio; }
+
 const sf::FloatRect Personajes::getHitboxBounds() const { return this->hitbox.getGlobalBounds(); }
 
 const sf::Vector2f Personajes::getPosition() const { return this->sprite.getPosition(); }

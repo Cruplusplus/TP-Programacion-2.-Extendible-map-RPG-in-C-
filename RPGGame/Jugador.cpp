@@ -1,4 +1,5 @@
 #include "Jugador.h"
+#include <cmath>
 
 //================JUGADOR================{
 
@@ -29,8 +30,6 @@ const bool Jugador::getAnimSwitch()
     return animSwitch;
 }
 
-void Jugador::recibirDanio(int danio) { this->hp -= danio; }
-int Jugador::getDmg() const { return this->dmg; }
 int Jugador::getHp() const { return this->hp; }
 
 void Jugador::resetAnimTimer()
@@ -75,6 +74,24 @@ void Jugador::updateMovement()
         this->animState = PLAYER_ANIMATION_STATES::MOVING_DOWN;
     }
 
+}
+
+void Jugador::atacar(Personajes *enemigo)
+{
+    if(this->animState != PLAYER_ANIMATION_STATES::ATTACK) {return;}
+
+    sf::Vector2f delta = enemigo->getPosition() - this->sprite.getPosition();
+    float distEnemigo = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+
+    if (distEnemigo < this->getHitboxBounds().width + 5.f)
+    {
+        if (this->animationTimer.getElapsedTime().asSeconds() >= 1.f)
+        {
+            std::cout << "atacaste!" << std::endl;
+            enemigo->recibirDanio(1);
+        }
+        return;
+    }
 }
 
 //================ANIMACIONES==================

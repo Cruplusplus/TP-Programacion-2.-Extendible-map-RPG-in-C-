@@ -1,31 +1,36 @@
 #include "Game_Struct_Clases.h"
-#pragma once
 #include "Jugador.h"
+#pragma once
+
+
+class Jugador;
 
 class Enemigos : public Personajes
 {
 protected:
-    sf::Clock stuckTimerX;
-    sf::Clock stuckTimerY;
     sf::Vector2f lastPosition;
-    bool isStuckX;
-    bool isStuckY;
+
+    sf::Clock timerEvasion;
+    bool enModoEvasion;
+    sf::Vector2f dirEvasion;
+    float ladoPreferido;
+
 public:
     Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre);
     virtual ~Enemigos();
 
+    void updateIA(Jugador* jugador);
+
     virtual void update() override;
+
     virtual void render(sf::RenderTarget& target) override;
 };
 
 class Duende : public Enemigos
 {
-    private:
-    public:
+public:
     Duende(float x, float y);
     virtual ~Duende();
 
-    //Funciones
-    void updateIA(Jugador* jugador);
     void update() override;
 };

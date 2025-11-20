@@ -1998,15 +1998,17 @@
 	<vector>
 	<SFML/Graphics.hpp>
 
-1763433867 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.cpp
+1763613195 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.cpp
 	"Enemigos.h"
+	"Jugador.h"
 	<cmath>
+	<iostream>
 
-1763432300 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.h
+1763612533 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.h
 	"Game_Struct_Clases.h"
 	"Jugador.h"
 
-1763429802 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_struct_clases.h
+1763611847 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_struct_clases.h
 	"Game_MapTiles.h"
 
 1763423588 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_maptiles.h
@@ -2621,13 +2623,13 @@
 	<SFML/Network/IpAddress.hpp>
 	<vector>
 
-1763429800 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
+1763613741 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
 	"Game_Struct_Clases.h"
 
 1763035289 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_maptiles.cpp
 	"Game_MapTiles.h"
 
-1763042119 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_struct_clases.cpp
+1763611892 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_struct_clases.cpp
 	"Game_Struct_Clases.h"
 
 1763423599 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.cpp
@@ -2641,8 +2643,9 @@
 	<vector>
 	<SFML/Graphics.hpp>
 
-1763035289 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
+1763613781 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
 	"Jugador.h"
+	<cmath>
 
 1763404688 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\main.cpp
 	<iostream>
@@ -2861,6 +2864,6 @@
 1762370484 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\visual_clases.cpp
 	"Visual_Clases.h"
 
-1763423599 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
+1763613886 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
 	"Game_Class.h"
 

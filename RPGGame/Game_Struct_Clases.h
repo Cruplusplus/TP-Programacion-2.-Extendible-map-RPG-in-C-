@@ -55,6 +55,7 @@ public:
     sf::Vector2f& getVelocidadVector();
 
     virtual void mover(const float dx, const float dy);
+    virtual void recibirDanio(int danio);
 
     virtual void update() = 0;
     virtual void render(sf::RenderTarget& target) = 0; //quiere decir que obliga a sus hijos a tener las fx
