@@ -1,5 +1,5 @@
 #pragma once
-#include "Visual_Clases.h"
+#include "GameConfig.h"
 
 class Tile
 {
@@ -34,7 +34,7 @@ public:
     ~TileMap();
 
     //inline funcs
-    inline const unsigned& getTileSize() const {return this->tileSize; };
+    const unsigned& getTileSize() const;
 
     void addTile(unsigned x, unsigned y, int tileType);
     void removeTile(unsigned x, unsigned y);

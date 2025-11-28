@@ -50,21 +50,33 @@
 		<Linker>
 			<Add directory="Librerias/SFML-2.6.2/lib" />
 		</Linker>
+		<Unit filename="Character.cpp" />
+		<Unit filename="Character.h" />
+		<Unit filename="DungeonGenerator.cpp" />
+		<Unit filename="DungeonGenerator.h" />
 		<Unit filename="Enemigos.cpp" />
 		<Unit filename="Enemigos.h" />
+		<Unit filename="Entity.cpp" />
+		<Unit filename="Entity.h" />
+		<Unit filename="GameConfig.cpp" />
+		<Unit filename="GameConfig.h" />
 		<Unit filename="Game_Class.cpp" />
 		<Unit filename="Game_Class.h" />
 		<Unit filename="Game_MapTiles.cpp" />
 		<Unit filename="Game_MapTiles.h" />
-		<Unit filename="Game_Struct_Clases.cpp" />
-		<Unit filename="Game_Struct_Clases.h" />
+		<Unit filename="HUD.cpp" />
+		<Unit filename="HUD.h" />
 		<Unit filename="Habitacion.cpp" />
 		<Unit filename="Habitacion.h" />
+		<Unit filename="Items.cpp" />
+		<Unit filename="Items.h" />
 		<Unit filename="Jugador.cpp" />
 		<Unit filename="Jugador.h" />
+		<Unit filename="MainMenu.cpp" />
+		<Unit filename="MainMenu.h" />
+		<Unit filename="SaveManager.cpp" />
+		<Unit filename="SaveManager.h" />
 		<Unit filename="Sprites ejemplo/player_sprites_ejemplo.png" />
-		<Unit filename="Visual_Clases.cpp" />
-		<Unit filename="Visual_Clases.h" />
 		<Unit filename="json.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>

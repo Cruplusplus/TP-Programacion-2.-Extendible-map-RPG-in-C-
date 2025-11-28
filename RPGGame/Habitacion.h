@@ -1,7 +1,7 @@
-#pragma once
-
 #include "Game_MapTiles.h"
 #include "Enemigos.h"
+#include "DungeonGenerator.h"
+#include "Items.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
 
@@ -11,6 +11,8 @@ private:
     sf::Texture* tileSheet;
     TileMap* tileMap;
     std::vector<Enemigos*> enemigos;
+    std::vector<Pickup*> pickups;
+    RoomData roomData;
 
     //BG
     sf::Texture backgroundTexture;
@@ -20,14 +22,14 @@ private:
     void initEnemigos();
 
 public:
-    Habitacion(sf::Texture* tile_sheet);
+    Habitacion(sf::Texture* tile_sheet, RoomData data);
     virtual ~Habitacion();
 
     void update(Jugador* jugador); // Pasar la pos del jugador para la IA
 
     void renderFondo(sf::RenderTarget& target);
 
-    TileMap* getTileMap() const { return this->tileMap; }
-
-    std::vector<Enemigos*> getEnemigos() { return this->enemigos; }
+    TileMap* getTileMap() const;
+    std::vector<Enemigos*> getEnemigos();
+    RoomData getRoomData() const;
 };

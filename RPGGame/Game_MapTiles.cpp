@@ -181,3 +181,5 @@ void TileMap::render(sf::RenderTarget& target)
         }
     }
 }
+
+const unsigned& TileMap::getTileSize() const { return this->tileSize; }

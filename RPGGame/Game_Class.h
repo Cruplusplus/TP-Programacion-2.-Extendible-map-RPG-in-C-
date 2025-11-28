@@ -2,6 +2,10 @@
 #include "Game_MapTiles.h"
 #include "Jugador.h"
 #include "Habitacion.h"
+#include "DungeonGenerator.h"
+#include "SaveManager.h"
+#include "HUD.h"
+#include "MainMenu.h"
 
 #include <algorithm>
 
@@ -23,6 +27,20 @@ private:
 //objetos del juego
     Jugador* jugador;
     Habitacion* habitacionActual;
+    DungeonGenerator* dungeonGen;
+    HUD* hud;
+    MainMenu* mainMenu;
+    sf::Vector2i currentRoomCoords;
+    unsigned int seed;
+    std::map<std::pair<int, int>, Habitacion*> roomsMap;
+
+    enum GameState {
+        STATE_MENU,
+        STATE_PLAYING,
+        STATE_GAMEOVER,
+        STATE_VICTORY
+    };
+    GameState gameState;
 
     std::map<std::string, sf::Keyboard::Key> keyboardMappings;
     std::map<std::string, sf::Mouse::Button> mouseMappings;
@@ -61,6 +79,9 @@ public:
 
     //Getters
     int getPuntos();
+    
+    void saveGame(int slot);
+    void loadGame(int slot);
     //}
 };
 //}
