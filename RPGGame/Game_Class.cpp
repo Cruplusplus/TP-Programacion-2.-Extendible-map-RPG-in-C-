@@ -74,6 +74,7 @@ Juego::Juego()
     this->initWindow();
     this->initInput();
     this->initTileSheet();
+    this->initFonts();
     this->initPersonajes();
     this->initHabitacion();
     this->hud = new HUD();
@@ -125,7 +126,7 @@ void Juego::updateInput()
     //Tile funcs
     if(sf::Mouse::isButtonPressed(this->mouseMappings["BTN_ADD_TILE"]))
     {
-        this->habitacionActual->getTileMap()->addTile(mouseX, mouseY, 1);
+        this->habitacionActual->getTileMap()->addTile(mouseX, mouseY, tipoTiles::ROCA);
     }
     else if(sf::Mouse::isButtonPressed(this->mouseMappings["BTN_REMOVE_TILE"]))
     {
@@ -231,12 +232,16 @@ void Juego::updateCollision()
     float playerCenterX = playerBounds.left + playerBounds.width / 2.f;
     float playerCenterY = playerBounds.top + playerBounds.height / 2.f;
 
+    // Check if enemies exist
+    bool enemiesExist = !this->habitacionActual->getEnemigos().empty();
+
     // Bottom
     if(playerBounds.top + playerBounds.height > this->window->getSize().y)
     {
         if(this->habitacionActual->getRoomData().doors[2] && 
            playerCenterX > this->window->getSize().x/2 - 50 && 
-           playerCenterX < this->window->getSize().x/2 + 50) {
+           playerCenterX < this->window->getSize().x/2 + 50 &&
+           !enemiesExist) {
             nextRoom.y++;
             nextPlayerPos.y = 10.f - 60.f; // Adjust for hitbox offset (y+60)
             roomChanged = true;
@@ -253,7 +258,8 @@ void Juego::updateCollision()
     {
         if(this->habitacionActual->getRoomData().doors[0] && 
            playerCenterX > this->window->getSize().x/2 - 50 && 
-           playerCenterX < this->window->getSize().x/2 + 50) {
+           playerCenterX < this->window->getSize().x/2 + 50 &&
+           !enemiesExist) {
             nextRoom.y--;
             nextPlayerPos.y = this->window->getSize().y - playerBounds.height - 10.f - 60.f;
             roomChanged = true;
@@ -269,7 +275,8 @@ void Juego::updateCollision()
     {
         if(this->habitacionActual->getRoomData().doors[1] && 
            playerCenterY > this->window->getSize().y/2 - 50 && 
-           playerCenterY < this->window->getSize().y/2 + 50) {
+           playerCenterY < this->window->getSize().y/2 + 50 &&
+           !enemiesExist) {
             nextRoom.x++;
             nextPlayerPos.x = 10.f;
             roomChanged = true;
@@ -286,7 +293,8 @@ void Juego::updateCollision()
     {
         if(this->habitacionActual->getRoomData().doors[3] && 
            playerCenterY > this->window->getSize().y/2 - 50 && 
-           playerCenterY < this->window->getSize().y/2 + 50) {
+           playerCenterY < this->window->getSize().y/2 + 50 &&
+           !enemiesExist) {
             nextRoom.x--;
             nextPlayerPos.x = this->window->getSize().x - playerBounds.width - 10.f;
             roomChanged = true;
@@ -341,18 +349,6 @@ void Juego::updateCollision()
             p->mover(0.f, -vel.y);
         }
     }
-    /*
-    this->jugador->mover(this->jugador->getVelocidadVector().x, 0.f);
-    if (mapa->checkCollision(this->jugador->getHitboxBounds()))
-    {
-        this->jugador->mover(-this->jugador->getVelocidadVector().x, 0.f);
-    }
-
-    this->jugador->mover(0.f, this->jugador->getVelocidadVector().y);
-    if (mapa->checkCollision(this->jugador->getHitboxBounds()))
-    {
-        this->jugador->mover(0.f, -this->jugador->getVelocidadVector().y);
-    }*/
 
 }
 
@@ -393,6 +389,13 @@ void Juego::render()
 {
     this->window->clear();
 
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+        this->window->setFramerateLimit(1);
+        sf::sleep(sf::seconds(2));
+        this->window->setFramerateLimit(60);
+        this->resetGame();
+    }
+
     if(this->gameState == STATE_MENU) {
         this->mainMenu->draw(*this->window);
     }
@@ -424,8 +427,7 @@ void Juego::render()
         this->hud->render(*this->window);
         
         if(this->gameState == STATE_GAMEOVER) {
-            // Draw Game Over Text (simple)
-            // ...
+            this->window->draw(this->gameOverText);
         }
     }
 
@@ -469,5 +471,42 @@ void Juego::loadGame(int slot) {
     this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
     
     // Restore player stats
+    // Restore player stats
     this->jugador->setStats(data.hp, data.maxHp, data.coins, data.keys, data.inventory);
+}
+
+void Juego::initFonts()
+{
+    if(!this->font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cout << "ERROR: COULD NOT LOAD FONT" << std::endl;
+    }
+
+    this->gameOverText.setFont(this->font);
+    this->gameOverText.setString("GAME OVER\nPress R to Restart");
+    this->gameOverText.setCharacterSize(60);
+    this->gameOverText.setFillColor(sf::Color::Red);
+    this->gameOverText.setStyle(sf::Text::Bold);
+    this->gameOverText.setPosition(
+        this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
+        this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f
+    );
+}
+
+void Juego::resetGame()
+{
+    delete this->jugador;
+    delete this->dungeonGen;
+    
+    // Clear rooms
+    for(auto const& [key, val] : this->roomsMap) {
+        delete val;
+    }
+    this->roomsMap.clear();
+
+    this->initPersonajes();
+    this->initHabitacion();
+    
+    this->gameState = STATE_PLAYING;
+    this->finalizarJuego = false;
 }

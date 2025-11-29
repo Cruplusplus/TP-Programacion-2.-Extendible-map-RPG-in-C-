@@ -45,6 +45,9 @@ private:
     std::map<std::string, sf::Keyboard::Key> keyboardMappings;
     std::map<std::string, sf::Mouse::Button> mouseMappings;
 
+    sf::Font font;
+    sf::Text gameOverText;
+
 //Inicializadores
     void initVariables();
     void initWindow();
@@ -52,11 +55,14 @@ private:
     void initTileSheet();
     void initPersonajes();
     void initHabitacion();
+    void initFonts();
 //
 public:
     //Constrc - Destrc
     Juego();
     virtual ~Juego();
+
+    void resetGame();
 
     //Accesors
     const bool gameRunning() const;

@@ -13,6 +13,7 @@ private:
     std::vector<Enemigos*> enemigos;
     std::vector<Pickup*> pickups;
     RoomData roomData;
+    std::vector<sf::Vector2f> enemySpawns;
 
     //BG
     sf::Texture backgroundTexture;

@@ -18,9 +18,9 @@ Jugador::Jugador(const float x, const float y)
     this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
 
-    this->initHitbox(19.f, 22.f);
+    this->initHitbox(16.f, 16.f);
     this->hitbox.setScale(this->sprite.getScale());
-    this->hitbox.setOrigin(this->sprite.getOrigin().x, this->sprite.getOrigin().y + 2.f);
+    this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->initInventory();
 

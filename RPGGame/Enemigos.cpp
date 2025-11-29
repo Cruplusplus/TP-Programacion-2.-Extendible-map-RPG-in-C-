@@ -120,9 +120,9 @@ Duende::Duende(float x, float y)
 
     this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
-    this->initHitbox(20.f, 20.f);
-    this->hitbox.setOrigin(this->sprite.getOrigin());
+    this->initHitbox(16.f, 16.f);
     this->hitbox.setScale(this->sprite.getScale());
+    this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->velocidad = 1.f;
     //this->initAnimations();
@@ -193,9 +193,10 @@ Orco::Orco(float x, float y)
     this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
     this->sprite.setColor(sf::Color::Red);
-    this->initHitbox(25.f, 25.f);
-    this->hitbox.setOrigin(this->sprite.getOrigin());
+    this->sprite.setScale(3.f, 3.f);
+    this->initHitbox(30.f, 30.f);
     this->hitbox.setScale(this->sprite.getScale());
+    this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->setPosition(x, y);
     this->velocidad = 1.0f; // Slow
@@ -215,9 +216,9 @@ Hada::Hada(float x, float y)
     this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
     this->sprite.setColor(sf::Color::Cyan);
-    this->initHitbox(15.f, 15.f);
-    this->hitbox.setOrigin(this->sprite.getOrigin());
+    this->initHitbox(14.f, 14.f);
     this->hitbox.setScale(this->sprite.getScale());
+    this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->setPosition(x, y);
     this->velocidad = 3.0f;
@@ -242,8 +243,8 @@ Estatua::Estatua(float x, float y)
     this->initSprite();
     this->sprite.setColor(sf::Color(100, 100, 100));
     this->initHitbox(20.f, 20.f);
-    this->hitbox.setOrigin(this->sprite.getOrigin());
     this->hitbox.setScale(this->sprite.getScale());
+    this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->setPosition(x, y);
     this->velocidad = 1.5f;
@@ -269,9 +270,9 @@ Hechicero::Hechicero(float x, float y)
     this->initTexture("Sprites ejemplo/player_sprites.png");
     this->initSprite();
     this->sprite.setColor(sf::Color::Magenta);
-    this->initHitbox(20.f, 20.f);
-    this->hitbox.setOrigin(this->sprite.getOrigin());
+    this->initHitbox(16.f, 16.f);
     this->hitbox.setScale(this->sprite.getScale());
+    this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->setPosition(x, y);
     this->velocidad = 1.8f;

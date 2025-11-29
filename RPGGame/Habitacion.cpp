@@ -37,6 +37,8 @@ Habitacion::~Habitacion()
     }
 }
 
+#include "RoomTemplates.h"
+
 void Habitacion::initTileMap()
 {
     const unsigned TILE_SIZE = 50;
@@ -46,15 +48,46 @@ void Habitacion::initTileMap()
     // Inicializar el piso
     int levelData[MAP_HEIGHT][MAP_WIDTH];
     for(int y=0; y<MAP_HEIGHT; y++)
+    {
         for(int x=0; x<MAP_WIDTH; x++)
+        {
             levelData[y][x] = 0;
+        }
+    }
 
-    // paredes
-    for(int x=0; x<MAP_WIDTH; x++) {
+    std::vector<std::string> selectedTemplate;
+    
+    if(roomData.type != BOSS && roomData.type != START) {
+        int tIndex = rand() % RoomTemplates::templates.size();
+        selectedTemplate = RoomTemplates::templates[tIndex];
+    } else {
+        // Template vacio por defecto para boss/start
+        for(int i=0; i<MAP_HEIGHT; i++) selectedTemplate.push_back("................");
+    }
+
+    // Parsear Template
+    for(int y=0; y<MAP_HEIGHT; y++)
+    {
+        for(int x=0; x<MAP_WIDTH; x++)
+        {
+            char c = selectedTemplate[y][x];
+            
+            if(c == 'R') levelData[y][x] = 5; // Roca
+            else if(c == 'E') {
+                // Guardar spawn de enemigo (centro del tile)
+                this->enemySpawns.push_back(sf::Vector2f(x * TILE_SIZE + TILE_SIZE/2, y * TILE_SIZE + TILE_SIZE/2));
+            }
+        }
+    }
+
+    // paredes (Sobrescriben template en bordes)
+    for(int x=0; x<MAP_WIDTH; x++)
+    {
         levelData[0][x] = 3; // Top
         levelData[MAP_HEIGHT-1][x] = 3; // Bottom
     }
-    for(int y=0; y<MAP_HEIGHT; y++) {
+    for(int y=0; y<MAP_HEIGHT; y++)
+    {
         levelData[y][0] = 3; // Left
         levelData[y][MAP_WIDTH-1] = 3; // Right
     }
@@ -66,30 +99,25 @@ void Habitacion::initTileMap()
     levelData[MAP_HEIGHT-1][MAP_WIDTH-1] = 4;
 
     // puertas (Crear aberturas si existe puerta)
-    if(roomData.doors[0]) { // Top
+    if(roomData.doors[0]) // Top
+    {
         levelData[0][MAP_WIDTH/2] = 0;
         levelData[0][MAP_WIDTH/2 - 1] = 0;
     }
-    if(roomData.doors[1]) { // Right
+    if(roomData.doors[1]) // Right
+    {
         levelData[MAP_HEIGHT/2][MAP_WIDTH-1] = 0;
         levelData[MAP_HEIGHT/2 - 1][MAP_WIDTH-1] = 0;
     }
-    if(roomData.doors[2]) { // Bottom
+    if(roomData.doors[2]) // Bottom
+    {
         levelData[MAP_HEIGHT-1][MAP_WIDTH/2] = 0;
         levelData[MAP_HEIGHT-1][MAP_WIDTH/2 - 1] = 0;
     }
-    if(roomData.doors[3]) { // Left
+    if(roomData.doors[3]) // Left
+    {
         levelData[MAP_HEIGHT/2][0] = 0;
         levelData[MAP_HEIGHT/2 - 1][0] = 0;
-    }
-
-    // Obstaculos aleatorios (rocas) dentro
-    if(roomData.type != BOSS && roomData.type != START) {
-        for(int i=0; i<10; i++) {
-            int rx = rand() % (MAP_WIDTH - 2) + 1;
-            int ry = rand() % (MAP_HEIGHT - 2) + 1;
-            if(levelData[ry][rx] == 0) levelData[ry][rx] = 5; // Rock
-        }
     }
 
     this->tileMap = new TileMap(MAP_WIDTH, MAP_HEIGHT, this->tileSheet, TILE_SIZE);
@@ -120,31 +148,25 @@ void Habitacion::initEnemigos()
 
     if(this->roomData.type == TREASURE) {
         // Spawn items (representados como pickup por ahora)
-        // Por simplicidad, solo se generan monedas y corazones
-        // TODO: Implementar drops de items correctamente. Por ahora, solo monedas y corazones.
         this->pickups.push_back(new Pickup(PICKUP_COIN, 400.f, 300.f));
         this->pickups.push_back(new Pickup(PICKUP_KEY, 450.f, 300.f));
         this->pickups.push_back(new Pickup(PICKUP_SPECTRAL_HEART, 350.f, 300.f));
         return;
     }
 
-    // Random enemies
-    int numEnemies = rand() % 4 + 2;
-    for(int i=0; i<numEnemies; i++) {
-        float ex = float(rand() % 600 + 100); // 100 to 700 (Width 800)
-        float ey = float(rand() % 400 + 100); // 100 to 500 (Height 600)
-
+    // Spawn enemies from template locations
+    for(auto& pos : this->enemySpawns) {
         int type = rand() % 100;
         if(type < 40) // 40% Duende
-            this->enemigos.push_back(new Duende(ex, ey));
+            this->enemigos.push_back(new Duende(pos.x, pos.y));
         else if(type < 60) // 20% Orco
-            this->enemigos.push_back(new Orco(ex, ey));
+            this->enemigos.push_back(new Orco(pos.x, pos.y));
         else if(type < 75) // 15% Hada
-            this->enemigos.push_back(new Hada(ex, ey));
+            this->enemigos.push_back(new Hada(pos.x, pos.y));
         else if(type < 90) // 15% Hechicero
-            this->enemigos.push_back(new Hechicero(ex, ey));
+            this->enemigos.push_back(new Hechicero(pos.x, pos.y));
         else // 10% Estatua
-            this->enemigos.push_back(new Estatua(ex, ey));
+            this->enemigos.push_back(new Estatua(pos.x, pos.y));
     }
 }
 
@@ -168,7 +190,7 @@ void Habitacion::update(Jugador* jugador)
         
         // Player Attack Collision
         if(playerAttacking) {
-            if(attackHb.intersects(enemigo->getHitboxBounds())) {
+            if(attackHb.intersects(enemigo->getSprite().getGlobalBounds())) {
                 if(!jugador->hasHit(enemigo)) {
                     enemigo->recibirDanio(1); // Base dmg
                     jugador->addHit(enemigo);

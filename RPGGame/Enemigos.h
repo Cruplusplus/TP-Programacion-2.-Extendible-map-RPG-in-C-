@@ -1,5 +1,4 @@
 #pragma once
-#include "Game_Struct_Clases.h"
 #include "Character.h"
 #include "Jugador.h"
 
