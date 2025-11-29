@@ -1,4 +1,5 @@
 #include "Jugador.h"
+#include <cmath>
 
 //================JUGADOR================{
 
@@ -42,13 +43,10 @@ const bool Jugador::getAnimSwitch()
     return animSwitch;
 }
 
-<<<<<<< Updated upstream
 void Jugador::recibirDanio(int danio) { this->hp -= danio; }
 int Jugador::getDmg() const { return this->dmg; }
 int Jugador::getHp() const { return this->hp; }
 
-=======
->>>>>>> Stashed changes
 void Jugador::resetAnimTimer()
 {
     this->animationTimer.restart();
@@ -198,8 +196,6 @@ void Jugador::updateMovement()
     }
 }
 
-<<<<<<< Updated upstream
-=======
 void Jugador::atacar(Character *enemigo)
 {
     // Esta funcion es principalmente para activar el estado de ataque
@@ -214,7 +210,6 @@ void Jugador::atacar(Character *enemigo)
     }
 }
 
->>>>>>> Stashed changes
 //================ANIMACIONES==================
 
 void Jugador::updateAnimations()

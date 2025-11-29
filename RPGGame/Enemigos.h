@@ -1,10 +1,6 @@
-<<<<<<< Updated upstream
-#include "Game_Struct_Clases.h"
-=======
-#include "Character.h"
-#include "Jugador.h"
->>>>>>> Stashed changes
 #pragma once
+#include "Game_Struct_Clases.h"
+#include "Character.h"
 #include "Jugador.h"
 
 class Enemigos : public Character
@@ -14,7 +10,17 @@ public:
     Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre);
     virtual ~Enemigos();
 
+protected:
+    sf::Vector2f lastPosition;
+    bool enModoEvasion;
+    sf::Clock timerEvasion;
+    float ladoPreferido;
+    sf::Vector2f dirEvasion;
+
+public:
+    virtual void updateIA(Jugador* jugador);
     virtual void update() override;
+
     virtual void render(sf::RenderTarget& target) override;
 };
 
@@ -26,7 +32,7 @@ class Duende : public Enemigos
     virtual ~Duende();
 
     //Funciones
-    void updateIA(Jugador* jugador);
+    void updateIA(Jugador* jugador) override;
     void update() override;
 };
 

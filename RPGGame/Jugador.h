@@ -1,6 +1,6 @@
+#pragma once
 #include "Character.h"
 #include "Items.h"
-#pragma once
 
 class Jugador : public Character
 {
@@ -42,13 +42,12 @@ public:
     void addPickup(PickupType pickup);
     bool hasItem(ItemType item);
 
-<<<<<<< Updated upstream
     virtual void recibirDanio(int danio);
     int getDmg() const;
     int getHp() const;
 
     void updateMovement();
-=======
+
     std::vector<int> getInventoryAsInt() const;
     int getCoins() const;
     int getKeys() const;
@@ -56,9 +55,7 @@ public:
 
     void setStats(int hp, int maxHp, int coins, int keys, const std::vector<int>& inv);
 
-    void updateMovement();
     void atacar(Character *enemigo);
->>>>>>> Stashed changes
     void updateAnimations();
     void update() override;
 

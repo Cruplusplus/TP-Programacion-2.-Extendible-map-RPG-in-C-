@@ -13,8 +13,6 @@ Enemigos::~Enemigos()
 {
 }
 
-<<<<<<< Updated upstream
-=======
 void Enemigos::updateIA(Jugador* jugador)
 {
     float distMovida = std::abs(this->getPosition().x - this->lastPosition.x) +
@@ -102,7 +100,6 @@ void Enemigos::updateIA(Jugador* jugador)
     this->lastPosition = this->getPosition();
 }
 
->>>>>>> Stashed changes
 void Enemigos::update()
 {
 
@@ -119,13 +116,9 @@ void Enemigos::render(sf::RenderTarget& target)
 Duende::Duende(float x, float y)
         : Enemigos(2, 3, 1, 1, "Duende")
 {
-<<<<<<< Updated upstream
     this->tipo = TipoPersonaje::Enemigos;
 
     this->initTexture("Sprites ejemplo/player_sprites.png");
-=======
-    this->initTexture("Sprites ejemplo/duende_sprites.png");
->>>>>>> Stashed changes
     this->initSprite();
     this->initHitbox(20.f, 20.f);
     this->hitbox.setOrigin(this->sprite.getOrigin());
@@ -188,9 +181,6 @@ void Duende::updateIA(Jugador* jugador)
 
 void Duende::update()
 {
-<<<<<<< Updated upstream
-
-=======
     //this->updateAnimations();
 }
 
@@ -300,5 +290,4 @@ void Hechicero::attack(Jugador* jugador) {
         // Reset timer
         this->attackTimer.restart();
     }
->>>>>>> Stashed changes
 }
