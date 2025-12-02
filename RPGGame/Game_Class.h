@@ -37,6 +37,7 @@ private:
     enum GameState {
         STATE_MENU,
         STATE_PLAYING,
+        STATE_PAUSE_MENU,
         STATE_GAMEOVER,
         STATE_VICTORY
     };

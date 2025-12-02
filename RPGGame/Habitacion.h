@@ -2,6 +2,7 @@
 #include "Enemigos.h"
 #include "DungeonGenerator.h"
 #include "Items.h"
+#include "Proyectil.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
 
@@ -14,6 +15,7 @@ private:
     std::vector<Pickup*> pickups;
     RoomData roomData;
     std::vector<sf::Vector2f> enemySpawns;
+    std::vector<Proyectil*> proyectiles;
 
     //BG
     sf::Texture backgroundTexture;

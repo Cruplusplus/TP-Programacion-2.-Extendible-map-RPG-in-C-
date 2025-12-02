@@ -12,8 +12,6 @@ protected:
     int lvl;
     std::string nombre;
 
-    sf::Texture textureSheet;
-    
     float velocidad;
     sf::Clock animationTimer;
     bool animationSwitch;
@@ -28,9 +26,7 @@ protected:
     TipoPersonaje tipo;
 
     void initVariables();
-    void initTexture(const std::string ubicacionSprite);
-    void initSprite();
-    void initHitbox(float width, float height);
+    void initSprite(); // Override/Extend
     void initAnimations();
 
 public:

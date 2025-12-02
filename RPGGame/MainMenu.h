@@ -6,6 +6,7 @@
 enum MenuState {
     MENU_MAIN,
     MENU_LOAD,
+    MENU_SAVE,
     MENU_OPTIONS
 };
 
@@ -14,6 +15,7 @@ private:
     sf::Font font;
     std::vector<sf::Text> mainOptions;
     std::vector<sf::Text> loadOptions;
+    std::vector<sf::Text> saveOptions;
     std::vector<sf::Text> optionsOptions;
     
     int selectedIndex;

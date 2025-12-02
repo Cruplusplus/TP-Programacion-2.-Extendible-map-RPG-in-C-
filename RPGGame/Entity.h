@@ -5,7 +5,12 @@
 class Entity {
 protected:
     sf::Sprite sprite;
+    sf::Texture texture;
     sf::RectangleShape hitbox;
+
+    void initTexture(std::string path);
+    void initSprite();
+    void initHitbox(float width, float height);
 
 public:
     Entity();

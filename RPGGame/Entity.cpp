@@ -8,6 +8,27 @@ Entity::Entity() {
 Entity::~Entity() {
 }
 
+void Entity::initTexture(std::string path)
+{
+    if(!this->texture.loadFromFile(path))
+    {
+        std::cout << "ERROR: COULD NOT LOAD TEXTURE: " << path << std::endl;
+    }
+}
+
+void Entity::initSprite()
+{
+    this->sprite.setTexture(this->texture);
+}
+
+void Entity::initHitbox(float width, float height)
+{
+    this->hitbox.setSize(sf::Vector2f(width, height));
+    this->hitbox.setFillColor(sf::Color::Transparent);
+    this->hitbox.setOutlineColor(sf::Color::Red);
+    this->hitbox.setOutlineThickness(1.f);
+}
+
 void Entity::setPosition(const float x, const float y) {
     this->sprite.setPosition(x, y);
     // Puede ser sobreescrito

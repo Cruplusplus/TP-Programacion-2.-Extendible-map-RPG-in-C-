@@ -109,11 +109,6 @@ const sf::RenderWindow& Juego::getWindow() const { return *this->window; }
 void Juego::updateInput()
 {
     //Mouse
-    /*
-    std::cout << int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize())
-                     << " " << int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize())
-                     << std::endl;*/
-
     const int mouseX = int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize());
     const int mouseY = int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize());
 
@@ -135,7 +130,16 @@ void Juego::updateInput()
     
     // Temp Save/Load
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-        this->saveGame(1);
+        // Toggle de Pause Menu
+        if(this->gameState == STATE_PLAYING) {
+            this->gameState = STATE_PAUSE_MENU;
+            this->mainMenu->setState(MENU_SAVE);
+            sf::sleep(sf::seconds(0.2f)); // Debounce
+        }
+        else if(this->gameState == STATE_PAUSE_MENU) {
+            this->gameState = STATE_PLAYING;
+            sf::sleep(sf::seconds(0.2f)); // Debounce
+        }
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F9)) {
         this->loadGame(1);
@@ -155,7 +159,7 @@ void Juego::pollEvents()
             if(this->ev.key.code == sf::Keyboard::Escape)
                 this->window->close();
                 
-            if(this->gameState == STATE_MENU) {
+            if(this->gameState == STATE_MENU || this->gameState == STATE_PAUSE_MENU) {
                 if(this->ev.key.code == sf::Keyboard::W || this->ev.key.code == sf::Keyboard::Up) {
                     this->mainMenu->moveUp();
                 }
@@ -186,6 +190,12 @@ void Juego::pollEvents()
                         else if(selected == 1) { this->loadGame(2); this->gameState = STATE_PLAYING; }
                         else if(selected == 2) { this->loadGame(3); this->gameState = STATE_PLAYING; }
                         else if(selected == 3) { this->mainMenu->setState(MENU_MAIN); }
+                    }
+                    else if(mState == MENU_SAVE) {
+                        if(selected == 0) { this->saveGame(1); this->gameState = STATE_PLAYING; }
+                        else if(selected == 1) { this->saveGame(2); this->gameState = STATE_PLAYING; }
+                        else if(selected == 2) { this->saveGame(3); this->gameState = STATE_PLAYING; }
+                        else if(selected == 3) { this->gameState = STATE_PLAYING; } // Back
                     }
                     else if(mState == MENU_OPTIONS) {
                         if(selected == 3) { this->mainMenu->setState(MENU_MAIN); }
@@ -356,12 +366,8 @@ void Juego::update()
 {
     this->pollEvents();
 
-    if(this->gameState == STATE_MENU) {
-        // Menu Input
-        if (this->ev.type == sf::Event::KeyPressed) {
-             // Need to handle key press once per frame, pollEvents handles it but we need to check here or in pollEvents
-             // Ideally move menu input to pollEvents or separate function
-        }
+    if(this->gameState == STATE_MENU || this->gameState == STATE_PAUSE_MENU) {
+        // Menu Input handled in pollEvents
         return;
     }
 
@@ -399,7 +405,7 @@ void Juego::render()
     if(this->gameState == STATE_MENU) {
         this->mainMenu->draw(*this->window);
     }
-    else if(this->gameState == STATE_PLAYING || this->gameState == STATE_GAMEOVER) {
+    else if(this->gameState == STATE_PLAYING || this->gameState == STATE_GAMEOVER || this->gameState == STATE_PAUSE_MENU) {
         this->habitacionActual->renderFondo(*this->window);
 
         //todos en el vector
@@ -429,6 +435,15 @@ void Juego::render()
         if(this->gameState == STATE_GAMEOVER) {
             this->window->draw(this->gameOverText);
         }
+        
+        if(this->gameState == STATE_PAUSE_MENU) {
+            // Darken background
+            sf::RectangleShape overlay(sf::Vector2f(this->window->getSize().x, this->window->getSize().y));
+            overlay.setFillColor(sf::Color(0, 0, 0, 150));
+            this->window->draw(overlay);
+            
+            this->mainMenu->draw(*this->window);
+        }
     }
 
     this->window->display();
@@ -444,8 +459,8 @@ void Juego::saveGame(int slot) {
     data.keys = this->jugador->getKeys();
     data.inventory = this->jugador->getInventoryAsInt();
     
-    // We need to store the seed to regenerate the dungeon
-    // For now, let's assume we stored the seed somewhere or we can just save the current room
+    // Necesitamos guardar el seed para regenerar el dungeon
+    // Por ahora, let's assume we stored the seed somewhere or we can just save the current room
     // Ideally DungeonGenerator should store its seed.
     // Let's add a getter for seed in DungeonGenerator or just store it in Game_Class when generating
     data.seed = this->seed; 
@@ -460,17 +475,26 @@ void Juego::loadGame(int slot) {
     
     GameData data = SaveManager::loadGame(slot);
     
-    // Re-init dungeon with saved seed
+    // Limpiar el dungeon y las habitaciones antiguas
     delete this->dungeonGen;
+    
+    for(auto const& [key, val] : this->roomsMap) {
+        delete val;
+    }
+    this->roomsMap.clear();
+    // habitacionActual is in roomsMap, so it's deleted above. 
+    // Set to nullptr to be safe, though we reassign immediately.
+    this->habitacionActual = nullptr;
+
+    // Re-inicializacion del dungeon con el seed guardado
     this->dungeonGen = new DungeonGenerator(10, 10, 5);
     this->dungeonGen->generate(data.seed); // Use saved seed
     
     this->currentRoomCoords = sf::Vector2i(data.currentRoomX, data.currentRoomY);
     
-    delete this->habitacionActual;
     this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+    this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
     
-    // Restore player stats
     // Restore player stats
     this->jugador->setStats(data.hp, data.maxHp, data.coins, data.keys, data.inventory);
 }

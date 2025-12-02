@@ -31,14 +31,14 @@ void DungeonGenerator::generate(unsigned int seed) {
 
     int currentRooms = 1;
     
-    // Generation Loop
+    // Loop de creacion de habitaciones
     while(currentRooms < numRooms) {
-        // Pick a random existing room to extend from
+        // Agarra una habitacion random de las ya creadas
         int randIndex = std::rand() % createdRooms.size();
         int cx = createdRooms[randIndex].first;
         int cy = createdRooms[randIndex].second;
 
-        // Pick a random direction
+        // Elige una direccion random
         int dir = std::rand() % 4;
         int nx = cx, ny = cy;
 
@@ -47,7 +47,7 @@ void DungeonGenerator::generate(unsigned int seed) {
         else if(dir == 2) ny++; // Bottom
         else if(dir == 3) nx--; // Left
 
-        // Check bounds and if empty
+        // Chequea que la habitacion no salga del mapa y que no haya una habitacion en la direccion
         if(nx >= 0 && nx < width && ny >= 0 && ny < height) {
             if(this->grid[nx][ny].type == EMPTY) {
                 this->grid[nx][ny].type = NORMAL;
@@ -57,8 +57,8 @@ void DungeonGenerator::generate(unsigned int seed) {
         }
     }
 
-    // Assign Special Rooms
-    // Find rooms with only 1 neighbor for Boss/Treasure
+    // Asignacion de habitaciones especiales
+    // Busca habitaciones con solo 1 vecino para Boss/Tesoros
     std::vector<std::pair<int, int>> leafRooms;
     for(auto p : createdRooms) {
         if(p.first == startX && p.second == startY) continue; // Skip start
@@ -72,7 +72,7 @@ void DungeonGenerator::generate(unsigned int seed) {
         if(neighbors == 1) leafRooms.push_back(p);
     }
 
-    // Fallback if no leaves (rare in small maps but possible)
+    // Fallback si no hay habitaciones con solo 1 vecino (es posible)
     if(leafRooms.empty()) {
         for(auto p : createdRooms) {
              if(p.first == startX && p.second == startY) continue;
@@ -80,19 +80,19 @@ void DungeonGenerator::generate(unsigned int seed) {
         }
     }
 
-    // Assign Boss
+    // Asignacion de Boss
     if(!leafRooms.empty()) {
         int idx = std::rand() % leafRooms.size();
         this->grid[leafRooms[idx].first][leafRooms[idx].second].type = BOSS;
         leafRooms.erase(leafRooms.begin() + idx);
     }
 
-    // Assign Treasure
+    // Asignacion de Tesoro
     if(!leafRooms.empty()) {
         int idx = std::rand() % leafRooms.size();
         this->grid[leafRooms[idx].first][leafRooms[idx].second].type = TREASURE;
     } else if (createdRooms.size() > 2) {
-         // Pick random non-start non-boss
+         // Elije random non-start non-boss
          for(auto p : createdRooms) {
              if(this->grid[p.first][p.second].type == NORMAL) {
                  this->grid[p.first][p.second].type = TREASURE;
@@ -101,7 +101,7 @@ void DungeonGenerator::generate(unsigned int seed) {
          }
     }
 
-    // Calculate Doors (Coherence Pass)
+    // Calculo de puertas (Coherence Pass)
     for(auto p : createdRooms) {
         int x = p.first;
         int y = p.second;

@@ -1,0 +1,10 @@
+{
+    "coins": 1,
+    "currentRoomX": 5,
+    "currentRoomY": 6,
+    "hp": 9,
+    "inventory": [],
+    "keys": 1,
+    "maxHp": 10,
+    "seed": 1764708564
+}

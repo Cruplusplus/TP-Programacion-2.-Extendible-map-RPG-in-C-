@@ -100,6 +100,11 @@ void Enemigos::updateIA(Jugador* jugador)
     this->lastPosition = this->getPosition();
 }
 
+void Enemigos::attack(Jugador* jugador)
+{
+    // Base implementation (can be empty or default melee)
+}
+
 void Enemigos::update()
 {
 
@@ -149,16 +154,7 @@ void Duende::updateIA(Jugador* jugador)
 
     if (distance < ATTACK_RANGE)
     {
-        this->animState = PLAYER_ANIMATION_STATES::ATTACK;
-
-        //logica de ataque
-        if (this->animationTimer.getElapsedTime().asSeconds() >= 1.f)
-        {
-            std::cout << "ataca enemigo" << std::endl;
-            jugador->recibirDanio(1);
-            this->animationTimer.restart();
-        }
-
+        this->attack(jugador);
     }
     else if (distance < SIGHT_RANGE)
     {
@@ -182,6 +178,19 @@ void Duende::updateIA(Jugador* jugador)
 void Duende::update()
 {
     //this->updateAnimations();
+}
+
+void Duende::attack(Jugador* jugador)
+{
+    this->animState = PLAYER_ANIMATION_STATES::ATTACK;
+
+    //logica de ataque
+    if (this->animationTimer.getElapsedTime().asSeconds() >= 1.f)
+    {
+        std::cout << "ataca enemigo" << std::endl;
+        jugador->recibirDanio(1);
+        this->animationTimer.restart();
+    }
 }
 
 //================ORCO================
@@ -208,6 +217,50 @@ void Orco::update() {
     //this->updateAnimations();
 }
 
+void Orco::updateIA(Jugador* jugador)
+{
+    // Orco: Perseguir al jugador (Lento pero constante)
+    sf::Vector2f direction = jugador->getPosition() - this->sprite.getPosition();
+    float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+    if (distance != 0) {
+        direction = direction / distance;
+    }
+
+    float ATTACK_RANGE = 40.f; // Rango melee un poco mayor por ser grande
+
+    if (distance < ATTACK_RANGE)
+    {
+        this->attack(jugador);
+    }
+    else
+    {
+        this->velocidadVector = direction; // Se mueve hacia el jugador
+        
+        // Animacion
+        if (std::abs(direction.x) > std::abs(direction.y)) {
+            if (direction.x > 0) this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
+            else this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
+        } else {
+            if (direction.y > 0) this->animState = PLAYER_ANIMATION_STATES::MOVING_DOWN;
+            else this->animState = PLAYER_ANIMATION_STATES::MOVING_UP;
+        }
+    }
+}
+
+void Orco::attack(Jugador* jugador)
+{
+    this->animState = PLAYER_ANIMATION_STATES::ATTACK;
+    this->velocidadVector = sf::Vector2f(0,0);
+
+    if (this->animationTimer.getElapsedTime().asSeconds() >= 1.5f) // Ataque lento
+    {
+        std::cout << "Orco aplasta!" << std::endl;
+        jugador->recibirDanio(this->dmg);
+        this->animationTimer.restart();
+    }
+}
+
 //================HADA================
 
 Hada::Hada(float x, float y)
@@ -231,7 +284,55 @@ void Hada::update() {
 }
 
 void Hada::curarAliados(std::vector<Enemigos*>& enemigos) {
-    //TODO: curar aliados random cada tanto tiempo
+    // Curar aliados cercanos cada 3 segundos
+    static sf::Clock healTimer;
+    if (healTimer.getElapsedTime().asSeconds() > 3.0f) {
+        for (auto* enemigo : enemigos) {
+            if (enemigo != this && enemigo->getHp() > 0) {
+                float dist = std::sqrt(std::pow(enemigo->getPosition().x - this->getPosition().x, 2) +
+                                     std::pow(enemigo->getPosition().y - this->getPosition().y, 2));
+                if (dist < 150.f) { // Rango de curacion
+                    // No tenemos metodo curar, asi que accedemos directo o asumimos logica
+                    // Por ahora solo print, idealmente
+                    std::cout << "Hada cura a " << enemigo->getPosition().x << std::endl;
+                    //hada->heal(1)
+                }
+            }
+        }
+        healTimer.restart();
+    }
+}
+
+void Hada::updateIA(Jugador* jugador)
+{
+    // Hada: Huir del jugador
+    sf::Vector2f direction = this->sprite.getPosition() - jugador->getPosition(); // Vector opuesto
+    float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+    if (distance != 0) {
+        direction = direction / distance;
+    }
+
+    float SAFE_DISTANCE = 200.f;
+
+    if (distance < SAFE_DISTANCE)
+    {
+        this->velocidadVector = direction; // Huir
+    }
+    else
+    {
+        // Deambular o quedarse quieta
+        this->velocidadVector = sf::Vector2f(0,0);
+        this->animState = PLAYER_ANIMATION_STATES::IDLE;
+    }
+    
+    // Animacion basica
+    if (this->velocidadVector.x != 0 || this->velocidadVector.y != 0) {
+         if (std::abs(this->velocidadVector.x) > std::abs(this->velocidadVector.y)) {
+            if (this->velocidadVector.x > 0) this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
+            else this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
+        }
+    }
 }
 
 //================ESTATUA================
@@ -254,6 +355,16 @@ Estatua::~Estatua() {}
 
 void Estatua::update() {
     //this->updateAnimations();
+}
+
+void Estatua::updateIA(Jugador* jugador)
+{
+    // Estatua: No hace nada, solo existe.
+    this->velocidadVector = sf::Vector2f(0,0);
+    this->animState = PLAYER_ANIMATION_STATES::IDLE;
+    
+    // Si el jugador la toca, quizas daño por contacto?
+    // Por ahora inerte.
 }
 
 bool Estatua::checkDeathCondition(int numEnemies) {
@@ -284,11 +395,54 @@ void Hechicero::update() {
     //this->updateAnimations();
 }
 
-void Hechicero::attack(Jugador* jugador) {
+void Hechicero::attack(Jugador* jugador)
+{
+    // Melee attack or empty
+}
+
+void Hechicero::attack(Jugador* jugador, std::vector<Proyectil*>& proyectiles) {
     if(this->attackTimer.getElapsedTime().asSeconds() > 2.0f) {
-        // Disparar proyectil (TODO: Implementar clase Proyectil o logica simple)
-        // Por ahora, daño directo si esta cerca o en linea de visión
-        // Reset timer
+        sf::Vector2f dir = jugador->getPosition() - this->getPosition();
+        float len = std::sqrt(dir.x*dir.x + dir.y*dir.y);
+        if(len != 0) dir /= len;
+        
+        // Spawn proyectil
+        proyectiles.push_back(new Proyectil(this->getPosition().x, this->getPosition().y, dir, 4.f, this->dmg, true));
+        
         this->attackTimer.restart();
+    }
+}
+
+void Hechicero::updateIA(Jugador* jugador)
+{
+    // Hechicero: Mantener distancia
+    sf::Vector2f diff = jugador->getPosition() - this->getPosition();
+    float dist = std::sqrt(diff.x*diff.x + diff.y*diff.y);
+    sf::Vector2f dir = (dist != 0) ? (diff / dist) : sf::Vector2f(0,0);
+
+    float OPTIMAL_DIST = 250.f;
+    float TOLERANCE = 50.f;
+
+    if (dist < OPTIMAL_DIST - TOLERANCE)
+    {
+        this->velocidadVector = -dir; // Alejarse
+    }
+    else if (dist > OPTIMAL_DIST + TOLERANCE)
+    {
+        this->velocidadVector = dir; // Acercarse
+    }
+    else
+    {
+        this->velocidadVector = sf::Vector2f(0,0); // Mantener posicion
+    }
+    
+    // Animacion
+    if (this->velocidadVector.x != 0 || this->velocidadVector.y != 0) {
+         if (std::abs(this->velocidadVector.x) > std::abs(this->velocidadVector.y)) {
+            if (this->velocidadVector.x > 0) this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
+            else this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
+        }
+    } else {
+        this->animState = PLAYER_ANIMATION_STATES::IDLE;
     }
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "Jugador.h"
+#include "Proyectil.h"
 
 class Enemigos : public Character
 {
@@ -19,6 +20,7 @@ protected:
 public:
     virtual void updateIA(Jugador* jugador);
     virtual void update() override;
+    virtual void attack(Jugador* jugador); // Base attack (melee)
 
     virtual void render(sf::RenderTarget& target) override;
 };
@@ -33,6 +35,7 @@ class Duende : public Enemigos
     //Funciones
     void updateIA(Jugador* jugador) override;
     void update() override;
+    void attack(Jugador* jugador) override;
 };
 
 class Orco : public Enemigos
@@ -41,6 +44,8 @@ public:
     Orco(float x, float y);
     virtual ~Orco();
     void update() override;
+    void updateIA(Jugador* jugador) override;
+    void attack(Jugador* jugador) override;
 };
 
 class Hada : public Enemigos
@@ -49,7 +54,9 @@ public:
     Hada(float x, float y);
     virtual ~Hada();
     void update() override;
+    void updateIA(Jugador* jugador) override;
     void curarAliados(std::vector<Enemigos*>& enemigos);
+    // Hada no ataca (por ahora)
 };
 
 class Estatua : public Enemigos
@@ -58,7 +65,8 @@ public:
     Estatua(float x, float y);
     virtual ~Estatua();
     void update() override;
-    // Special flag to check if it should die
+    void updateIA(Jugador* jugador) override;
+    // Estatua no ataca
     bool checkDeathCondition(int numEnemies);
 };
 
@@ -70,5 +78,7 @@ public:
     Hechicero(float x, float y);
     virtual ~Hechicero();
     void update() override;
-    void attack(Jugador* jugador);
+    void updateIA(Jugador* jugador) override;
+    void attack(Jugador* jugador) override; // Overload/Override sin proyectiles (Melee)
+    void attack(Jugador* jugador, std::vector<Proyectil*>& proyectiles); // Ranged
 };

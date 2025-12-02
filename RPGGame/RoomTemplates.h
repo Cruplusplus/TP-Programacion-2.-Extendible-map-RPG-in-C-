@@ -46,7 +46,7 @@ namespace RoomTemplates {
         },
 
         {
-            "RRRRRRRRRRRRRRRR",
+            "RRRR........RRRR",
             "R...R.....R....R",
             "................",
             "R...R.....R....R",
@@ -56,7 +56,7 @@ namespace RoomTemplates {
             "R...R....R....R.",
             "................",
             "R...R....R....R.",
-            "RRRRRRRRRRRRRRRR",
+            "RRRR........RRRR",
             "................"
         },
 
