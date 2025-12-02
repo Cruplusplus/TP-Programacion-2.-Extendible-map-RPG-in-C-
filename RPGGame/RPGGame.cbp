@@ -74,6 +74,9 @@
 		<Unit filename="Jugador.h" />
 		<Unit filename="MainMenu.cpp" />
 		<Unit filename="MainMenu.h" />
+		<Unit filename="Proyectil.cpp" />
+		<Unit filename="Proyectil.h" />
+		<Unit filename="RoomTemplates.h" />
 		<Unit filename="SaveManager.cpp" />
 		<Unit filename="SaveManager.h" />
 		<Unit filename="Sprites ejemplo/player_sprites_ejemplo.png" />
