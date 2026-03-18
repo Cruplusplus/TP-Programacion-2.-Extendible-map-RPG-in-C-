@@ -134,11 +134,11 @@ void Juego::updateInput()
         if(this->gameState == STATE_PLAYING) {
             this->gameState = STATE_PAUSE_MENU;
             this->mainMenu->setState(MENU_SAVE);
-            sf::sleep(sf::seconds(0.2f)); // Debounce
+            sf::sleep(sf::seconds(0.2f));
         }
         else if(this->gameState == STATE_PAUSE_MENU) {
             this->gameState = STATE_PLAYING;
-            sf::sleep(sf::seconds(0.2f)); // Debounce
+            sf::sleep(sf::seconds(0.2f));
         }
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F9)) {
@@ -158,7 +158,8 @@ void Juego::pollEvents()
         case sf::Event::KeyPressed:
             if(this->ev.key.code == sf::Keyboard::Escape)
                 this->window->close();
-                
+            
+            //save manager
             if(this->gameState == STATE_MENU || this->gameState == STATE_PAUSE_MENU) {
                 if(this->ev.key.code == sf::Keyboard::W || this->ev.key.code == sf::Keyboard::Up) {
                     this->mainMenu->moveUp();
@@ -173,7 +174,6 @@ void Juego::pollEvents()
                     if(mState == MENU_MAIN) {
                         if(selected == 0) { // New Game
                             this->gameState = STATE_PLAYING;
-                            // Reset game logic if needed
                         }
                         else if(selected == 1) { // Load Game
                             this->mainMenu->setState(MENU_LOAD);
@@ -232,7 +232,6 @@ void Juego::updatePersonajes()
 
 void Juego::updateCollision()
 {
-    //bordes de la ventana y transiciones
     //bordes de la ventana y transiciones
     bool roomChanged = false;
     sf::Vector2i nextRoom = this->currentRoomCoords;
@@ -316,10 +315,10 @@ void Juego::updateCollision()
     }
 
     if(roomChanged) {
-        // Do NOT delete habitacionActual, it is stored in the map
+        // No borrar habitacionActual, se guarda en el mapa para volver a acceder 
+        //si se regresa a esta habitacion
         this->currentRoomCoords = nextRoom;
         
-        // Check if room exists in map
         auto it = this->roomsMap.find(std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y));
         if(it != this->roomsMap.end()) {
             this->habitacionActual = it->second;
@@ -329,12 +328,13 @@ void Juego::updateCollision()
         }
 
         this->jugador->setPosition(nextPlayerPos.x, nextPlayerPos.y);
-        return; // Skip collision check for this frame to avoid getting stuck
+        return; // Skippea la colision con el mapa en el frame de transicion, 
+        //no es necesario porque el jugador ya se reposiciono y no va a colisionar con nada
     }
 
     //colision con objetos del mapa
     TileMap* mapa = this->habitacionActual->getTileMap();
-    if (mapa == nullptr) return; //ya veo que hacemos cagada
+    if (mapa == nullptr) return; //ya veo que hago cagada
 
     std::vector<Character*> personajes;
     personajes.push_back(this->jugador);
@@ -367,7 +367,7 @@ void Juego::update()
     this->pollEvents();
 
     if(this->gameState == STATE_MENU || this->gameState == STATE_PAUSE_MENU) {
-        // Menu Input handled in pollEvents
+        // Se maneja en pollEvents
         return;
     }
 
@@ -383,7 +383,6 @@ void Juego::update()
 
     }
 
-    //cuando termina el juego
     if(this-> jugador->getHp() <= 0) {
         // this->finalizarJuego = true;
         this->gameState = STATE_GAMEOVER;
@@ -393,6 +392,7 @@ void Juego::update()
 
 void Juego::render()
 {
+
     this->window->clear();
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
@@ -428,7 +428,7 @@ void Juego::render()
         {
             personaje->render(*this->window);
         }
-        
+
         this->hud->update(this->jugador);
         this->hud->render(*this->window);
         
@@ -437,7 +437,6 @@ void Juego::render()
         }
         
         if(this->gameState == STATE_PAUSE_MENU) {
-            // Darken background
             sf::RectangleShape overlay(sf::Vector2f(this->window->getSize().x, this->window->getSize().y));
             overlay.setFillColor(sf::Color(0, 0, 0, 150));
             this->window->draw(overlay);
@@ -459,10 +458,10 @@ void Juego::saveGame(int slot) {
     data.keys = this->jugador->getKeys();
     data.inventory = this->jugador->getInventoryAsInt();
     
-    // Necesitamos guardar el seed para regenerar el dungeon
-    // Por ahora, let's assume we stored the seed somewhere or we can just save the current room
-    // Ideally DungeonGenerator should store its seed.
-    // Let's add a getter for seed in DungeonGenerator or just store it in Game_Class when generating
+    /* Necesitamos guardar el seed para regenerar el dungeon
+    Por ahora, vamos a asumir que el seed se guarda directamente en Game_Class cuando se genera el
+    dungeon, asi que lo guardamos directamente desde ahi. */
+
     data.seed = this->seed; 
     data.currentRoomX = this->currentRoomCoords.x;
     data.currentRoomY = this->currentRoomCoords.y;
@@ -482,8 +481,8 @@ void Juego::loadGame(int slot) {
         delete val;
     }
     this->roomsMap.clear();
-    // habitacionActual is in roomsMap, so it's deleted above. 
-    // Set to nullptr to be safe, though we reassign immediately.
+    // habitacionActual se borra en el loop anterior
+    // pero lo seteamos a nullptr para evitar un dangling pointer
     this->habitacionActual = nullptr;
 
     // Re-inicializacion del dungeon con el seed guardado
@@ -495,12 +494,13 @@ void Juego::loadGame(int slot) {
     this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
     this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
     
-    // Restore player stats
+    // Restaurar player stats
     this->jugador->setStats(data.hp, data.maxHp, data.coins, data.keys, data.inventory);
 }
 
 void Juego::initFonts()
 {
+    //para menu y el game over
     if(!this->font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
     {
         std::cout << "ERROR: COULD NOT LOAD FONT" << std::endl;
@@ -522,7 +522,7 @@ void Juego::resetGame()
     delete this->jugador;
     delete this->dungeonGen;
     
-    // Clear rooms
+    // Limpiar rooms
     for(auto const& [key, val] : this->roomsMap) {
         delete val;
     }

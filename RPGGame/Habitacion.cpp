@@ -280,7 +280,7 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
   for (auto *p : this->pickups) {
     p->render(target);
   }
-  
+
   for (auto *p : this->proyectiles) {
       p->render(target);
   }

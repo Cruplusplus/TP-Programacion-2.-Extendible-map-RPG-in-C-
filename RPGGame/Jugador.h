@@ -2,6 +2,8 @@
 #include "Character.h"
 #include "Items.h"
 
+enum DIRECTION {DOWN = 0, LEFT, RIGHT, UP};
+
 class Jugador : public Character
 {
 private:

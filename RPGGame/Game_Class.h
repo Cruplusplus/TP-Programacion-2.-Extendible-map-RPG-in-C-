@@ -9,7 +9,7 @@
 
 #include <algorithm>
 
-//{Motor grafico del juego
+//Motor grafico del juego
 class Juego{
 private:
 //ventana
@@ -57,7 +57,6 @@ private:
     void initPersonajes();
     void initHabitacion();
     void initFonts();
-//
 public:
     //Constrc - Destrc
     Juego();
@@ -70,7 +69,7 @@ public:
     const bool getFinalizarJuego() const;
     const sf::RenderWindow& getWindow() const;
 
-    //{Funcs
+    //Funcs
     //void spawnEnemigo();
     void updateInput();
 
@@ -89,7 +88,5 @@ public:
     
     void saveGame(int slot);
     void loadGame(int slot);
-    //}
 };
-//}
 

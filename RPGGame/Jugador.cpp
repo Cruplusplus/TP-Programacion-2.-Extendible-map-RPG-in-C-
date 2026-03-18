@@ -337,7 +337,9 @@ void Jugador::update() {
   }
 }
 
-void Jugador::render(sf::RenderTarget &target) { target.draw(this->sprite); }
+void Jugador::render(sf::RenderTarget &target) { target.draw(this->sprite);
+target.draw(this->debugHb);
+}
 
 // Getters & Setters
 std::vector<int> Jugador::getInventoryAsInt() const {
@@ -379,31 +381,33 @@ int Jugador::getFacingDirection() const { return this->facingDirection; }
 
 sf::FloatRect Jugador::getAttackHitbox() const {
   sf::FloatRect swordHb = this->getHitboxBounds();
-  float range = 75.f; // Rango de la espada
+  swordHb.height -= 90.f;
+  float range = 90.f; // Rango de la espada
   float width = 50.f; // Ancho de la espada
 
   sf::FloatRect playerHb = this->getHitboxBounds();
   playerHb.width += range;
   playerHb.height += range;
 
-  if (facingDirection == 0) // Down
+  if (facingDirection == DIRECTION::DOWN)
   {
+    swordHb.height += 90.f;
     return sf::FloatRect(swordHb.left + swordHb.width / 2 - width / 2,
                          swordHb.top + swordHb.height, width, range);
-  } else if (facingDirection == 1) // Left
+  } else if (facingDirection == DIRECTION::LEFT)
   {
     return sf::FloatRect(swordHb.left - range,
                          swordHb.top + swordHb.height / 2 - width / 2, range,
                          width);
-  } else if (facingDirection == 2) // Right
+  } else if (facingDirection == DIRECTION::RIGHT)
   {
     return sf::FloatRect(swordHb.left + swordHb.width,
                          swordHb.top + swordHb.height / 2 - width / 2, range,
                          width);
-  } else if (facingDirection == 3) // Up
+  } else if (facingDirection == DIRECTION::UP)
   {
     return sf::FloatRect(swordHb.left + swordHb.width / 2 - width / 2,
-                         swordHb.top - range, width, range);
+                         swordHb.top - 130.f, width, range);
   }
   return sf::FloatRect(0, 0, 0, 0);
 }
