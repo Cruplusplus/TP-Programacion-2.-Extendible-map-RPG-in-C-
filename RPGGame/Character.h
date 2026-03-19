@@ -41,8 +41,9 @@ public:
 
     virtual void update() = 0;
     virtual void render(sf::RenderTarget& target) = 0;
-
-    void renderHitbox(sf::RenderTarget& target);
     
     void setPosition(const float x, const float y) override;
+
+    //debug
+    void renderHitbox(sf::RenderTarget& target);
 };

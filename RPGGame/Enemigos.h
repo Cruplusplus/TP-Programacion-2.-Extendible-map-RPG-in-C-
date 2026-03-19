@@ -67,7 +67,6 @@ public:
     void update() override;
     void updateIA(Jugador* jugador) override;
     // Estatua no ataca
-    bool checkDeathCondition(int numEnemies);
 };
 
 class Hechicero : public Enemigos

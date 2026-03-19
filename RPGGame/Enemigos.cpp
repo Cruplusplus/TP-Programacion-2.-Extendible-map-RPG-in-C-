@@ -367,12 +367,6 @@ void Estatua::updateIA(Jugador* jugador)
     // Por ahora inerte.
 }
 
-bool Estatua::checkDeathCondition(int numEnemies) {
-    // Muere si es el unico enemigo o si solo hay estatuas
-    // If numEnemies <= num statues
-    return false; // Logica en Habitacion
-}
-
 //================HECHICERO================
 
 Hechicero::Hechicero(float x, float y)

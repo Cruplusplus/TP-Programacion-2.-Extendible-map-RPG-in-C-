@@ -112,13 +112,7 @@ void Juego::updateInput()
     const int mouseX = int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize());
     const int mouseY = int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize());
 
-    //Player movement
-    if(sf::Keyboard::isKeyPressed(this->keyboardMappings["KEY_MOVE_LEFT"]))
-    {
-
-    }
-
-    //Tile funcs
+    //Debug tile func
     if(sf::Mouse::isButtonPressed(this->mouseMappings["BTN_ADD_TILE"]))
     {
         this->habitacionActual->getTileMap()->addTile(mouseX, mouseY, tipoTiles::ROCA);
@@ -128,7 +122,7 @@ void Juego::updateInput()
         this->habitacionActual->getTileMap()->removeTile(mouseX, mouseY);
     }
     
-    // Temp Save/Load
+    // Save/Load
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
         // Toggle de Pause Menu
         if(this->gameState == STATE_PLAYING) {
@@ -171,34 +165,80 @@ void Juego::pollEvents()
                     int selected = this->mainMenu->getPressedItem();
                     MenuState mState = this->mainMenu->getState();
                     
+                    //refactorizar
                     if(mState == MENU_MAIN) {
-                        if(selected == 0) { // New Game
-                            this->gameState = STATE_PLAYING;
-                        }
-                        else if(selected == 1) { // Load Game
-                            this->mainMenu->setState(MENU_LOAD);
-                        }
-                        else if(selected == 2) { // Options
-                            this->mainMenu->setState(MENU_OPTIONS);
-                        }
-                        else if(selected == 3) { // Exit
-                            this->window->close();
+                        switch(selected) {
+                            case NEW_GAME:
+                                this->gameState = STATE_PLAYING;
+                                break;
+                            case LOAD_GAME:
+                                this->mainMenu->setState(MENU_LOAD);
+                                break;
+                            case OPTIONS:
+                                this->mainMenu->setState(MENU_OPTIONS);
+                                break;
+                            case EXIT:
+                                this->window->close();
+                                break;
                         }
                     }
                     else if(mState == MENU_LOAD) {
-                        if(selected == 0) { this->loadGame(1); this->gameState = STATE_PLAYING; }
-                        else if(selected == 1) { this->loadGame(2); this->gameState = STATE_PLAYING; }
-                        else if(selected == 2) { this->loadGame(3); this->gameState = STATE_PLAYING; }
-                        else if(selected == 3) { this->mainMenu->setState(MENU_MAIN); }
+                        switch(selected) {
+                            case 0: // Load Game 1
+                                this->loadGame(1);
+                                this->gameState = STATE_PLAYING;
+                                break;
+                            case 1: // Load Game 2
+                                this->loadGame(2);
+                                this->gameState = STATE_PLAYING;
+                                break;
+                            case 2: // Load Game 3
+                                this->loadGame(3);
+                                this->gameState = STATE_PLAYING;
+                                break;
+                            case 3: // Back
+                                this->mainMenu->setState(MENU_MAIN);
+                                break;
+                        }
                     }
                     else if(mState == MENU_SAVE) {
-                        if(selected == 0) { this->saveGame(1); this->gameState = STATE_PLAYING; }
-                        else if(selected == 1) { this->saveGame(2); this->gameState = STATE_PLAYING; }
-                        else if(selected == 2) { this->saveGame(3); this->gameState = STATE_PLAYING; }
-                        else if(selected == 3) { this->gameState = STATE_PLAYING; } // Back
+                        switch(selected) {
+                            case SAVE_GAME_1:
+                                this->saveGame(1);
+                                this->gameState = STATE_PLAYING;
+                                break;
+                            case SAVE_GAME_2:
+                                this->saveGame(2);
+                                this->gameState = STATE_PLAYING;
+                                break;
+                            case SAVE_GAME_3:
+                                this->saveGame(3);
+                                this->gameState = STATE_PLAYING;
+                                break;
+                            case BACK:
+                                this->gameState = STATE_PLAYING;
+                                break;
+                        }
                     }
                     else if(mState == MENU_OPTIONS) {
-                        if(selected == 3) { this->mainMenu->setState(MENU_MAIN); }
+                        switch(selected) {
+                            case RES_DEF:
+                                this->window->setSize(sf::Vector2u(800, 600)); 
+                                SaveManager::saveConfig(800, 600, false);
+                                break;
+                            case RES_1024:
+                                this->window->setSize(sf::Vector2u(1024, 768)); 
+                                SaveManager::saveConfig(1024, 768, false);
+                                break;
+                            case FULLSCREEN:
+                                this->window->create(sf::VideoMode::getDesktopMode(), "The Fallen Knight", sf::Style::Fullscreen);
+                                SaveManager::saveConfig(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
+                                break;
+                            case BACK:
+                                this->mainMenu->setState(MENU_MAIN);
+                                break;
+                        }
+                        /*
                         // Handle other options (res, fullscreen)
                         if(selected == 0) { 
                             this->window->setSize(sf::Vector2u(800, 600)); 
@@ -207,7 +247,7 @@ void Juego::pollEvents()
                         if(selected == 1) { 
                             this->window->setSize(sf::Vector2u(1024, 768)); 
                             SaveManager::saveConfig(1024, 768, false);
-                        }
+                        }*/
                     }
                 }
             }
@@ -471,7 +511,7 @@ void Juego::saveGame(int slot) {
 
 void Juego::loadGame(int slot) {
     if(!SaveManager::saveExists(slot)) return;
-    
+
     GameData data = SaveManager::loadGame(slot);
     
     // Limpiar el dungeon y las habitaciones antiguas

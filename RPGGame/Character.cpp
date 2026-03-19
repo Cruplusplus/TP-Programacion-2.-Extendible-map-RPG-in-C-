@@ -55,4 +55,5 @@ void Character::setPosition(const float x, const float y)
     this->hitbox.setPosition(x, y+60);
 }
 
+//debug
 void Character::renderHitbox(sf::RenderTarget& target) { target.draw(this->hitbox); }

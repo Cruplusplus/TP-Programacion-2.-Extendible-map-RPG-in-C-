@@ -41,7 +41,6 @@ const bool Jugador::getAnimSwitch() {
 }
 
 void Jugador::recibirDanio(int danio) { this->hp -= danio; }
-int Jugador::getDmg() const { return this->dmg; }
 int Jugador::getHp() const { return this->hp; }
 
 void Jugador::resetAnimTimer() {
@@ -174,18 +173,7 @@ void Jugador::updateMovement() {
   }
 }
 
-void Jugador::atacar(Character *enemigo) {
-  // Esta funcion es principalmente para activar el estado de ataque
-  // La logica real de daño se maneja en Habitacion::update usando
-  // getAttackHitbox
 
-  if (this->animState != PLAYER_ANIMATION_STATES::ATTACK) {
-    // Inicia ataque
-    this->resetAttack();
-    // Reset timer para asegurar que la animacion se reproduzca desde el inicio
-    // Pero lo manejamos generalmente en updateAnimations
-  }
-}
 
 //================ANIMACIONES==================
 
@@ -377,7 +365,7 @@ void Jugador::addHit(Character *target) { this->hitEnemies.push_back(target); }
 bool Jugador::isAttacking() const {
   return this->animState == PLAYER_ANIMATION_STATES::ATTACK;
 }
-int Jugador::getFacingDirection() const { return this->facingDirection; }
+
 
 sf::FloatRect Jugador::getAttackHitbox() const {
   sf::FloatRect swordHb = this->getHitboxBounds();

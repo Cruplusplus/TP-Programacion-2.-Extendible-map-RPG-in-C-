@@ -6,7 +6,8 @@
 
 MainMenu::MainMenu(float width, float height) {
     if(!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
-        // Handle error
+        std::cout << "Error al cargar la fuente!!" << std::endl;
+        std::cout << "MainMenu.cpp MainMenu()" << std::endl;
     }
     
     state = MENU_MAIN;

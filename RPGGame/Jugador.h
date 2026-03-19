@@ -37,7 +37,7 @@ public:
     bool hasHit(Character* target);
     void addHit(Character* target);
     bool isAttacking() const;
-    int getFacingDirection() const;
+
     
     // Items & stats
     void addItem(ItemType item);
@@ -45,7 +45,7 @@ public:
     bool hasItem(ItemType item);
 
     virtual void recibirDanio(int danio);
-    int getDmg() const;
+
     int getHp() const;
 
     void updateMovement();
@@ -56,8 +56,7 @@ public:
     int getMaxHp() const;
 
     void setStats(int hp, int maxHp, int coins, int keys, const std::vector<int>& inv);
-
-    void atacar(Character *enemigo);
+    
     void updateAnimations();
     void update() override;
 
