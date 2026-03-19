@@ -3,12 +3,12 @@
 
 VisualConfig::VisualConfig()
 {
-    int w, h;
-    bool fs;
-    SaveManager::loadConfig(w, h, fs);
+    int width, height;
+    bool fullscreen;
+    SaveManager::loadConfig(width, height, fullscreen);
     
-    this->resolucionX = h; 
-    this->resolucionY = w;
+    this->resolucionX = height; 
+    this->resolucionY = width;
     
     this->frameRate = 60;
     this->volumenMusica = 100;

@@ -53,6 +53,7 @@ public:
     std::vector<int> getInventoryAsInt() const;
     int getCoins() const;
     int getKeys() const;
+    int getDmg() const;
     int getMaxHp() const;
 
     void setStats(int hp, int maxHp, int coins, int keys, const std::vector<int>& inv);

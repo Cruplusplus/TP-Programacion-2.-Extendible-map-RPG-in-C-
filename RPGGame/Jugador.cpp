@@ -339,6 +339,7 @@ std::vector<int> Jugador::getInventoryAsInt() const {
 
 int Jugador::getCoins() const { return this->coins; }
 int Jugador::getKeys() const { return this->keys; }
+int Jugador::getDmg() const { return this->dmg; }
 int Jugador::getMaxHp() const { return this->maxHp; }
 
 void Jugador::setStats(int hp, int maxHp, int coins, int keys,

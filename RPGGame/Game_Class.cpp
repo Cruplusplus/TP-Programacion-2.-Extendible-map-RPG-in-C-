@@ -356,7 +356,7 @@ void Juego::updateCollision()
 
     if(roomChanged) {
         // No borrar habitacionActual, se guarda en el mapa para volver a acceder 
-        //si se regresa a esta habitacion
+        // si se regresa a esta habitacion
         this->currentRoomCoords = nextRoom;
         
         auto it = this->roomsMap.find(std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y));
@@ -522,12 +522,12 @@ void Juego::loadGame(int slot) {
     }
     this->roomsMap.clear();
     // habitacionActual se borra en el loop anterior
-    // pero lo seteamos a nullptr para evitar un dangling pointer
+    // pero por si acaso seteamos a nullptr para evitar un dangling pointer
     this->habitacionActual = nullptr;
 
     // Re-inicializacion del dungeon con el seed guardado
     this->dungeonGen = new DungeonGenerator(10, 10, 5);
-    this->dungeonGen->generate(data.seed); // Use saved seed
+    this->dungeonGen->generate(data.seed); // saved seed
     
     this->currentRoomCoords = sf::Vector2i(data.currentRoomX, data.currentRoomY);
     
@@ -543,7 +543,7 @@ void Juego::initFonts()
     //para menu y el game over
     if(!this->font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
     {
-        std::cout << "ERROR: COULD NOT LOAD FONT" << std::endl;
+        std::cout << "ERROR: COULD NOT LOAD FONT Game_Class.cpp in initFonts()" << std::endl;
     }
 
     this->gameOverText.setFont(this->font);
@@ -563,7 +563,8 @@ void Juego::resetGame()
     delete this->dungeonGen;
     
     // Limpiar rooms
-    for(auto const& [key, val] : this->roomsMap) {
+    // key para "desempaquetar" el val (rooms)
+    for(auto const& [key, val]: this->roomsMap) {
         delete val;
     }
     this->roomsMap.clear();
