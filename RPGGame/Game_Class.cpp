@@ -165,7 +165,6 @@ void Juego::pollEvents()
                     int selected = this->mainMenu->getPressedItem();
                     MenuState mState = this->mainMenu->getState();
                     
-                    //refactorizar
                     if(mState == MENU_MAIN) {
                         switch(selected) {
                             case NEW_GAME:

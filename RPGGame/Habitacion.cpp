@@ -13,8 +13,8 @@ Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data) {
               << std::endl;
   }
   this->backgroundSprite.setTexture(this->backgroundTexture);
-  this->backgroundSprite.setScale(3.f, 3.f);
-  // this->backgroundSprite.setPosition(x, y);
+  this->backgroundSprite.setScale(3.2f, 3.2f);
+  this->backgroundSprite.setPosition(5, 15);
 
   this->initTileMap();
   this->initEnemigos();
@@ -170,6 +170,14 @@ void Habitacion::initEnemigos() {
 
 void Habitacion::update(Jugador *jugador) {
   this->tileMap->update();
+
+  //debug pickups
+  if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T))
+  {
+    int xrand = rand() % 200 + 300;
+    int yrand = rand() % 200 + 200;
+    this->pickups.push_back(new Pickup(PICKUP_HEART, xrand, yrand));
+  }
 
   int statuesCount = 0;
   int otherEnemiesCount = 0;
