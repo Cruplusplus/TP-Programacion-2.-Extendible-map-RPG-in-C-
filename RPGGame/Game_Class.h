@@ -72,6 +72,7 @@ public:
     //Funcs
     //void spawnEnemigo();
     void updateInput();
+    void handleMenuInput(sf::Keyboard::Key key);
 
     void pollEvents();
 

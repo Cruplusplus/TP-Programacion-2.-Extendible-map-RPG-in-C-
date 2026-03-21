@@ -11,7 +11,7 @@ int main() {
 
     while (juego.gameRunning() && !juego.getFinalizarJuego())
     {
-        juego.update();a
+        juego.update();
         juego.render();
     }
 

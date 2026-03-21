@@ -10,7 +10,15 @@ enum MenuState {
     MENU_OPTIONS
 };
 
+
+
 class MainMenu {
+public:
+    enum class MainOption { NewGame = 0, LoadGame, Options, Exit };
+    enum class LoadOption { Slot1 = 0, Slot2, Slot3, Back };
+    enum class SaveOption { Slot1 = 0, Slot2, Slot3, Back };
+    enum class ConfigOption { Res800 = 0, Res1024, Fullscreen, Back };
+
 private:
     sf::Font font;
     std::vector<sf::Text> mainOptions;
