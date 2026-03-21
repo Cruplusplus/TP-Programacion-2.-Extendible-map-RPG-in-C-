@@ -140,6 +140,53 @@ void Juego::updateInput()
     }
 }
 
+void Juego::handleMenuInput(sf::Keyboard::Key key) {
+    if (key == sf::Keyboard::W || key == sf::Keyboard::Up) {
+        this->mainMenu->moveUp();
+    }
+    else if (key == sf::Keyboard::S || key == sf::Keyboard::Down) {
+        this->mainMenu->moveDown();
+    }
+    else if (key == sf::Keyboard::Enter) {
+        int selected = this->mainMenu->getPressedItem();
+        MenuState mState = this->mainMenu->getState();
+        
+        switch (mState) {
+            case MENU_MAIN:
+                if (selected == static_cast<int>(MainMenu::MainOption::NewGame)) this->gameState = STATE_PLAYING;
+                else if (selected == static_cast<int>(MainMenu::MainOption::LoadGame)) this->mainMenu->setState(MENU_LOAD);
+                else if (selected == static_cast<int>(MainMenu::MainOption::Options)) this->mainMenu->setState(MENU_OPTIONS);
+                else if (selected == static_cast<int>(MainMenu::MainOption::Exit)) this->window->close();
+                break;
+
+            case MENU_LOAD:
+                if (selected == static_cast<int>(MainMenu::LoadOption::Back)) {
+                    this->mainMenu->setState(MENU_MAIN);
+                } else {
+                    this->loadGame(selected + 1); // 0 pasa a 1, 1 a 2, etc.
+                    this->gameState = STATE_PLAYING;
+                }
+                break;
+
+            case MENU_SAVE:
+                if (selected == static_cast<int>(MainMenu::SaveOption::Back)) {
+                    this->gameState = STATE_PLAYING;
+                } else {
+                    this->saveGame(selected + 1);
+                    this->gameState = STATE_PLAYING;
+                }
+                break;
+
+            case MENU_OPTIONS:
+                // Tenia planeado cambiar la res pero lastimosamente bugea el juego y hace que la
+                // ventana se ponga negra y no se pueda volver a jugar.
+                // Por ahora solo se puede volver al menu principal.
+                this->mainMenu->setState(MENU_MAIN);
+                break;
+        }
+    }
+}
+
 void Juego::pollEvents()
 {
     while (this->window->pollEvent(this->ev))
@@ -155,100 +202,7 @@ void Juego::pollEvents()
             
             //save manager
             if(this->gameState == STATE_MENU || this->gameState == STATE_PAUSE_MENU) {
-                if(this->ev.key.code == sf::Keyboard::W || this->ev.key.code == sf::Keyboard::Up) {
-                    this->mainMenu->moveUp();
-                }
-                if(this->ev.key.code == sf::Keyboard::S || this->ev.key.code == sf::Keyboard::Down) {
-                    this->mainMenu->moveDown();
-                }
-                if(this->ev.key.code == sf::Keyboard::Enter) {
-                    int selected = this->mainMenu->getPressedItem();
-                    MenuState mState = this->mainMenu->getState();
-                    
-                    if(mState == MENU_MAIN) {
-                        switch(selected) {
-                            case NEW_GAME:
-                                this->gameState = STATE_PLAYING;
-                                break;
-                            case LOAD_GAME:
-                                this->mainMenu->setState(MENU_LOAD);
-                                break;
-                            case OPTIONS:
-                                this->mainMenu->setState(MENU_OPTIONS);
-                                break;
-                            case EXIT:
-                                this->window->close();
-                                break;
-                        }
-                    }
-                    else if(mState == MENU_LOAD) {
-                        switch(selected) {
-                            case 0: // Load Game 1
-                                this->loadGame(1);
-                                this->gameState = STATE_PLAYING;
-                                break;
-                            case 1: // Load Game 2
-                                this->loadGame(2);
-                                this->gameState = STATE_PLAYING;
-                                break;
-                            case 2: // Load Game 3
-                                this->loadGame(3);
-                                this->gameState = STATE_PLAYING;
-                                break;
-                            case 3: // Back
-                                this->mainMenu->setState(MENU_MAIN);
-                                break;
-                        }
-                    }
-                    else if(mState == MENU_SAVE) {
-                        switch(selected) {
-                            case SAVE_GAME_1:
-                                this->saveGame(1);
-                                this->gameState = STATE_PLAYING;
-                                break;
-                            case SAVE_GAME_2:
-                                this->saveGame(2);
-                                this->gameState = STATE_PLAYING;
-                                break;
-                            case SAVE_GAME_3:
-                                this->saveGame(3);
-                                this->gameState = STATE_PLAYING;
-                                break;
-                            case BACK:
-                                this->gameState = STATE_PLAYING;
-                                break;
-                        }
-                    }
-                    else if(mState == MENU_OPTIONS) {
-                        switch(selected) {
-                            case RES_DEF:
-                                this->window->setSize(sf::Vector2u(800, 600)); 
-                                SaveManager::saveConfig(800, 600, false);
-                                break;
-                            case RES_1024:
-                                this->window->setSize(sf::Vector2u(1024, 768)); 
-                                SaveManager::saveConfig(1024, 768, false);
-                                break;
-                            case FULLSCREEN:
-                                this->window->create(sf::VideoMode::getDesktopMode(), "The Fallen Knight", sf::Style::Fullscreen);
-                                SaveManager::saveConfig(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height, true);
-                                break;
-                            case BACK:
-                                this->mainMenu->setState(MENU_MAIN);
-                                break;
-                        }
-                        /*
-                        // Handle other options (res, fullscreen)
-                        if(selected == 0) { 
-                            this->window->setSize(sf::Vector2u(800, 600)); 
-                            SaveManager::saveConfig(800, 600, false);
-                        }
-                        if(selected == 1) { 
-                            this->window->setSize(sf::Vector2u(1024, 768)); 
-                            SaveManager::saveConfig(1024, 768, false);
-                        }*/
-                    }
-                }
+                this->handleMenuInput(this->ev.key.code);
             }
             break;
         }
