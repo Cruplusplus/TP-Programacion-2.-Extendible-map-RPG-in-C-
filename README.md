@@ -26,7 +26,7 @@
 
 | Acción                            | Tecla                                     |
 | :-------------------------------- | :---------------------------------------- |
-| **Moverse**                       | `W` `A` `S` `D` o `Flechas Direccionales` |
+| **Moverse**                       | `W` `A` `S` `D`                           |
 | **Atacar**                        | `K`                                       |
 | **Defender**                      | `L`                                       |
 | **Menú de Pausa / Guardar Slot**  | `F5`                                      |
