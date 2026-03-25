@@ -28,6 +28,13 @@ Jugador::Jugador(const float x, const float y)
 
   this->facingDirection = 0;
 
+  this->keybinds["UP"] = sf::Keyboard::W;
+  this->keybinds["DOWN"] = sf::Keyboard::S;
+  this->keybinds["LEFT"] = sf::Keyboard::A;
+  this->keybinds["RIGHT"] = sf::Keyboard::D;
+  this->keybinds["DASH"] = sf::Keyboard::Space;
+  this->keybinds["ATTACK"] = sf::Keyboard::K;
+
   this->setPosition(x, y);
 }
 
@@ -99,11 +106,6 @@ void Jugador::updateMovement() {
     return;
   }
 
-  this->velocidadVector.x = 0.f;
-  this->velocidadVector.y = 0.f;
-
-  this->animState = PLAYER_ANIMATION_STATES::IDLE;
-
   // Dash Logic
   if (this->isDashing) {
     if (this->dashTimer.getElapsedTime().asSeconds() < 0.2f) {
@@ -115,51 +117,65 @@ void Jugador::updateMovement() {
   }
 
   // Active Items Input
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && hasItem(ITEM_DASH)) {
-    if (this->dashTimer.getElapsedTime().asSeconds() > 7.0f) {
+  if (sf::Keyboard::isKeyPressed(this->keybinds["DASH"])) {
+    if (this->dashTimer.getElapsedTime().asSeconds() > 0.5f) {
       this->isDashing = true;
       this->dashTimer.restart();
 
-      this->dashDir = sf::Vector2f(1.f, 0.f);
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        this->dashDir = sf::Vector2f(-1.f, 0.f);
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        this->dashDir = sf::Vector2f(0.f, -1.f);
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        this->dashDir = sf::Vector2f(0.f, 1.f);
+      this->dashDir = sf::Vector2f(0.f, 0.f);
+      if (sf::Keyboard::isKeyPressed(this->keybinds["LEFT"]))  this->dashDir.x -= 1.f;
+      if (sf::Keyboard::isKeyPressed(this->keybinds["RIGHT"])) this->dashDir.x += 1.f;
+      if (sf::Keyboard::isKeyPressed(this->keybinds["UP"]))    this->dashDir.y -= 1.f;
+      if (sf::Keyboard::isKeyPressed(this->keybinds["DOWN"]))  this->dashDir.y += 1.f;
+
+      if (this->dashDir.x == 0.f && this->dashDir.y == 0.f) {
+        if (this->facingDirection == DIRECTION::RIGHT) this->dashDir.x = 1.f;
+        else if (this->facingDirection == DIRECTION::LEFT) this->dashDir.x = -1.f;
+        else if (this->facingDirection == DIRECTION::UP) this->dashDir.y = -1.f;
+        else if (this->facingDirection == DIRECTION::DOWN) this->dashDir.y = 1.f;
+      } else {
+        float length = std::sqrt(this->dashDir.x * this->dashDir.x + this->dashDir.y * this->dashDir.y);
+        this->dashDir.x /= length;
+        this->dashDir.y /= length;
+      }
     }
   }
 
-  if (!sf::Keyboard::isKeyPressed(sf::Keyboard::A) &&
-      !sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
-      !sf::Keyboard::isKeyPressed(sf::Keyboard::W) &&
-      !sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-    this->velocidadVector.x = 0.f;
-    this->velocidadVector.y = 0.f;
-    this->animState = PLAYER_ANIMATION_STATES::IDLE;
-  }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-    this->velocidadVector.x = -1.f;
-    this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
-    this->facingDirection = 1;
-  }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-    this->velocidadVector.x = 1.f;
-    this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
-    this->facingDirection = 2;
-  }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-    this->velocidadVector.y = -1.f;
-    this->animState = PLAYER_ANIMATION_STATES::MOVING_UP;
-    this->facingDirection = 3;
-  }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-    this->velocidadVector.y = 1.f;
-    this->animState = PLAYER_ANIMATION_STATES::MOVING_DOWN;
-    this->facingDirection = 0;
+  this->velocidadVector.x = 0.f;
+  this->velocidadVector.y = 0.f;
+
+  if (sf::Keyboard::isKeyPressed(this->keybinds["LEFT"]))  this->velocidadVector.x -= 1.f;
+  if (sf::Keyboard::isKeyPressed(this->keybinds["RIGHT"])) this->velocidadVector.x += 1.f;
+  if (sf::Keyboard::isKeyPressed(this->keybinds["UP"]))    this->velocidadVector.y -= 1.f;
+  if (sf::Keyboard::isKeyPressed(this->keybinds["DOWN"]))  this->velocidadVector.y += 1.f;
+
+  if (this->velocidadVector.x != 0.f || this->velocidadVector.y != 0.f) {
+      float length = std::sqrt(std::pow(this->velocidadVector.x, 2) + std::pow(this->velocidadVector.y, 2));
+      this->velocidadVector.x /= length;
+      this->velocidadVector.y /= length;
+
+      if (std::abs(this->velocidadVector.x) > std::abs(this->velocidadVector.y)) {
+          if (this->velocidadVector.x > 0) {
+              this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
+              this->facingDirection = DIRECTION::RIGHT;
+          } else {
+              this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
+              this->facingDirection = DIRECTION::LEFT;
+          }
+      } else {
+          if (this->velocidadVector.y > 0) {
+              this->animState = PLAYER_ANIMATION_STATES::MOVING_DOWN;
+              this->facingDirection = DIRECTION::DOWN;
+          } else {
+              this->animState = PLAYER_ANIMATION_STATES::MOVING_UP;
+              this->facingDirection = DIRECTION::UP;
+          }
+      }
+  } else {
+      this->animState = PLAYER_ANIMATION_STATES::IDLE;
   }
 
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
+  if (sf::Keyboard::isKeyPressed(this->keybinds["ATTACK"])) {
     if (hasItem(ITEM_KAMIKAZE) || hasItem(ITEM_ARCOMIKAZE)) {
       if (this->kamikazeTimer.getElapsedTime().asSeconds() > 7.0f) {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;

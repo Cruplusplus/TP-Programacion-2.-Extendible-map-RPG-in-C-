@@ -1,6 +1,8 @@
 #pragma once
 #include "Character.h"
 #include "Items.h"
+#include <map>
+#include <string>
 
 enum DIRECTION {DOWN = 0, LEFT, RIGHT, UP};
 
@@ -25,6 +27,8 @@ private:
     std::vector<Character*> hitEnemies;
 
 public:
+    std::map<std::string, sf::Keyboard::Key> keybinds;
+
     Jugador(const float x, const float y);
 
     //setters

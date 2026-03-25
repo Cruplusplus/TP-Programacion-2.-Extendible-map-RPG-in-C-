@@ -8,6 +8,7 @@ void Juego::initVariables()
 //Logica del juego
     finalizarJuego = false;
     vida = 5;
+    this->gameState = STATE_MENU;
 }
 
 void Juego::initWindow()
@@ -61,10 +62,19 @@ void Juego::initHabitacion()
     this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
 }
 
+void Juego::initFonts()
+{
+    // Carga fuente por defecto del sistema
+    this->font.loadFromFile("C:/Windows/Fonts/arial.ttf");
+}
+
 Juego::Juego()
 {
     this->initVariables();
     this->initWindow();
+    this->initFonts();
+    this->hud = new HUD();
+    this->mainMenu = new MainMenu(static_cast<float>(this->videoMode.width), static_cast<float>(this->videoMode.height));
     this->initInput();
     this->initTileSheet();
     this->initPersonajes();
@@ -77,6 +87,8 @@ Juego::~Juego()
     delete this->jugador;
     delete this->habitacionActual;
     delete this->dungeonGen;
+    delete this->hud;
+    delete this->mainMenu;
 }
 
 //Accesors
@@ -128,10 +140,19 @@ void Juego::pollEvents()
         case sf::Event::KeyPressed:
             if(this->ev.key.code == sf::Keyboard::Escape)
                 this->window->close();
+            
+            if (this->gameState == STATE_MENU || this->gameState == STATE_PAUSE_MENU) {
+                this->handleMenuInput(this->ev.key.code);
+            }
+            else if(this->gameState == STATE_PLAYING && this->ev.key.code == sf::Keyboard::F5){ 
+                this->gameState = STATE_PAUSE_MENU;
+                this->mainMenu->setState(MENU_MAIN);
+            }
+
             break;
         }
-
-        if(this->ev.type == sf::Event::KeyReleased &&
+        
+        if(this->gameState == STATE_PLAYING && this->ev.type == sf::Event::KeyReleased &&
                 (this->ev.key.code == sf::Keyboard::W ||
                  this->ev.key.code == sf::Keyboard::A ||
                  this->ev.key.code == sf::Keyboard::S ||
@@ -264,16 +285,13 @@ void Juego::update()
 {
     this->pollEvents();
 
-    if (!this->finalizarJuego)
+    if (!this->finalizarJuego && this->gameState == STATE_PLAYING)
     {
         this->updateInput();
-
         this->updatePersonajes();
-
         this->habitacionActual->update(this->jugador);
-
         this->updateCollision();
-
+        this->hud->update(this->jugador);
     }
 
     //cuando termina el juego
@@ -286,30 +304,112 @@ void Juego::render()
 {
     this->window->clear();
 
-    this->habitacionActual->renderFondo(*this->window);
+    if (this->gameState == STATE_MENU) {
+        this->mainMenu->draw(*this->window);
+    } else if (this->gameState == STATE_PLAYING || this->gameState == STATE_PAUSE_MENU) {
+        this->habitacionActual->renderFondo(*this->window);
 
-    //todos en el vector
-    std::vector<Character*> personajesParaRender;
-    personajesParaRender.push_back(this->jugador);
+        //todos en el vector
+        std::vector<Character*> personajesParaRender;
+        personajesParaRender.push_back(this->jugador);
 
-    for (auto* enemigo : this->habitacionActual->getEnemigos())
-    {
-        personajesParaRender.push_back(enemigo);
-    }
+        for (auto* enemigo : this->habitacionActual->getEnemigos())
+        {
+            personajesParaRender.push_back(enemigo);
+        }
 
-    //orden
-    std::sort(personajesParaRender.begin(), personajesParaRender.end(),
-        [](Character* a, Character* b) {
-            return a->getPosition().y < b->getPosition().y;
-        });
+        //orden
+        std::sort(personajesParaRender.begin(), personajesParaRender.end(),
+            [](Character* a, Character* b) {
+                return a->getPosition().y < b->getPosition().y;
+            });
 
-    //draw
-    for (auto* personaje : personajesParaRender)
-    {
-        personaje->render(*this->window);
+        //draw
+        for (auto* personaje : personajesParaRender)
+        {
+            personaje->render(*this->window);
+            //personaje->renderHitbox(*this->window);
+        }
 
-        //personaje->renderHitbox(*this->window);
+        this->hud->render(*this->window);
+
+        if (this->gameState == STATE_PAUSE_MENU) {
+            // Draw a translucent overlay? (optional, could be added later)
+            this->mainMenu->draw(*this->window);
+        }
     }
 
     this->window->display();
+}
+
+int Juego::getPuntos() {
+    return 0; // Temp placeholder
+}
+
+void Juego::handleMenuInput(sf::Keyboard::Key key) {
+    if (key == sf::Keyboard::Up || key == sf::Keyboard::W) {
+        this->mainMenu->moveUp();
+    } else if (key == sf::Keyboard::Down || key == sf::Keyboard::S) {
+        this->mainMenu->moveDown();
+    } else if (key == sf::Keyboard::Enter || key == sf::Keyboard::Space) {
+        int pressed = this->mainMenu->getPressedItem();
+        MenuState menustate = this->mainMenu->getState();
+
+        if (menustate == MENU_MAIN) {
+            if (pressed == 0) this->gameState = STATE_PLAYING;
+            else if (pressed == 1) this->mainMenu->setState(MENU_LOAD);
+            else if (pressed == 2) this->mainMenu->setState(MENU_SAVE);
+            else if (pressed == 3) this->window->close();
+        } else if (menustate == MENU_LOAD) {
+            if (pressed == 3) this->mainMenu->setState(MENU_MAIN);
+            else this->loadGame(pressed + 1);
+        } else if (menustate == MENU_SAVE) {
+            if (pressed == 3) {
+                 if (this->gameState == STATE_PAUSE_MENU) this->gameState = STATE_PLAYING;
+                 else this->mainMenu->setState(MENU_MAIN);
+            }
+            else {
+                 this->saveGame(pressed + 1);
+                 if (this->gameState == STATE_PAUSE_MENU) this->gameState = STATE_PLAYING;
+            }
+        } else if (menustate == MENU_SAVE) {
+            if (pressed == 3) this->mainMenu->setState(MENU_MAIN);
+        }
+    }
+}
+
+void Juego::saveGame(int slot) {
+    GameData gd;
+    gd.hp = this->jugador->getHp();
+    gd.maxHp = this->jugador->getMaxHp();
+    gd.coins = this->jugador->getCoins();
+    gd.keys = this->jugador->getKeys();
+    gd.seed = this->seed;
+    gd.currentRoomX = this->currentRoomCoords.x;
+    gd.currentRoomY = this->currentRoomCoords.y;
+    gd.inventory = this->jugador->getInventoryAsInt();
+    SaveManager::saveGame(slot, gd);
+}
+
+void Juego::loadGame(int slot) {
+    if (SaveManager::saveExists(slot)) {
+        GameData gd = SaveManager::loadGame(slot);
+        this->jugador->setStats(gd.hp, gd.maxHp, gd.coins, gd.keys, gd.inventory);
+        this->seed = gd.seed;
+        this->currentRoomCoords.x = gd.currentRoomX;
+        this->currentRoomCoords.y = gd.currentRoomY;
+        
+        if (this->dungeonGen != nullptr) delete this->dungeonGen;
+        this->dungeonGen = new DungeonGenerator(10, 10, 10);
+        this->dungeonGen->generate(this->seed);
+
+        for (auto& pair : this->roomsMap) {
+            delete pair.second;
+        }
+        this->roomsMap.clear();
+
+        this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+        this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
+        this->gameState = STATE_PLAYING;
+    }
 }
