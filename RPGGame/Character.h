@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Game_MapTiles.h"
 
-enum PLAYER_ANIMATION_STATES {IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN, ATTACK};
+enum PLAYER_ANIMATION_STATES {IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN, ATTACK, BLOCK};
 
 class Character : public Entity {
 protected:

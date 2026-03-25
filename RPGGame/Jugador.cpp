@@ -34,6 +34,7 @@ Jugador::Jugador(const float x, const float y)
   this->keybinds["RIGHT"] = sf::Keyboard::D;
   this->keybinds["DASH"] = sf::Keyboard::Space;
   this->keybinds["ATTACK"] = sf::Keyboard::K;
+  this->keybinds["BLOCK"] = sf::Keyboard::L;
 
   this->setPosition(x, y);
 }
@@ -101,6 +102,12 @@ void Jugador::addPickup(PickupType pickup) {
 void Jugador::updateMovement() {
   // Lockea el movimiento durante el ataque
   if (this->animState == PLAYER_ANIMATION_STATES::ATTACK) {
+    this->velocidadVector.x = 0.f;
+    this->velocidadVector.y = 0.f;
+    return;
+  }
+  
+  if (this->animState == PLAYER_ANIMATION_STATES::BLOCK) {
     this->velocidadVector.x = 0.f;
     this->velocidadVector.y = 0.f;
     return;
