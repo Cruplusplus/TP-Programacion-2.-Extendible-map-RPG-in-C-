@@ -4558,7 +4558,7 @@
 	"Jugador.h"
 	"Proyectil.h"
 
-1773929645 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
+1774443366 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
 	"Character.h"
 	"Items.h"
 
@@ -4573,10 +4573,10 @@
 1773832131 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\entity.cpp
 	"Entity.h"
 
-1773931287 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
+1774443366 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
 	"Game_Class.h"
 
-1773841497 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.h
+1774443366 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.h
 	"Game_MapTiles.h"
 	"Jugador.h"
 	"Habitacion.h"
@@ -4586,7 +4586,7 @@
 	"MainMenu.h"
 	<algorithm>
 
-1773832131 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.h
+1774443366 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.h
 	"Game_MapTiles.h"
 	"Enemigos.h"
 	"DungeonGenerator.h"
@@ -4595,7 +4595,7 @@
 	<vector>
 	<SFML/Graphics.hpp>
 
-1773931150 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\savemanager.h
+1774443366 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\savemanager.h
 	"json.hpp"
 	<fstream>
 	<string>
@@ -4808,7 +4808,7 @@
 	<SFML/Graphics.hpp>
 	"Jugador.h"
 
-1773932037 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.h
+1774443366 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.h
 	<SFML/Graphics.hpp>
 	<vector>
 	<string>
@@ -4820,7 +4820,7 @@
 	"GameConfig.h"
 	"SaveManager.h"
 
-1773931631 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.cpp
+1774443366 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.cpp
 	"Habitacion.h"
 	"Enemigos.h"
 	"Jugador.h"
@@ -4837,16 +4837,16 @@
 1773930610 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\items.cpp
 	"Items.h"
 
-1773929645 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
+1774443366 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
 	"Jugador.h"
 	<cmath>
 
-1773930487 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\main.cpp
+1774442749 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\main.cpp
 	<iostream>
 	"Game_Class.h"
 	"json.hpp"
 
-1773931034 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.cpp
+1774443366 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.cpp
 	"MainMenu.h"
 	<iostream>
 

@@ -50,7 +50,15 @@ void Juego::initPersonajes()
 
 void Juego::initHabitacion()
 {
-    this->habitacionActual = new Habitacion(&this->tileSheet);
+    this->seed = static_cast<unsigned int>(time(NULL));
+    this->dungeonGen = new DungeonGenerator(10, 10, 10);
+    this->dungeonGen->generate(this->seed);
+
+    this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;
+    this->currentRoomCoords.y = this->dungeonGen->getHeight() / 2;
+
+    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+    this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
 }
 
 Juego::Juego()
@@ -68,6 +76,7 @@ Juego::~Juego()
     delete this->window;
     delete this->jugador;
     delete this->habitacionActual;
+    delete this->dungeonGen;
 }
 
 //Accesors
@@ -280,7 +289,7 @@ void Juego::render()
     this->habitacionActual->renderFondo(*this->window);
 
     //todos en el vector
-    std::vector<Personajes*> personajesParaRender;
+    std::vector<Character*> personajesParaRender;
     personajesParaRender.push_back(this->jugador);
 
     for (auto* enemigo : this->habitacionActual->getEnemigos())
@@ -290,7 +299,7 @@ void Juego::render()
 
     //orden
     std::sort(personajesParaRender.begin(), personajesParaRender.end(),
-        [](Personajes* a, Personajes* b) {
+        [](Character* a, Character* b) {
             return a->getPosition().y < b->getPosition().y;
         });
 
