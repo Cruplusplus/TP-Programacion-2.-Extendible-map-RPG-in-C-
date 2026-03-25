@@ -18,6 +18,7 @@ private:
 
     // Cooldowns
     sf::Clock dashTimer;
+    sf::Clock dashCooldown;
     sf::Clock kamikazeTimer;
     bool isDashing;
     sf::Vector2f dashDir;

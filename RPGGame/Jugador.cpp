@@ -112,14 +112,16 @@ void Jugador::updateMovement() {
       this->velocidadVector = this->dashDir * 5.0f; // Velocidad del dash
       return; // Salta el movimiento normal
     } else {
+      if(this->dashCooldown.getElapsedTime().asSeconds() > 2.f)
       this->isDashing = false;
     }
   }
 
   // Active Items Input
-  if (sf::Keyboard::isKeyPressed(this->keybinds["DASH"])) {
+  if (sf::Keyboard::isKeyPressed(this->keybinds["DASH"]) && !isDashing) {
     if (this->dashTimer.getElapsedTime().asSeconds() > 0.5f) {
       this->isDashing = true;
+      this->dashCooldown.restart();
       this->dashTimer.restart();
 
       this->dashDir = sf::Vector2f(0.f, 0.f);

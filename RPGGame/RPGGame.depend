@@ -4558,7 +4558,7 @@
 	"Jugador.h"
 	"Proyectil.h"
 
-1774446470 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
+1774448869 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
 	"Character.h"
 	"Items.h"
 	<map>
@@ -4575,7 +4575,7 @@
 1773832131 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\entity.cpp
 	"Entity.h"
 
-1774447608 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
+1774447980 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
 	"Game_Class.h"
 
 1774443366 c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.h
@@ -4839,7 +4839,7 @@
 1773930610 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\items.cpp
 	"Items.h"
 
-1774446510 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
+1774449019 source:c:\users\sebastian\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
 	"Jugador.h"
 	<cmath>
 
