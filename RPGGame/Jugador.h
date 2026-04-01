@@ -20,7 +20,10 @@ private:
     sf::Clock dashTimer;
     sf::Clock dashCooldown;
     sf::Clock kamikazeTimer;
+    sf::Clock blockDuration;
+    sf::Clock blockCooldown;
     bool isDashing;
+    bool isBlocking;
     sf::Vector2f dashDir;
     sf::RectangleShape debugHb;
     // Attack Logic

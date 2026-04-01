@@ -27,6 +27,7 @@ Jugador::Jugador(const float x, const float y)
   this->velocidad = 2.f;
 
   this->facingDirection = 0;
+  this->isBlocking = false;
 
   this->keybinds["UP"] = sf::Keyboard::W;
   this->keybinds["DOWN"] = sf::Keyboard::S;
@@ -48,7 +49,11 @@ const bool Jugador::getAnimSwitch() {
   return animSwitch;
 }
 
-void Jugador::recibirDanio(int danio) { this->hp -= danio; }
+void Jugador::recibirDanio(int danio) { 
+    if (!this->isBlocking) {
+        this->hp -= danio;
+    }
+}
 int Jugador::getHp() const { return this->hp; }
 
 void Jugador::resetAnimTimer() {
@@ -107,17 +112,36 @@ void Jugador::updateMovement() {
     return;
   }
   
-  if (this->animState == PLAYER_ANIMATION_STATES::BLOCK) {
-    this->velocidadVector.x = 0.f;
-    this->velocidadVector.y = 0.f;
-    return;
+  // Logica de Bloqueo
+  if (this->isBlocking) {
+      if (this->blockDuration.getElapsedTime().asSeconds() < 0.5f) {
+          this->animState = PLAYER_ANIMATION_STATES::BLOCK;
+          this->velocidadVector.x = 0.f;
+          this->velocidadVector.y = 0.f;
+          this->sprite.setColor(sf::Color(100, 150, 255, 230));
+          return;
+      } else {
+          this->isBlocking = false;
+          this->sprite.setColor(sf::Color(255, 255, 255, 255));
+          this->animState = PLAYER_ANIMATION_STATES::IDLE;
+      }
+  } else {
+      if (sf::Keyboard::isKeyPressed(this->keybinds["BLOCK"]) && !this->isDashing) {
+          if (this->blockCooldown.getElapsedTime().asSeconds() > 3.0f) {
+              this->isBlocking = true;
+              this->blockDuration.restart();
+              this->blockCooldown.restart();
+              this->animState = PLAYER_ANIMATION_STATES::BLOCK;
+              return;
+          }
+      }
   }
 
   // Dash Logic
   if (this->isDashing) {
     if (this->dashTimer.getElapsedTime().asSeconds() < 0.2f) {
-      this->velocidadVector = this->dashDir * 5.0f; // Velocidad del dash
-      return; // Salta el movimiento normal
+      this->velocidadVector = this->dashDir * 5.0f;
+      return;
     } else {
       if(this->dashCooldown.getElapsedTime().asSeconds() > 2.f)
       this->isDashing = false;
