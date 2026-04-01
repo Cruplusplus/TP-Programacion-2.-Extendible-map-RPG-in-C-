@@ -398,7 +398,7 @@ void Juego::saveGame(int slot) {
     gd.hp = this->jugador->getHp();
     gd.maxHp = this->jugador->getMaxHp();
     gd.coins = this->jugador->getCoins();
-    gd.keys = this->jugador->getKeys();
+    gd.statsUp = this->jugador->getStatsUp();
     gd.seed = this->seed;
     gd.currentRoomX = this->currentRoomCoords.x;
     gd.currentRoomY = this->currentRoomCoords.y;
@@ -409,7 +409,7 @@ void Juego::saveGame(int slot) {
 void Juego::loadGame(int slot) {
     if (SaveManager::saveExists(slot)) {
         GameData gd = SaveManager::loadGame(slot);
-        this->jugador->setStats(gd.hp, gd.maxHp, gd.coins, gd.keys, gd.inventory);
+        this->jugador->setStats(gd.hp, gd.maxHp, gd.coins, gd.statsUp, gd.inventory);
         this->seed = gd.seed;
         this->currentRoomCoords.x = gd.currentRoomX;
         this->currentRoomCoords.y = gd.currentRoomY;

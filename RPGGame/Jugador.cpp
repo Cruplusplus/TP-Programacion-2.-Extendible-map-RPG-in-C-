@@ -6,7 +6,7 @@
 void Jugador::initInventory() {
   this->inventory = std::vector<ItemType>();
   this->coins = 0;
-  this->keys = 0;
+  this->statsUp = 0; 
   this->maxHp = 10;
 }
 
@@ -24,7 +24,7 @@ Jugador::Jugador(const float x, const float y)
   this->initInventory();
 
   this->initAnimations();
-  this->velocidad = 2.f;
+  this->velocidad = 3.f;
 
   this->facingDirection = 0;
   this->isBlocking = false;
@@ -96,8 +96,31 @@ void Jugador::addPickup(PickupType pickup) {
   case PICKUP_COIN:
     coins++;
     break;
-  case PICKUP_KEY:
-    keys++;
+  case PICKUP_STAT_UP:
+    statsUp++;
+
+    //beta random stat up
+    int randomNum = rand()%3+1;
+    switch(randomNum){
+      case 1:
+        this->dmg = this->dmg+1;
+        std::cout << "DMG up" << std::endl;
+        break;
+      case 2:
+        this->hp = this->hp+1;
+        std::cout << "HP up" << std::endl;
+        break;
+      case 3:
+        this->velocidad = this->velocidad+1;
+        std::cout << "VEL up" << std::endl;
+        break;
+      default:
+        std::cout << "error at Jugador.cpp Jugador::addPickup()";
+        break;
+    }
+
+    std::cout << this->getHp() << std::endl;
+
     break;
   }
 }
@@ -387,16 +410,16 @@ std::vector<int> Jugador::getInventoryAsInt() const {
 }
 
 int Jugador::getCoins() const { return this->coins; }
-int Jugador::getKeys() const { return this->keys; }
+int Jugador::getStatsUp() const { return this->statsUp; }
 int Jugador::getDmg() const { return this->dmg; }
 int Jugador::getMaxHp() const { return this->maxHp; }
 
-void Jugador::setStats(int hp, int maxHp, int coins, int keys,
+void Jugador::setStats(int hp, int maxHp, int coins, int statsUp,
                        const std::vector<int> &inv) {
   this->hp = hp;
   this->maxHp = maxHp;
   this->coins = coins;
-  this->keys = keys;
+  this->statsUp = statsUp;
   this->inventory.clear();
   for (int i : inv)
     this->inventory.push_back((ItemType)i);

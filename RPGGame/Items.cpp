@@ -16,7 +16,7 @@ void Pickup::render(sf::RenderTarget& target) {
         case PICKUP_HEART: shape.setFillColor(sf::Color::Red); break;
         case PICKUP_SPECTRAL_HEART: shape.setFillColor(sf::Color::Blue); break;
         case PICKUP_COIN: shape.setFillColor(sf::Color::Yellow); break;
-        case PICKUP_KEY: shape.setFillColor(sf::Color(192, 192, 192)); break; // Silver
+        case PICKUP_STAT_UP: shape.setFillColor(sf::Color(192, 192, 192)); break;
     }
     
     target.draw(shape);

@@ -5,7 +5,7 @@ void SaveManager::saveGame(int slot, const GameData& data) {
     j["hp"] = data.hp;
     j["maxHp"] = data.maxHp;
     j["coins"] = data.coins;
-    j["keys"] = data.keys;
+    j["statsUp"] = data.statsUp;
     j["seed"] = data.seed;
     j["currentRoomX"] = data.currentRoomX;
     j["currentRoomY"] = data.currentRoomY;
@@ -34,7 +34,7 @@ GameData SaveManager::loadGame(int slot) {
         data.hp = j.value("hp", 10);
         data.maxHp = j.value("maxHp", 10);
         data.coins = j.value("coins", 0);
-        data.keys = j.value("keys", 0);
+        data.statsUp = j.value("statsUp", 0);
         data.seed = j.value("seed", 0);
         data.currentRoomX = j.value("currentRoomX", 0);
         data.currentRoomY = j.value("currentRoomY", 0);
@@ -50,7 +50,7 @@ GameData SaveManager::loadGame(int slot) {
         data.hp = 10;
         data.maxHp = 10;
         data.coins = 0;
-        data.keys = 0;
+        data.statsUp = 0;
         data.seed = 0;
         data.currentRoomX = 0;
         data.currentRoomY = 0;

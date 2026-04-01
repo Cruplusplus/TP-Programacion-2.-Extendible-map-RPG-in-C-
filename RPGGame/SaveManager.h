@@ -10,7 +10,7 @@ struct GameData {
     int hp;
     int maxHp;
     int coins;
-    int keys;
+    int statsUp;
     unsigned int seed;
     int currentRoomX;
     int currentRoomY;

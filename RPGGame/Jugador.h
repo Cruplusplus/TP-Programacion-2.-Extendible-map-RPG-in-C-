@@ -11,7 +11,7 @@ class Jugador : public Character
 private:
     std::vector<ItemType> inventory;
     int coins;
-    int keys;
+    int statsUp;
     int maxHp;
 
     void initInventory();
@@ -60,11 +60,11 @@ public:
 
     std::vector<int> getInventoryAsInt() const;
     int getCoins() const;
-    int getKeys() const;
+    int getStatsUp() const;
     int getDmg() const;
     int getMaxHp() const;
 
-    void setStats(int hp, int maxHp, int coins, int keys, const std::vector<int>& inv);
+    void setStats(int hp, int maxHp, int coins, int statsUp, const std::vector<int>& inv);
     
     void updateAnimations();
     void update() override;

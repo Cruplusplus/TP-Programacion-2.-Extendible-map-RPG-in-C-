@@ -35,7 +35,6 @@ HUD::HUD() {
 void HUD::update(Jugador* jugador) {
     this->hpText.setString("HP: " + std::to_string(jugador->getHp()) + "/" + std::to_string(jugador->getMaxHp()));
     this->coinText.setString("Coins: " + std::to_string(jugador->getCoins()));
-    this->keyText.setString("Keys: " + std::to_string(jugador->getKeys()));
     
     std::string items = "Items: ";
     if(jugador->hasItem(ITEM_DASH)) items += "Dash ";

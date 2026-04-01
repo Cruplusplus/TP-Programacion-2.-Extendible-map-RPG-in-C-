@@ -147,7 +147,7 @@ void Habitacion::initEnemigos() {
   if (this->roomData.type == TREASURE) {
     // Spawn items (representados como pickup por ahora)
     this->pickups.push_back(new Pickup(PICKUP_COIN, 400.f, 300.f));
-    this->pickups.push_back(new Pickup(PICKUP_KEY, 450.f, 300.f));
+    this->pickups.push_back(new Pickup(PICKUP_STAT_UP, 450.f, 300.f));
     this->pickups.push_back(new Pickup(PICKUP_SPECTRAL_HEART, 350.f, 300.f));
     return;
   }
@@ -176,7 +176,7 @@ void Habitacion::update(Jugador *jugador) {
   {
     int xrand = rand() % 200 + 300;
     int yrand = rand() % 200 + 200;
-    this->pickups.push_back(new Pickup(PICKUP_HEART, xrand, yrand));
+    this->pickups.push_back(new Pickup(PICKUP_STAT_UP, xrand, yrand));
   }
 
   int statuesCount = 0;
