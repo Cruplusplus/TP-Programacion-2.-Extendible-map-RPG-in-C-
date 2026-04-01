@@ -66,6 +66,16 @@ void Juego::initFonts()
 {
     // Carga fuente por defecto del sistema
     this->font.loadFromFile("C:/Windows/Fonts/arial.ttf");
+    
+    this->gameOverText.setFont(this->font);
+    this->gameOverText.setCharacterSize(60);
+    this->gameOverText.setFillColor(sf::Color::Red);
+    this->gameOverText.setString("GAME OVER\nPress R to Restart\nPress Esc to Exit");
+    
+    // Centrar
+    sf::FloatRect textRect = this->gameOverText.getLocalBounds();
+    this->gameOverText.setOrigin(textRect.left + textRect.width/2.0f, textRect.top  + textRect.height/2.0f);
+    this->gameOverText.setPosition(this->videoMode.width/2.0f, this->videoMode.height/2.0f);
 }
 
 Juego::Juego()
@@ -147,6 +157,9 @@ void Juego::pollEvents()
             else if(this->gameState == STATE_PLAYING && this->ev.key.code == sf::Keyboard::F5){ 
                 this->gameState = STATE_PAUSE_MENU;
                 this->mainMenu->setState(MENU_MAIN);
+            }
+            else if(this->gameState == STATE_GAMEOVER && this->ev.key.code == sf::Keyboard::R){
+                this->resetGame();
             }
 
             break;
@@ -296,7 +309,7 @@ void Juego::update()
 
     //cuando termina el juego
     if(this-> jugador->getHp() <= 0)
-        this->finalizarJuego = true;
+        this->gameState = STATE_GAMEOVER;
 
 }
 
@@ -337,6 +350,8 @@ void Juego::render()
             // Draw a translucent overlay? (optional, could be added later)
             this->mainMenu->draw(*this->window);
         }
+    } else if (this->gameState == STATE_GAMEOVER) {
+        this->window->draw(this->gameOverText);
     }
 
     this->window->display();
@@ -412,4 +427,27 @@ void Juego::loadGame(int slot) {
         this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         this->gameState = STATE_PLAYING;
     }
+}
+
+void Juego::resetGame() {
+    if (this->jugador != nullptr) {
+        delete this->jugador;
+        this->jugador = nullptr;
+    }
+    
+    if (this->dungeonGen != nullptr) {
+        delete this->dungeonGen;
+        this->dungeonGen = nullptr;
+    }
+    
+    for (auto& pair : this->roomsMap) {
+        delete pair.second;
+    }
+    this->roomsMap.clear();
+
+    this->initPersonajes();
+    this->initHabitacion();
+
+    this->gameState = STATE_PLAYING;
+    this->finalizarJuego = false;
 }
