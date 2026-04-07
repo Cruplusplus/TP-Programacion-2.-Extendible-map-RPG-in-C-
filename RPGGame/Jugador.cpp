@@ -107,6 +107,7 @@ void Jugador::addPickup(PickupType pickup) {
         std::cout << "DMG up" << std::endl;
         break;
       case 2:
+        this->maxHp = this->maxHp+1;
         this->hp = this->hp+1;
         std::cout << "HP up" << std::endl;
         break;

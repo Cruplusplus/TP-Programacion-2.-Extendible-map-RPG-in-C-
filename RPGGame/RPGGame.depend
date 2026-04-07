@@ -2000,7 +2000,7 @@
 
 1763035289 ated upstream
 
-1764705384 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.cpp
+1774071541 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.cpp
 	"Enemigos.h"
 	<cmath>
 
@@ -2008,14 +2008,14 @@
 	"Enemigos.h"
 	<cmath>
 
-1764708262 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\enemigos.h
 	"Character.h"
 	"Jugador.h"
 	"Proyectil.h"
 
 1764441180 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_struct_clases.h
 
-1764372686 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_maptiles.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_maptiles.h
 	"GameConfig.h"
 
 1763404688 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\visual_clases.h
@@ -2627,23 +2627,25 @@
 	<SFML/Network/IpAddress.hpp>
 	<vector>
 
-1764441649 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
+1775089362 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.h
 	"Character.h"
 	"Items.h"
+	<map>
+	<string>
 
-1764372686 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_maptiles.cpp
+1774071541 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_maptiles.cpp
 	"Game_MapTiles.h"
 
 1763042119 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_struct_clases.cpp
 	"Game_Struct_Clases.h"
 
-1764704886 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.cpp
+1775089362 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.cpp
 	"Habitacion.h"
 	"Enemigos.h"
 	"Jugador.h"
 	"RoomTemplates.h"
 
-1764704835 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\habitacion.h
 	"Game_MapTiles.h"
 	"Enemigos.h"
 	"DungeonGenerator.h"
@@ -2652,16 +2654,16 @@
 	<vector>
 	<SFML/Graphics.hpp>
 
-1764704214 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
+1775089362 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\jugador.cpp
 	"Jugador.h"
 	<cmath>
 
-1764443907 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\main.cpp
+1774071812 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\main.cpp
 	<iostream>
 	"Game_Class.h"
 	"json.hpp"
 
-1764708786 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.h
+1774071812 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.h
 	"Game_MapTiles.h"
 	"Jugador.h"
 	"Habitacion.h"
@@ -2877,7 +2879,7 @@
 1762370484 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\visual_clases.cpp
 	"Visual_Clases.h"
 
-1764708438 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
+1775089362 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\game_class.cpp
 	"Game_Class.h"
 
 1764364642 source:c:\users\cruz\downloads\ia project made\rpggame\game_maptiles.cpp
@@ -3831,18 +3833,18 @@
 	"GameConfig.h"
 	"SaveManager.h"
 
-1764708231 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\character.cpp
+1774071541 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\character.cpp
 	"Character.h"
 
-1764706437 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\character.h
+1774677979 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\character.h
 	"Entity.h"
 	"Game_MapTiles.h"
 
-1764706403 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\entity.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\entity.h
 	<SFML/Graphics.hpp>
 	<iostream>
 
-1764372686 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\gameconfig.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\gameconfig.h
 	<cstdlib>
 	<ctime>
 	<iostream>
@@ -3854,65 +3856,65 @@
 	<SFML/Audio.hpp>
 	<SFML/Network.hpp>
 
-1764708410 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\dungeongenerator.cpp
+1774071541 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\dungeongenerator.cpp
 	"DungeonGenerator.h"
 
-1764372686 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\dungeongenerator.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\dungeongenerator.h
 	<vector>
 	<stack>
 	<ctime>
 	<cstdlib>
 	<iostream>
 
-1764706405 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\entity.cpp
+1774071541 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\entity.cpp
 	"Entity.h"
 
-1764372686 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\gameconfig.cpp
+1774071541 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\gameconfig.cpp
 	"GameConfig.h"
 	"SaveManager.h"
 
-1764372686 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\savemanager.h
+1775089362 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\savemanager.h
 	"json.hpp"
 	<fstream>
 	<string>
 	<iostream>
 
-1764372686 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\hud.cpp
+1775089362 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\hud.cpp
 	"HUD.h"
 	<iostream>
 
-1764372686 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\hud.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\hud.h
 	<SFML/Graphics.hpp>
 	"Jugador.h"
 
-1764372686 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\items.h
+1775089362 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\items.h
 	<SFML/Graphics.hpp>
 	"Entity.h"
 	<string>
 
-1764372686 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\items.cpp
+1775089362 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\items.cpp
 	"Items.h"
 
-1764708748 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.h
+1774677979 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.h
 	<SFML/Graphics.hpp>
 	<vector>
 	<string>
 
-1764372686 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.cpp
+1774677979 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\mainmenu.cpp
 	"MainMenu.h"
 	<iostream>
 
-1764372686 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\savemanager.cpp
+1775089362 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\savemanager.cpp
 	"SaveManager.h"
 
-1764703922 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\roomtemplates.h
+1775089362 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\roomtemplates.h
 	<vector>
 	<string>
 
-1764706450 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\proyectil.h
+1774071541 c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\proyectil.h
 	"Entity.h"
 
-1764706452 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\proyectil.cpp
+1774071541 source:c:\users\cruz\documents\github\tp-programacion-2.-extendible-map-rpg-in-c-\rpggame\proyectil.cpp
 	"Proyectil.h"
 	<iostream>
 
