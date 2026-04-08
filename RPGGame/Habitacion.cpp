@@ -16,6 +16,12 @@ Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data) {
   this->backgroundSprite.setScale(3.2f, 3.2f);
   this->backgroundSprite.setPosition(5, 15);
 
+  this->trapdoorShape.setSize(sf::Vector2f(50.f, 50.f));
+  this->trapdoorShape.setFillColor(sf::Color(20, 20, 20)); // Escotilla Oscura
+  this->trapdoorShape.setOutlineColor(sf::Color(100, 100, 100)); // Borde
+  this->trapdoorShape.setOutlineThickness(3.f);
+  this->trapdoorShape.setPosition(375.f, 275.f); // Centro del mapa 800x600
+
   this->initTileMap();
   this->initEnemigos();
 }
@@ -285,6 +291,10 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
 
   this->tileMap->render(target);
 
+  if (this->roomData.type == BOSS && this->enemigos.empty()) {
+      target.draw(this->trapdoorShape);
+  }
+
   for (auto *p : this->pickups) {
     p->render(target);
   }
@@ -297,3 +307,10 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
 TileMap *Habitacion::getTileMap() const { return this->tileMap; }
 std::vector<Enemigos *> Habitacion::getEnemigos() { return this->enemigos; }
 RoomData Habitacion::getRoomData() const { return roomData; }
+
+sf::FloatRect Habitacion::getTrapdoorBounds() const {
+    if (this->roomData.type == BOSS && this->enemigos.empty()) {
+        return this->trapdoorShape.getGlobalBounds();
+    }
+    return sf::FloatRect(0.f, 0.f, 0.f, 0.f);
+}

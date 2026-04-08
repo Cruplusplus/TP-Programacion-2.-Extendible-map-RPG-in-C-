@@ -4,7 +4,6 @@ void Juego::initVariables()
 {
 //window
     this->window = nullptr;
-
 //Logica del juego
     finalizarJuego = false;
     vida = 5;
@@ -185,6 +184,14 @@ void Juego::updateCollision()
 {
 
     //Esto fue durisimo de refactorizar
+    
+    // Check de escotilla
+    sf::FloatRect trapdoorBounds = this->habitacionActual->getTrapdoorBounds();
+    if (trapdoorBounds.width > 0.f && this->jugador->getHitboxBounds().intersects(trapdoorBounds)) {
+        this->jugador->addLevelPiso();
+        this->nextDungeonFloor();
+        return; // Salimos prematuramente porque el mapa fue destruido y regenerado
+    }
     
 
     bool roomChanged = false;
@@ -450,4 +457,30 @@ void Juego::resetGame() {
 
     this->gameState = STATE_PLAYING;
     this->finalizarJuego = false;
+}
+
+void Juego::nextDungeonFloor() {
+    this->seed = static_cast<unsigned int>(rand());
+    
+    if (this->dungeonGen != nullptr) {
+        delete this->dungeonGen;
+        this->dungeonGen = nullptr;
+    }
+    
+    for (auto& pair : this->roomsMap) {
+        delete pair.second;
+    }
+    this->roomsMap.clear();
+
+    this->dungeonGen = new DungeonGenerator(10, 10, 10); // Genera uno completamente nuevo
+    this->dungeonGen->generate(this->seed);
+
+    this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;
+    this->currentRoomCoords.y = this->dungeonGen->getHeight() / 2;
+
+    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+    this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
+    
+    // Posicionar en el centro de la nueva START room sin perder su data
+    this->jugador->setPosition(400.f, 300.f); 
 }

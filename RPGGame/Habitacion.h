@@ -20,6 +20,7 @@ private:
     //BG
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
+    sf::RectangleShape trapdoorShape;
 
     void initTileMap();
     void initEnemigos();
@@ -35,4 +36,5 @@ public:
     TileMap* getTileMap() const;
     std::vector<Enemigos*> getEnemigos();
     RoomData getRoomData() const;
+    sf::FloatRect getTrapdoorBounds() const;
 };

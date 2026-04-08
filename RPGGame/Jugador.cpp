@@ -8,6 +8,8 @@ void Jugador::initInventory() {
   this->coins = 0;
   this->statsUp = 0; 
   this->maxHp = 10;
+
+  this->levelPiso = 0;
 }
 
 Jugador::Jugador(const float x, const float y)
@@ -414,6 +416,9 @@ int Jugador::getCoins() const { return this->coins; }
 int Jugador::getStatsUp() const { return this->statsUp; }
 int Jugador::getDmg() const { return this->dmg; }
 int Jugador::getMaxHp() const { return this->maxHp; }
+
+int Jugador::getLevelPiso() const { return this->levelPiso; }
+void Jugador::addLevelPiso() { this->levelPiso++; }
 
 void Jugador::setStats(int hp, int maxHp, int coins, int statsUp,
                        const std::vector<int> &inv) {

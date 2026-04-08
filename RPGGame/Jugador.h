@@ -14,6 +14,8 @@ private:
     int statsUp;
     int maxHp;
 
+    int levelPiso;
+
     void initInventory();
 
     // Cooldowns
@@ -63,6 +65,9 @@ public:
     int getStatsUp() const;
     int getDmg() const;
     int getMaxHp() const;
+
+    int getLevelPiso() const;
+    void addLevelPiso();
 
     void setStats(int hp, int maxHp, int coins, int statsUp, const std::vector<int>& inv);
     
