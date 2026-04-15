@@ -25,8 +25,9 @@ private:
     void initTileMap();
     void initEnemigos();
 
+    int pisoActual;
 public:
-    Habitacion(sf::Texture* tile_sheet, RoomData data);
+    Habitacion(sf::Texture* tile_sheet, RoomData data, int nivelPiso);
     virtual ~Habitacion();
 
     void update(Jugador* jugador); // Pasar la pos del jugador para la IA

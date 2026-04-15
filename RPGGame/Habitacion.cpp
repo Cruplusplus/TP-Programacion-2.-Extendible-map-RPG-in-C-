@@ -2,8 +2,9 @@
 #include "Enemigos.h"
 #include "Jugador.h"
 
-Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data) {
+Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data, int nivelPiso) {
   this->tileSheet = tile_sheet;
+  this->pisoActual = nivelPiso;
   this->tileMap = nullptr;
   this->roomData = data;
 
@@ -147,6 +148,7 @@ void Habitacion::initEnemigos() {
     this->enemigos.push_back(
         new Orco(400.f, 300.f)); // Por ahora es un orco pero mas grande
     this->enemigos.back()->getSprite().setScale(4.f, 4.f);
+    this->enemigos.back()->escalarDificultad(this->pisoActual);
     return;
   }
 
@@ -161,16 +163,21 @@ void Habitacion::initEnemigos() {
   // Spawn enemies from template locations
   for (auto &pos : this->enemySpawns) {
     int type = rand() % 100;
+    Enemigos* e = nullptr;
+    
     if (type < 40) // 40% Duende
-      this->enemigos.push_back(new Duende(pos.x, pos.y));
+      e = new Duende(pos.x, pos.y);
     else if (type < 60) // 20% Orco
-      this->enemigos.push_back(new Orco(pos.x, pos.y));
+      e = new Orco(pos.x, pos.y);
     else if (type < 75) // 15% Hada
-      this->enemigos.push_back(new Hada(pos.x, pos.y));
+      e = new Hada(pos.x, pos.y);
     else if (type < 90) // 15% Hechicero
-      this->enemigos.push_back(new Hechicero(pos.x, pos.y));
+      e = new Hechicero(pos.x, pos.y);
     else // 10% Estatua
-      this->enemigos.push_back(new Estatua(pos.x, pos.y));
+      e = new Estatua(pos.x, pos.y);
+      
+    e->escalarDificultad(this->pisoActual);
+    this->enemigos.push_back(e);
   }
 }
 

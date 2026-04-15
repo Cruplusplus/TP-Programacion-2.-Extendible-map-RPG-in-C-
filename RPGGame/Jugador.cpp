@@ -8,6 +8,7 @@ void Jugador::initInventory() {
   this->coins = 0;
   this->statsUp = 0; 
   this->maxHp = 10;
+  this->lvl = 1;
 
   this->levelPiso = 0;
 }

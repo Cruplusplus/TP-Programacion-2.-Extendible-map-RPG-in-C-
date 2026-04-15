@@ -17,11 +17,14 @@ protected:
     float ladoPreferido;
     sf::Vector2f dirEvasion;
 
+    //nose ingles -lauti
+    
 public:
+    void escalarDificultad(int pisoActual);
     virtual void updateIA(Jugador* jugador);
     virtual void update() override;
     virtual void attack(Jugador* jugador); // Base attack (melee)
-
+    
     virtual void render(sf::RenderTarget& target) override;
 };
 

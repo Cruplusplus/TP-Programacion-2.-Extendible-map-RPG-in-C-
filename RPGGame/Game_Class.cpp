@@ -57,7 +57,7 @@ void Juego::initHabitacion()
     this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;
     this->currentRoomCoords.y = this->dungeonGen->getHeight() / 2;
 
-    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
     this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
 }
 
@@ -183,8 +183,6 @@ void Juego::updatePersonajes()
 void Juego::updateCollision()
 {
 
-    //Esto fue durisimo de refactorizar
-    
     // Check de escotilla
     sf::FloatRect trapdoorBounds = this->habitacionActual->getTrapdoorBounds();
     if (trapdoorBounds.width > 0.f && this->jugador->getHitboxBounds().intersects(trapdoorBounds)) {
@@ -293,7 +291,7 @@ void Juego::updateCollision()
         if(it != this->roomsMap.end()) {
             this->habitacionActual = it->second;
         } else {
-            this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+            this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
             this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         }
 
@@ -430,7 +428,7 @@ void Juego::loadGame(int slot) {
         }
         this->roomsMap.clear();
 
-        this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+        this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
         this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         this->gameState = STATE_PLAYING;
     }
@@ -478,7 +476,7 @@ void Juego::nextDungeonFloor() {
     this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;
     this->currentRoomCoords.y = this->dungeonGen->getHeight() / 2;
 
-    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
     this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
     
     // Posicionar en el centro de la nueva START room sin perder su data

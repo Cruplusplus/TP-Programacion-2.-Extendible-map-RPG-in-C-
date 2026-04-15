@@ -7,6 +7,17 @@ Enemigos::Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre)
     : Character(_id, _hp, _dmg, _lvl, _nombre)
 {
     this->tipo = TipoPersonaje::Enemigos;
+    this->tipo = TipoPersonaje::Enemigos;
+}
+
+void Enemigos::escalarDificultad(int pisoActual)
+{    
+    if (pisoActual <= 1) return;
+
+    float multiplicador = 1.0f + (0.25f * pisoActual); 
+
+    this->hp = static_cast<int>(this->hp * multiplicador);
+    this->dmg = static_cast<int>(this->dmg * multiplicador);
 }
 
 Enemigos::~Enemigos()
@@ -15,6 +26,8 @@ Enemigos::~Enemigos()
 
 void Enemigos::updateIA(Jugador* jugador)
 {
+
+
     float distMovida = std::abs(this->getPosition().x - this->lastPosition.x) +
                        std::abs(this->getPosition().y - this->lastPosition.y);
 
@@ -58,13 +71,12 @@ void Enemigos::updateIA(Jugador* jugador)
         }
         else
         {
-            // Camino libre: Perseguir
             this->velocidadVector = dirJugador;
         }
     }
     else
     {
-        // --- ESTADO EVASIÓN ---
+        // --- ESTADO EVASION ---
         this->velocidadVector = this->dirEvasion;
 
         if (isStuck && this->timerEvasion.getElapsedTime().asSeconds() > 0.2f)
@@ -102,7 +114,7 @@ void Enemigos::updateIA(Jugador* jugador)
 
 void Enemigos::attack(Jugador* jugador)
 {
-    // Base implementation (can be empty or default melee)
+
 }
 
 void Enemigos::update()
