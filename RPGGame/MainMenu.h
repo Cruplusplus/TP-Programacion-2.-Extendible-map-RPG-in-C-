@@ -9,8 +9,6 @@ enum MenuState {
     MENU_SAVE,
 };
 
-
-
 class MainMenu {
 public:
     enum class MainOption { NewGame = 0, LoadGame, Options, Exit };

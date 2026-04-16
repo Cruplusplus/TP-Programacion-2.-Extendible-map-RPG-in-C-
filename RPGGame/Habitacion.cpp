@@ -212,9 +212,8 @@ void Habitacion::update(Jugador *jugador) {
     if (playerAttacking) {
       if (attackHb.intersects(enemigo->getSprite().getGlobalBounds())) {
         if (!jugador->hasHit(enemigo)) {
-          enemigo->recibirDanio(jugador->getDmg()); // Base dmg
+          enemigo->recibirDanio(jugador->getDmg());
           jugador->addHit(enemigo);
-          std::cout << "Golpe direccional AOE!" << std::endl;
         }
       }
     }

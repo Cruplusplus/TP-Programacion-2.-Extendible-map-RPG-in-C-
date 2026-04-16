@@ -375,6 +375,29 @@ void Juego::handleMenuInput(sf::Keyboard::Key key) {
         int pressed = this->mainMenu->getPressedItem();
         MenuState menustate = this->mainMenu->getState();
 
+        //refactorizar:
+        /*switch(menustate)
+        {
+            case MENU_MAIN:
+                switch(pressed)
+                {
+                    case 0:
+                        this->gameState = STATE_PLAYING;
+                        break;
+                    case 1:
+                        this->mainMenu->setState(MENU_LOAD);
+                        break;
+                    case 2:
+                        this->mainMenu->setState(MENU_SAVE);
+                        break;
+                    case 0:
+                        this->window->close();
+                        break;
+                }
+            case MENU_SAVE:
+                switch()
+        }
+        */
         if (menustate == MENU_MAIN) {
             if (pressed == 0) this->gameState = STATE_PLAYING;
             else if (pressed == 1) this->mainMenu->setState(MENU_LOAD);

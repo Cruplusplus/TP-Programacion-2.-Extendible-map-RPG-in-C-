@@ -9,6 +9,7 @@ private:
 public:
     Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre);
     virtual ~Enemigos();
+    void recibirCuracion(int cantidad);
 
 protected:
     sf::Vector2f lastPosition;
@@ -53,13 +54,18 @@ public:
 
 class Hada : public Enemigos
 {
+private:
+    int cantidadCuracion;
+    bool isHealing;
+    sf::Clock healingCooldown;
 public:
     Hada(float x, float y);
     virtual ~Hada();
     void update() override;
     void updateIA(Jugador* jugador) override;
     void curarAliados(std::vector<Enemigos*>& enemigos);
-    // Hada no ataca (por ahora)
+    // Hada no ataca
+    
 };
 
 class Estatua : public Enemigos
