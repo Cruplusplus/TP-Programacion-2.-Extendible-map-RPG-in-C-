@@ -375,48 +375,37 @@ void Juego::handleMenuInput(sf::Keyboard::Key key) {
         int pressed = this->mainMenu->getPressedItem();
         MenuState menustate = this->mainMenu->getState();
 
-        //refactorizar:
-        /*switch(menustate)
+        switch(menustate)
         {
             case MENU_MAIN:
                 switch(pressed)
                 {
-                    case 0:
-                        this->gameState = STATE_PLAYING;
-                        break;
-                    case 1:
-                        this->mainMenu->setState(MENU_LOAD);
-                        break;
-                    case 2:
-                        this->mainMenu->setState(MENU_SAVE);
-                        break;
-                    case 0:
-                        this->window->close();
-                        break;
+                    case 0: this->gameState = STATE_PLAYING; break;
+                    case 1: this->mainMenu->setState(MENU_LOAD); break;
+                    case 2: this->mainMenu->setState(MENU_SAVE); break;
+                    case 3: this->window->close(); break;
                 }
+                break; 
+                
+            case MENU_LOAD:
+                if (pressed == 3) {
+                    this->mainMenu->setState(MENU_MAIN);
+                } else {
+                    this->loadGame(pressed + 1);
+                }
+                break;
             case MENU_SAVE:
-                switch()
-        }
-        */
-        if (menustate == MENU_MAIN) {
-            if (pressed == 0) this->gameState = STATE_PLAYING;
-            else if (pressed == 1) this->mainMenu->setState(MENU_LOAD);
-            else if (pressed == 2) this->mainMenu->setState(MENU_SAVE);
-            else if (pressed == 3) this->window->close();
-        } else if (menustate == MENU_LOAD) {
-            if (pressed == 3) this->mainMenu->setState(MENU_MAIN);
-            else this->loadGame(pressed + 1);
-        } else if (menustate == MENU_SAVE) {
-            if (pressed == 3) {
-                 if (this->gameState == STATE_PAUSE_MENU) this->gameState = STATE_PLAYING;
-                 else this->mainMenu->setState(MENU_MAIN);
-            }
-            else {
-                 this->saveGame(pressed + 1);
-                 if (this->gameState == STATE_PAUSE_MENU) this->gameState = STATE_PLAYING;
-            }
-        } else if (menustate == MENU_SAVE) {
-            if (pressed == 3) this->mainMenu->setState(MENU_MAIN);
+                if (pressed == 3) {
+                    this->mainMenu->setState(MENU_MAIN);
+                } else {
+                     this->saveGame(pressed + 1);
+                     if (this->gameState == STATE_PAUSE_MENU) this->gameState = STATE_PLAYING;
+                }
+                break;
+            default:
+                std::cout << "Error in Game_Class.cpp Juego::handleMenuInput()" << std::endl;
+                this->window->close();
+                break;
         }
     }
 }
