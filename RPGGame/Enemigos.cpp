@@ -7,14 +7,32 @@ Enemigos::Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre)
     : Character(_id, _hp, _dmg, _lvl, _nombre)
 {
     this->tipo = TipoPersonaje::Enemigos;
+    this->tipo = TipoPersonaje::Enemigos;
+}
+
+void Enemigos::escalarDificultad(int pisoActual)
+{    
+    if (pisoActual <= 1) return;
+
+    float multiplicador = 1.0f + (0.25f * pisoActual); 
+
+    this->hp = static_cast<int>(this->hp * multiplicador);
+    this->dmg = static_cast<int>(this->dmg * multiplicador);
 }
 
 Enemigos::~Enemigos()
 {
 }
 
+void Enemigos::recibirCuracion(int cantidad)
+{
+    this->hp = this->hp + cantidad;
+}
+
 void Enemigos::updateIA(Jugador* jugador)
 {
+
+
     float distMovida = std::abs(this->getPosition().x - this->lastPosition.x) +
                        std::abs(this->getPosition().y - this->lastPosition.y);
 
@@ -58,13 +76,12 @@ void Enemigos::updateIA(Jugador* jugador)
         }
         else
         {
-            // Camino libre: Perseguir
             this->velocidadVector = dirJugador;
         }
     }
     else
     {
-        // --- ESTADO EVASIÓN ---
+        // --- ESTADO EVASION ---
         this->velocidadVector = this->dirEvasion;
 
         if (isStuck && this->timerEvasion.getElapsedTime().asSeconds() > 0.2f)
@@ -102,7 +119,7 @@ void Enemigos::updateIA(Jugador* jugador)
 
 void Enemigos::attack(Jugador* jugador)
 {
-    // Base implementation (can be empty or default melee)
+
 }
 
 void Enemigos::update()
@@ -187,12 +204,10 @@ void Duende::attack(Jugador* jugador)
     //logica de ataque
     if (this->animationTimer.getElapsedTime().asSeconds() >= 1.f)
     {
-        std::cout << "ataca enemigo" << std::endl;
         jugador->recibirDanio(1);
         this->animationTimer.restart();
     }
 }
-
 //================ORCO================
 
 Orco::Orco(float x, float y)
@@ -203,7 +218,7 @@ Orco::Orco(float x, float y)
     this->initSprite();
     this->sprite.setColor(sf::Color::Red);
     this->sprite.setScale(3.f, 3.f);
-    this->initHitbox(30.f, 30.f);
+    this->initHitbox(20.f, 20.f);
     this->hitbox.setScale(this->sprite.getScale());
     this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
@@ -219,7 +234,6 @@ void Orco::update() {
 
 void Orco::updateIA(Jugador* jugador)
 {
-    // Orco: Perseguir al jugador (Lento pero constante)
     sf::Vector2f direction = jugador->getPosition() - this->sprite.getPosition();
     float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
@@ -227,7 +241,7 @@ void Orco::updateIA(Jugador* jugador)
         direction = direction / distance;
     }
 
-    float ATTACK_RANGE = 40.f; // Rango melee un poco mayor por ser grande
+    float ATTACK_RANGE = 40.f;
 
     if (distance < ATTACK_RANGE)
     {
@@ -235,7 +249,7 @@ void Orco::updateIA(Jugador* jugador)
     }
     else
     {
-        this->velocidadVector = direction; // Se mueve hacia el jugador
+        this->velocidadVector = direction;
         
         // Animacion
         if (std::abs(direction.x) > std::abs(direction.y)) {
@@ -253,9 +267,8 @@ void Orco::attack(Jugador* jugador)
     this->animState = PLAYER_ANIMATION_STATES::ATTACK;
     this->velocidadVector = sf::Vector2f(0,0);
 
-    if (this->animationTimer.getElapsedTime().asSeconds() >= 1.5f) // Ataque lento
+    if (this->animationTimer.getElapsedTime().asSeconds() >= 1.5f)
     {
-        std::cout << "Orco aplasta!" << std::endl;
         jugador->recibirDanio(this->dmg);
         this->animationTimer.restart();
     }
@@ -275,6 +288,8 @@ Hada::Hada(float x, float y)
 
     this->setPosition(x, y);
     this->velocidad = 3.0f;
+
+    this->cantidadCuracion = 3;
 }
 
 Hada::~Hada() {}
@@ -284,22 +299,20 @@ void Hada::update() {
 }
 
 void Hada::curarAliados(std::vector<Enemigos*>& enemigos) {
-    // Curar aliados cercanos cada 3 segundos
-    static sf::Clock healTimer;
-    if (healTimer.getElapsedTime().asSeconds() > 3.0f) {
+    
+    if (healingCooldown.getElapsedTime().asSeconds() > 3.0f) {
         for (auto* enemigo : enemigos) {
             if (enemigo != this && enemigo->getHp() > 0) {
                 float dist = std::sqrt(std::pow(enemigo->getPosition().x - this->getPosition().x, 2) +
                                      std::pow(enemigo->getPosition().y - this->getPosition().y, 2));
-                if (dist < 150.f) { // Rango de curacion
-                    // No tenemos metodo curar, asi que accedemos directo o asumimos logica
-                    // Por ahora solo print, idealmente
-                    std::cout << "Hada cura a " << enemigo->getPosition().x << std::endl;
-                    //hada->heal(1)
+                if (dist < 150.f) 
+                {
+                    std::cout << "Hada cura a " << enemigo->getPosition().x << std::endl; 
+                    enemigo->recibirCuracion(cantidadCuracion);
                 }
             }
         }
-        healTimer.restart();
+        healingCooldown.restart();
     }
 }
 

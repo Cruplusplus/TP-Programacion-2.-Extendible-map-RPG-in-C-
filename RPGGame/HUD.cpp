@@ -21,10 +21,10 @@ HUD::HUD() {
     this->coinText.setPosition(10.f, 40.f);
     this->coinText.setFillColor(sf::Color::Yellow);
 
-    this->keyText.setFont(font);
-    this->keyText.setCharacterSize(20);
-    this->keyText.setPosition(10.f, 70.f);
-    this->keyText.setFillColor(sf::Color::White);
+    this->floorsText.setFont(font);
+    this->floorsText.setCharacterSize(20);
+    this->floorsText.setPosition(10.f, 70.f);
+    this->floorsText.setFillColor(sf::Color::White);
     
     this->itemText.setFont(font);
     this->itemText.setCharacterSize(20);
@@ -35,7 +35,7 @@ HUD::HUD() {
 void HUD::update(Jugador* jugador) {
     this->hpText.setString("HP: " + std::to_string(jugador->getHp()) + "/" + std::to_string(jugador->getMaxHp()));
     this->coinText.setString("Coins: " + std::to_string(jugador->getCoins()));
-    
+    this->floorsText.setString("Floor: " + std::to_string(jugador->getLevelPiso()));
     std::string items = "Items: ";
     if(jugador->hasItem(ITEM_DASH)) items += "Dash ";
     if(jugador->hasItem(ITEM_KAMIKAZE)) items += "Kamikaze ";
@@ -47,6 +47,6 @@ void HUD::update(Jugador* jugador) {
 void HUD::render(sf::RenderTarget& target) {
     target.draw(this->hpText);
     target.draw(this->coinText);
-    target.draw(this->keyText);
+    target.draw(this->floorsText);
     target.draw(this->itemText);
 }

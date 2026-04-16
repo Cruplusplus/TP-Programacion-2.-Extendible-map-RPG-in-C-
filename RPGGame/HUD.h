@@ -7,7 +7,7 @@ private:
     sf::Font font;
     sf::Text hpText;
     sf::Text coinText;
-    sf::Text keyText;
+    sf::Text floorsText;
     sf::Text itemText;
 
 public:

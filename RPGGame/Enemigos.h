@@ -9,6 +9,7 @@ private:
 public:
     Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre);
     virtual ~Enemigos();
+    void recibirCuracion(int cantidad);
 
 protected:
     sf::Vector2f lastPosition;
@@ -17,11 +18,14 @@ protected:
     float ladoPreferido;
     sf::Vector2f dirEvasion;
 
+    //nose ingles -lauti
+    
 public:
+    void escalarDificultad(int pisoActual);
     virtual void updateIA(Jugador* jugador);
     virtual void update() override;
     virtual void attack(Jugador* jugador); // Base attack (melee)
-
+    
     virtual void render(sf::RenderTarget& target) override;
 };
 
@@ -50,13 +54,18 @@ public:
 
 class Hada : public Enemigos
 {
+private:
+    int cantidadCuracion;
+    bool isHealing;
+    sf::Clock healingCooldown;
 public:
     Hada(float x, float y);
     virtual ~Hada();
     void update() override;
     void updateIA(Jugador* jugador) override;
     void curarAliados(std::vector<Enemigos*>& enemigos);
-    // Hada no ataca (por ahora)
+    // Hada no ataca
+    
 };
 
 class Estatua : public Enemigos

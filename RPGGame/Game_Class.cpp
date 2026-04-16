@@ -4,7 +4,6 @@ void Juego::initVariables()
 {
 //window
     this->window = nullptr;
-
 //Logica del juego
     finalizarJuego = false;
     vida = 5;
@@ -58,7 +57,7 @@ void Juego::initHabitacion()
     this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;
     this->currentRoomCoords.y = this->dungeonGen->getHeight() / 2;
 
-    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
     this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
 }
 
@@ -184,7 +183,13 @@ void Juego::updatePersonajes()
 void Juego::updateCollision()
 {
 
-    //Esto fue durisimo de refactorizar
+    // Check de escotilla
+    sf::FloatRect trapdoorBounds = this->habitacionActual->getTrapdoorBounds();
+    if (trapdoorBounds.width > 0.f && this->jugador->getHitboxBounds().intersects(trapdoorBounds)) {
+        this->jugador->addLevelPiso();
+        this->nextDungeonFloor();
+        return; // Salimos prematuramente porque el mapa fue destruido y regenerado
+    }
     
 
     bool roomChanged = false;
@@ -286,7 +291,7 @@ void Juego::updateCollision()
         if(it != this->roomsMap.end()) {
             this->habitacionActual = it->second;
         } else {
-            this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+            this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
             this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         }
 
@@ -370,6 +375,29 @@ void Juego::handleMenuInput(sf::Keyboard::Key key) {
         int pressed = this->mainMenu->getPressedItem();
         MenuState menustate = this->mainMenu->getState();
 
+        //refactorizar:
+        /*switch(menustate)
+        {
+            case MENU_MAIN:
+                switch(pressed)
+                {
+                    case 0:
+                        this->gameState = STATE_PLAYING;
+                        break;
+                    case 1:
+                        this->mainMenu->setState(MENU_LOAD);
+                        break;
+                    case 2:
+                        this->mainMenu->setState(MENU_SAVE);
+                        break;
+                    case 0:
+                        this->window->close();
+                        break;
+                }
+            case MENU_SAVE:
+                switch()
+        }
+        */
         if (menustate == MENU_MAIN) {
             if (pressed == 0) this->gameState = STATE_PLAYING;
             else if (pressed == 1) this->mainMenu->setState(MENU_LOAD);
@@ -423,7 +451,7 @@ void Juego::loadGame(int slot) {
         }
         this->roomsMap.clear();
 
-        this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y));
+        this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
         this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         this->gameState = STATE_PLAYING;
     }
@@ -450,4 +478,30 @@ void Juego::resetGame() {
 
     this->gameState = STATE_PLAYING;
     this->finalizarJuego = false;
+}
+
+void Juego::nextDungeonFloor() {
+    this->seed = static_cast<unsigned int>(rand());
+    
+    if (this->dungeonGen != nullptr) {
+        delete this->dungeonGen;
+        this->dungeonGen = nullptr;
+    }
+    
+    for (auto& pair : this->roomsMap) {
+        delete pair.second;
+    }
+    this->roomsMap.clear();
+
+    this->dungeonGen = new DungeonGenerator(10, 10, 10); // Genera uno completamente nuevo
+    this->dungeonGen->generate(this->seed);
+
+    this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;
+    this->currentRoomCoords.y = this->dungeonGen->getHeight() / 2;
+
+    this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
+    this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
+    
+    // Posicionar en el centro de la nueva START room sin perder su data
+    this->jugador->setPosition(400.f, 300.f); 
 }

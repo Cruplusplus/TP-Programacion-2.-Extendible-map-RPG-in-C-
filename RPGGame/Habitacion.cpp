@@ -2,8 +2,9 @@
 #include "Enemigos.h"
 #include "Jugador.h"
 
-Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data) {
+Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data, int nivelPiso) {
   this->tileSheet = tile_sheet;
+  this->pisoActual = nivelPiso;
   this->tileMap = nullptr;
   this->roomData = data;
 
@@ -15,6 +16,12 @@ Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data) {
   this->backgroundSprite.setTexture(this->backgroundTexture);
   this->backgroundSprite.setScale(3.2f, 3.2f);
   this->backgroundSprite.setPosition(5, 15);
+
+  this->trapdoorShape.setSize(sf::Vector2f(50.f, 50.f));
+  this->trapdoorShape.setFillColor(sf::Color(20, 20, 20)); // Escotilla Oscura
+  this->trapdoorShape.setOutlineColor(sf::Color(100, 100, 100)); // Borde
+  this->trapdoorShape.setOutlineThickness(3.f);
+  this->trapdoorShape.setPosition(375.f, 275.f); // Centro del mapa 800x600
 
   this->initTileMap();
   this->initEnemigos();
@@ -141,6 +148,7 @@ void Habitacion::initEnemigos() {
     this->enemigos.push_back(
         new Orco(400.f, 300.f)); // Por ahora es un orco pero mas grande
     this->enemigos.back()->getSprite().setScale(4.f, 4.f);
+    this->enemigos.back()->escalarDificultad(this->pisoActual);
     return;
   }
 
@@ -155,16 +163,21 @@ void Habitacion::initEnemigos() {
   // Spawn enemies from template locations
   for (auto &pos : this->enemySpawns) {
     int type = rand() % 100;
+    Enemigos* e = nullptr;
+    
     if (type < 40) // 40% Duende
-      this->enemigos.push_back(new Duende(pos.x, pos.y));
+      e = new Duende(pos.x, pos.y);
     else if (type < 60) // 20% Orco
-      this->enemigos.push_back(new Orco(pos.x, pos.y));
+      e = new Orco(pos.x, pos.y);
     else if (type < 75) // 15% Hada
-      this->enemigos.push_back(new Hada(pos.x, pos.y));
+      e = new Hada(pos.x, pos.y);
     else if (type < 90) // 15% Hechicero
-      this->enemigos.push_back(new Hechicero(pos.x, pos.y));
+      e = new Hechicero(pos.x, pos.y);
     else // 10% Estatua
-      this->enemigos.push_back(new Estatua(pos.x, pos.y));
+      e = new Estatua(pos.x, pos.y);
+      
+    e->escalarDificultad(this->pisoActual);
+    this->enemigos.push_back(e);
   }
 }
 
@@ -199,9 +212,8 @@ void Habitacion::update(Jugador *jugador) {
     if (playerAttacking) {
       if (attackHb.intersects(enemigo->getSprite().getGlobalBounds())) {
         if (!jugador->hasHit(enemigo)) {
-          enemigo->recibirDanio(jugador->getDmg()); // Base dmg
+          enemigo->recibirDanio(jugador->getDmg());
           jugador->addHit(enemigo);
-          std::cout << "Golpe direccional AOE!" << std::endl;
         }
       }
     }
@@ -285,6 +297,10 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
 
   this->tileMap->render(target);
 
+  if (this->roomData.type == BOSS && this->enemigos.empty()) {
+      target.draw(this->trapdoorShape);
+  }
+
   for (auto *p : this->pickups) {
     p->render(target);
   }
@@ -297,3 +313,10 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
 TileMap *Habitacion::getTileMap() const { return this->tileMap; }
 std::vector<Enemigos *> Habitacion::getEnemigos() { return this->enemigos; }
 RoomData Habitacion::getRoomData() const { return roomData; }
+
+sf::FloatRect Habitacion::getTrapdoorBounds() const {
+    if (this->roomData.type == BOSS && this->enemigos.empty()) {
+        return this->trapdoorShape.getGlobalBounds();
+    }
+    return sf::FloatRect(0.f, 0.f, 0.f, 0.f);
+}

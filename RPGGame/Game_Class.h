@@ -63,6 +63,7 @@ public:
     virtual ~Juego();
 
     void resetGame();
+    void nextDungeonFloor();
 
     //Accesors
     const bool gameRunning() const;
