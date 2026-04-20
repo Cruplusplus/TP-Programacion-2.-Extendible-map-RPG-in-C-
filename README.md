@@ -3,7 +3,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Language-C++-blue.svg">
   <img src="https://img.shields.io/badge/Library-SFML-green.svg">
-  <img src="https://img.shields.io/badge/Class-Programming%202-orange.svg">
 </p>
 
 Un simulador de mapa extensible y lógica RPG desarrollado en C++ utilizando la librería **SFML**. Este proyecto fue creado como trabajo integrador para la materia Programación II (UTN), enfocado en la aplicación de conceptos avanzados de programación orientada a objetos y gestión de recursos.
