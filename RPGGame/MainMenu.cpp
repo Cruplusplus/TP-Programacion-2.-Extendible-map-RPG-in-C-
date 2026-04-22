@@ -10,7 +10,7 @@ MainMenu::MainMenu(float width, float height) {
     selectedIndex = 0;
     
     // Main Options
-    std::vector<std::string> mainOpts = {"Resume", "Load Game", "Save Game", "Exit"};
+    std::vector<std::string> mainOpts = {"Play Game", "Load Game", "Save Game", "Exit"};
     for(size_t i=0; i<mainOpts.size(); i++) {
         sf::Text text;
         text.setFont(font);

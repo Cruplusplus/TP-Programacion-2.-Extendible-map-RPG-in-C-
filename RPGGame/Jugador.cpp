@@ -60,6 +60,7 @@ void Jugador::recibirDanio(int danio) {
 int Jugador::getHp() const { return this->hp; }
 
 void Jugador::resetAnimTimer() {
+  if (this->animState == PLAYER_ANIMATION_STATES::ATTACK || this->animState == PLAYER_ANIMATION_STATES::BLOCK) return;
   this->animationTimer.restart();
   this->animationSwitch = true;
 }
@@ -122,8 +123,6 @@ void Jugador::addPickup(PickupType pickup) {
         std::cout << "error at Jugador.cpp Jugador::addPickup()";
         break;
     }
-
-    std::cout << this->getHp() << std::endl;
 
     break;
   }
@@ -265,7 +264,7 @@ void Jugador::updateAnimations() {
     }
 
     // Terminar el ataque después de un tiempo total (ej. 0.5s)
-    if (this->animationTimer.getElapsedTime().asSeconds() >= 0.5f) {
+    if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f) {
       this->animState = PLAYER_ANIMATION_STATES::IDLE;
       this->resetAttack(); // Limpiar lista de enemigos golpeados
 

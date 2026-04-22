@@ -501,8 +501,11 @@ void Juego::loadGame(int slot)
         }
         this->roomsMap.clear();
 
-        this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
-        this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
+        this->habitacionActual = new Habitacion(&this->tileSheet, 
+            this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), 
+            this->jugador->getLevelPiso());
+        this->roomsMap[std::make_pair(
+            this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         this->gameState = STATE_PLAYING;
     }
 }
@@ -559,6 +562,6 @@ void Juego::nextDungeonFloor()
     this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
     this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
 
-    // Posicionar en el centro de la nueva START room sin perder su data
+    // Posicionar en el centro de la nueva START_ROOM sin perder su data
     this->jugador->setPosition(400.f, 300.f);
 }
