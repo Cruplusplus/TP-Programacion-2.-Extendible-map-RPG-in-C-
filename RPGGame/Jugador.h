@@ -56,11 +56,10 @@ public:
 
     virtual void recibirDanio(int danio);
 
-    int getHp() const;
-
     void updateMovement();
 
     std::vector<int> getInventoryAsInt() const;
+    int getHp() const;
     int getCoins() const;
     int getStatsUp() const;
     int getDmg() const;
@@ -69,7 +68,7 @@ public:
     int getLevelPiso() const;
     void addLevelPiso();
 
-    void setStats(int hp, int maxHp, int coins, int statsUp, const std::vector<int>& inv);
+    void setStats(int hp, int maxHp, int coins, int dmg, const std::vector<int>& inv);
     
     void updateAnimations();
     void update() override;

@@ -166,7 +166,7 @@ void Duende::updateIA(Jugador* jugador)
         direction = direction / distance;
     }
 
-    float SIGHT_RANGE = 100.f;
+    float SIGHT_RANGE = 250.f;
     float ATTACK_RANGE = 20.f;
 
     if (distance < ATTACK_RANGE)
@@ -223,7 +223,7 @@ Orco::Orco(float x, float y)
     this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->setPosition(x, y);
-    this->velocidad = 1.0f; // Slow
+    this->velocidad = 1.5f; // Slow
 }
 
 Orco::~Orco() {}
@@ -377,7 +377,6 @@ void Estatua::updateIA(Jugador* jugador)
     this->animState = PLAYER_ANIMATION_STATES::IDLE;
     
     // Si el jugador la toca, quizas daño por contacto?
-    // Por ahora inerte.
 }
 
 //================HECHICERO================

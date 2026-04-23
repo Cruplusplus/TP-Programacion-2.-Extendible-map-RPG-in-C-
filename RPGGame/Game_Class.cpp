@@ -8,6 +8,14 @@ void Juego::initVariables()
     finalizarJuego = false;
     vida = 5;
     this->gameState = STATE_MENU;
+
+  //muejejejeje
+    this->konamiSequence = {
+      sf::Keyboard::Up, sf::Keyboard::Up, sf::Keyboard::Down, sf::Keyboard::Down, 
+      sf::Keyboard::Left, sf::Keyboard::Right, sf::Keyboard::Left, sf::Keyboard::Right, 
+      sf::Keyboard::B, sf::Keyboard::A
+    };
+    this->konamiIndex = 0;
 }
 
 void Juego::initWindow()
@@ -126,7 +134,7 @@ void Juego::updateInput()
     }
 
     // Tile funcs
-    //debug
+    // debug
     if (sf::Mouse::isButtonPressed(this->mouseMappings["BTN_ADD_TILE"]))
     {
         this->habitacionActual->getTileMap()->addTile(mouseX, mouseY, 1);
@@ -154,7 +162,7 @@ void Juego::pollEvents()
             {
                 this->resetGame();
             }
-
+            
             if (this->gameState == STATE_MENU || this->gameState == STATE_PAUSE_MENU)
             {
                 this->handleMenuInput(this->ev.key.code);
@@ -165,6 +173,36 @@ void Juego::pollEvents()
                 this->mainMenu->setState(MENU_MAIN);
             }
 
+            // super secreto
+            if(!this->gameState == STATE_PLAYING) break;
+
+            if (this->ev.key.code == this->konamiSequence[this->konamiIndex])
+            {
+                this->konamiIndex++;
+                if (this->konamiIndex == this->konamiSequence.size())
+                {
+                    std::cout << "¡CODIGO KONAMI ACTIVADO!" << std::endl;
+                    std::vector<int> fullInventory;
+                    
+                    for (int i = 0; i<4; i++){
+                        fullInventory.push_back(0);
+                    }
+                    
+                    this->jugador->setStats(99999, 99999, 9999, 67, fullInventory);
+                    this->konamiIndex = 0;
+                }
+            }
+            else
+            {
+                if (this->ev.key.code == this->konamiSequence[0])
+                {
+                    this->konamiIndex = 1;
+                }
+                else
+                {
+                    this->konamiIndex = 0;
+                }
+            }
             break;
         }
 
@@ -501,9 +539,9 @@ void Juego::loadGame(int slot)
         }
         this->roomsMap.clear();
 
-        this->habitacionActual = new Habitacion(&this->tileSheet, 
-            this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), 
-            this->jugador->getLevelPiso());
+        this->habitacionActual = new Habitacion(&this->tileSheet,
+                                                this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y),
+                                                this->jugador->getLevelPiso());
         this->roomsMap[std::make_pair(
             this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         this->gameState = STATE_PLAYING;

@@ -420,12 +420,12 @@ int Jugador::getMaxHp() const { return this->maxHp; }
 int Jugador::getLevelPiso() const { return this->levelPiso; }
 void Jugador::addLevelPiso() { this->levelPiso++; }
 
-void Jugador::setStats(int hp, int maxHp, int coins, int statsUp,
+void Jugador::setStats(int hp, int maxHp, int coins, int dmg,
                        const std::vector<int> &inv) {
   this->hp = hp;
   this->maxHp = maxHp;
   this->coins = coins;
-  this->statsUp = statsUp;
+  this->dmg = dmg;
   this->inventory.clear();
   for (int i : inv)
     this->inventory.push_back((ItemType)i);
