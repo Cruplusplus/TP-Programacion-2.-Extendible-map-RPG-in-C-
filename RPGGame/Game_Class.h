@@ -49,6 +49,10 @@ private:
     sf::Font font;
     sf::Text gameOverText;
 
+    //muejejejeeje
+    std::vector<sf::Keyboard::Key> konamiSequence;
+    int konamiIndex;
+
 //Inicializadores
     void initVariables();
     void initWindow();

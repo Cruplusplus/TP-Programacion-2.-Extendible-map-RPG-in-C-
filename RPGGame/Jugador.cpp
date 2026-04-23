@@ -60,6 +60,7 @@ void Jugador::recibirDanio(int danio) {
 int Jugador::getHp() const { return this->hp; }
 
 void Jugador::resetAnimTimer() {
+  if (this->animState == PLAYER_ANIMATION_STATES::ATTACK || this->animState == PLAYER_ANIMATION_STATES::BLOCK) return;
   this->animationTimer.restart();
   this->animationSwitch = true;
 }
@@ -122,8 +123,6 @@ void Jugador::addPickup(PickupType pickup) {
         std::cout << "error at Jugador.cpp Jugador::addPickup()";
         break;
     }
-
-    std::cout << this->getHp() << std::endl;
 
     break;
   }
@@ -265,7 +264,7 @@ void Jugador::updateAnimations() {
     }
 
     // Terminar el ataque después de un tiempo total (ej. 0.5s)
-    if (this->animationTimer.getElapsedTime().asSeconds() >= 0.5f) {
+    if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f) {
       this->animState = PLAYER_ANIMATION_STATES::IDLE;
       this->resetAttack(); // Limpiar lista de enemigos golpeados
 
@@ -421,12 +420,12 @@ int Jugador::getMaxHp() const { return this->maxHp; }
 int Jugador::getLevelPiso() const { return this->levelPiso; }
 void Jugador::addLevelPiso() { this->levelPiso++; }
 
-void Jugador::setStats(int hp, int maxHp, int coins, int statsUp,
+void Jugador::setStats(int hp, int maxHp, int coins, int dmg,
                        const std::vector<int> &inv) {
   this->hp = hp;
   this->maxHp = maxHp;
   this->coins = coins;
-  this->statsUp = statsUp;
+  this->dmg = dmg;
   this->inventory.clear();
   for (int i : inv)
     this->inventory.push_back((ItemType)i);

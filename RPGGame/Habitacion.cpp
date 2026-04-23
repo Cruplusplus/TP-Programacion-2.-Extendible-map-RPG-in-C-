@@ -79,7 +79,7 @@ void Habitacion::initTileMap() {
       char c = selectedTemplate[y][x];
 
       if (c == 'R')
-        levelData[y][x] = 5; // Roca
+        levelData[y][x] = tipoTiles::ROCA; // Roca
       else if (c == 'E') {
         // Guardar spawn de enemigo (centro del tile)
         this->enemySpawns.push_back(sf::Vector2f(
@@ -164,7 +164,7 @@ void Habitacion::initEnemigos() {
   for (auto &pos : this->enemySpawns) {
     int type = rand() % 100;
     Enemigos* e = nullptr;
-    
+
     if (type < 40) // 40% Duende
       e = new Duende(pos.x, pos.y);
     else if (type < 60) // 20% Orco
