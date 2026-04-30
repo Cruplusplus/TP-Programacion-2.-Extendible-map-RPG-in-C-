@@ -13,6 +13,12 @@ Un simulador de mapa extensible y lógica RPG desarrollado en C++ utilizando la 
 - **Serialización:** JSON for Modern C++.
 - **Control de Versiones:** Git / GitHub.
 
+## Screenshots
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/7a483dd9-7b82-4dfd-a422-39abcb3bbae0" />
+<img width="799" height="625" alt="image" src="https://github.com/user-attachments/assets/a437ea76-4ff2-4f9b-9b1a-18141c98d9bf" />
+<img width="505" height="547" alt="image" src="https://github.com/user-attachments/assets/dd25c089-76e2-4d3f-a197-ed6029ad0ed9" />
+
+
 ## Características Principales
 
 - **Generación Procedural de Mazmorras**: Cada partida genera un mapa único con salas interconectadas de manera lógica, garantizando rejugabilidad.
