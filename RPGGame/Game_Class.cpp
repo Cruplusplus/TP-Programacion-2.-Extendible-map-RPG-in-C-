@@ -120,7 +120,7 @@ const sf::RenderWindow &Juego::getWindow() const { return *this->window; }
 void Juego::updateInput()
 {
     // Mouse
-    /* //Debug
+    /*
     std::cout << int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize())
                      << " " << int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize())
                      << std::endl;*/
@@ -128,9 +128,13 @@ void Juego::updateInput()
     const int mouseX = int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize());
     const int mouseY = int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize());
 
+    // Player movement
+    if (sf::Keyboard::isKeyPressed(this->keyboardMappings["KEY_MOVE_LEFT"]))
+    {
+    }
+
     // Tile funcs
     // debug
-    /*
     if (sf::Mouse::isButtonPressed(this->mouseMappings["BTN_ADD_TILE"]))
     {
         this->habitacionActual->getTileMap()->addTile(mouseX, mouseY, 1);
@@ -138,7 +142,7 @@ void Juego::updateInput()
     else if (sf::Mouse::isButtonPressed(this->mouseMappings["BTN_REMOVE_TILE"]))
     {
         this->habitacionActual->getTileMap()->removeTile(mouseX, mouseY);
-    }*/
+    }
 }
 
 void Juego::pollEvents()
@@ -587,7 +591,7 @@ void Juego::nextDungeonFloor()
     }
     this->roomsMap.clear();
 
-    this->dungeonGen = new DungeonGenerator(10, 10, 10); // Genera uno nuevo
+    this->dungeonGen = new DungeonGenerator(10, 10, 10); // Genera uno completamente nuevo
     this->dungeonGen->generate(this->seed);
 
     this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;

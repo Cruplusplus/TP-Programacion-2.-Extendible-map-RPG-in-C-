@@ -1,6 +1,6 @@
 #pragma once
-#include <array>
-#include <string_view>
+#include <vector>
+#include <string>
 
 namespace RoomTemplates {
 
@@ -14,8 +14,8 @@ namespace RoomTemplates {
     // E = Enemigo
     // T = Tesoro (Opcional)
 
-    const std::array<std::array<std::string_view, TEMPLATE_HEIGHT>, 5> templates = {{
-        {{
+    const std::vector<std::vector<std::string>> templates = {
+        {
             "................",
             "................",
             "................",
@@ -28,8 +28,9 @@ namespace RoomTemplates {
             "................",
             "................",
             "................",
-        }},
-        {{
+        },
+
+        {
             "................",
             ".RRRR......RRRR.",
             "................",
@@ -42,8 +43,9 @@ namespace RoomTemplates {
             "................",
             ".RRRR......RRRR.",
             "................"
-        }},
-        {{
+        },
+
+        {
             "................",
             ".RRRR......RRRR.",
             "................",
@@ -56,8 +58,9 @@ namespace RoomTemplates {
             ".R............R.",
             ".RRR........RRR.",
             "................"
-        }},
-        {{
+        },
+
+        {
             "................",
             "................",
             ".....R....R.....",
@@ -70,8 +73,9 @@ namespace RoomTemplates {
             ".....R....R.....",
             "................",
             "................",
-        }},
-        {{
+        },
+        
+        {
             "................",
             "................",
             "................",
@@ -84,7 +88,7 @@ namespace RoomTemplates {
             "................",
             "................",
             "................",
-        }}
-    }};
+        }
+    };
 
 }
