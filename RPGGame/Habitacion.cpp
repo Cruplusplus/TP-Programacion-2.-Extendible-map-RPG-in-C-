@@ -61,7 +61,7 @@ void Habitacion::initTileMap() {
     }
   }
 
-  std::vector<std::string> selectedTemplate;
+  std::array<std::string_view, MAP_HEIGHT> selectedTemplate;
 
   if (roomData.type != BOSS && roomData.type != START &&
       roomData.type != TREASURE) {
@@ -70,7 +70,7 @@ void Habitacion::initTileMap() {
   } else {
     // Template vacio por defecto para boss/start/treasure
     for (int i = 0; i < MAP_HEIGHT; i++)
-      selectedTemplate.push_back("................");
+      selectedTemplate[i] = "................";
   }
 
   // recorre el template y le da un valor a cada tile
