@@ -8,6 +8,7 @@
 #include "MainMenu.h"
 
 #include <algorithm>
+#include <set>
 
 //Motor grafico del juego
 class Juego{
@@ -33,6 +34,7 @@ private:
     sf::Vector2i currentRoomCoords;
     unsigned int seed;
     std::map<std::pair<int, int>, Habitacion*> roomsMap;
+    std::set<std::pair<int, int>> clearedRooms;
 
     enum GameState {
         STATE_MENU,

@@ -9,11 +9,14 @@ using json = nlohmann::json;
 struct GameData {
     int hp;
     int maxHp;
+    int dmg;
     int coins;
     int statsUp;
     unsigned int seed;
     int currentRoomX;
     int currentRoomY;
+    int floor;
+    std::vector<std::pair<int, int>> clearedRooms;
     std::vector<int> inventory; // Guarda ItemType como int
 };
 

@@ -1,10 +1,15 @@
 {
-    "coins": 0,
-    "currentRoomX": 5,
-    "currentRoomY": 5,
-    "hp": 10,
-    "inventory": [],
-    "maxHp": 10,
-    "seed": 1779367249,
-    "statsUp": 0
+    "coins": 9999,
+    "currentRoomX": 4,
+    "currentRoomY": 4,
+    "hp": 99999,
+    "inventory": [
+        0,
+        0,
+        0,
+        0
+    ],
+    "maxHp": 99999,
+    "seed": 1779378770,
+    "statsUp": 2
 }

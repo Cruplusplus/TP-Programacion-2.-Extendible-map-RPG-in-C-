@@ -312,6 +312,12 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
 
 TileMap *Habitacion::getTileMap() const { return this->tileMap; }
 std::vector<Enemigos *> Habitacion::getEnemigos() { return this->enemigos; }
+void Habitacion::clearEnemies() {
+  for (auto *e : this->enemigos) {
+    delete e;
+  }
+  this->enemigos.clear();
+}
 RoomData Habitacion::getRoomData() const { return roomData; }
 
 sf::FloatRect Habitacion::getTrapdoorBounds() const {

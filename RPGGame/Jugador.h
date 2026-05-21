@@ -66,6 +66,7 @@ public:
     int getMaxHp() const;
 
     int getLevelPiso() const;
+    void setLevelPiso(int piso);
     void addLevelPiso();
 
     void setStats(int hp, int maxHp, int coins, int dmg, const std::vector<int>& inv);

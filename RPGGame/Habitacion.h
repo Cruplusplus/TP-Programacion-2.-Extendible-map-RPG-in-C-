@@ -36,6 +36,7 @@ public:
 
     TileMap* getTileMap() const;
     std::vector<Enemigos*> getEnemigos();
+    void clearEnemies();
     RoomData getRoomData() const;
     sf::FloatRect getTrapdoorBounds() const;
 };

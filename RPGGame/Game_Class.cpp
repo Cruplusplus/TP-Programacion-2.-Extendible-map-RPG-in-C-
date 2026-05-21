@@ -360,6 +360,9 @@ void Juego::updateCollision()
         else
         {
             this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
+            if (this->clearedRooms.count(std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y))) {
+                this->habitacionActual->clearEnemies();
+            }
             this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         }
 
@@ -506,6 +509,12 @@ void Juego::handleMenuInput(sf::Keyboard::Key key)
 
 void Juego::saveGame(int slot)
 {
+    for (auto& pair : this->roomsMap) {
+        if (pair.second->getEnemigos().empty() && pair.second->getRoomData().type != START) {
+            this->clearedRooms.insert(pair.first);
+        }
+    }
+
     GameData gd;
     gd.hp = this->jugador->getHp();
     gd.maxHp = this->jugador->getMaxHp();
@@ -514,6 +523,8 @@ void Juego::saveGame(int slot)
     gd.seed = this->seed;
     gd.currentRoomX = this->currentRoomCoords.x;
     gd.currentRoomY = this->currentRoomCoords.y;
+    gd.floor = this->jugador->getLevelPiso();
+    gd.clearedRooms = std::vector<std::pair<int, int>>(this->clearedRooms.begin(), this->clearedRooms.end());
     gd.inventory = this->jugador->getInventoryAsInt();
     SaveManager::saveGame(slot, gd);
 }
@@ -524,9 +535,15 @@ void Juego::loadGame(int slot)
     {
         GameData gd = SaveManager::loadGame(slot);
         this->jugador->setStats(gd.hp, gd.maxHp, gd.coins, gd.statsUp, gd.inventory);
+        this->jugador->setLevelPiso(gd.floor);
         this->seed = gd.seed;
         this->currentRoomCoords.x = gd.currentRoomX;
         this->currentRoomCoords.y = gd.currentRoomY;
+
+        this->clearedRooms.clear();
+        for (auto p : gd.clearedRooms) {
+            this->clearedRooms.insert(p);
+        }
 
         if (this->dungeonGen != nullptr)
             delete this->dungeonGen;
@@ -542,6 +559,9 @@ void Juego::loadGame(int slot)
         this->habitacionActual = new Habitacion(&this->tileSheet,
                                                 this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y),
                                                 this->jugador->getLevelPiso());
+        if (this->clearedRooms.count(std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y))) {
+            this->habitacionActual->clearEnemies();
+        }
         this->roomsMap[std::make_pair(
             this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
         this->gameState = STATE_PLAYING;
@@ -567,6 +587,7 @@ void Juego::resetGame()
         delete pair.second;
     }
     this->roomsMap.clear();
+    this->clearedRooms.clear();
 
     this->initPersonajes();
     this->initHabitacion();
@@ -590,6 +611,7 @@ void Juego::nextDungeonFloor()
         delete pair.second;
     }
     this->roomsMap.clear();
+    this->clearedRooms.clear();
 
     this->dungeonGen = new DungeonGenerator(10, 10, 10); // Genera uno completamente nuevo
     this->dungeonGen->generate(this->seed);
