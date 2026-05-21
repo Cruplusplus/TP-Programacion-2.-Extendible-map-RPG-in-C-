@@ -1,0 +1,15 @@
+{
+    "coins": 10002,
+    "currentRoomX": 3,
+    "currentRoomY": 5,
+    "hp": 99996,
+    "inventory": [
+        0,
+        0,
+        0,
+        0
+    ],
+    "maxHp": 99999,
+    "seed": 1779367249,
+    "statsUp": 2
+}

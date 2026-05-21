@@ -5,6 +5,7 @@ void SaveManager::saveGame(int slot, const GameData& data) {
     j["hp"] = data.hp;
     j["maxHp"] = data.maxHp;
     j["coins"] = data.coins;
+    j["dmg"] = data.dmg;
     j["statsUp"] = data.statsUp;
     j["seed"] = data.seed;
     j["currentRoomX"] = data.currentRoomX;
