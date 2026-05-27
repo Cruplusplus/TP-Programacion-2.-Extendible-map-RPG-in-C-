@@ -116,7 +116,7 @@ void Jugador::addPickup(PickupType pickup) {
         std::cout << "HP up" << std::endl;
         break;
       case 3:
-        this->velocidad = this->velocidad+1;
+        this->velocidad = this->velocidad+0.5;
         std::cout << "VEL up" << std::endl;
         break;
       default:
