@@ -418,6 +418,7 @@ int Jugador::getDmg() const { return this->dmg; }
 int Jugador::getMaxHp() const { return this->maxHp; }
 
 int Jugador::getLevelPiso() const { return this->levelPiso; }
+void Jugador::setLevelPiso(int piso) { this->levelPiso = piso; }
 void Jugador::addLevelPiso() { this->levelPiso++; }
 
 void Jugador::setStats(int hp, int maxHp, int coins, int dmg,
