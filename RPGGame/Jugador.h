@@ -31,9 +31,22 @@ private:
     // Attack Logic
     int facingDirection; // 0: Down, 1: Left, 2: Right, 3: Up
     std::vector<Character*> hitEnemies;
+    
+    bool pendingProjectileSpawn;
+    bool pendingExplosionSpawn;
+    sf::Clock bowCooldown;
+
+    void recalculateStatsFromItems();
+
 
 public:
     std::map<std::string, sf::Keyboard::Key> keybinds;
+
+    bool getPendingProjectileSpawn() const;
+    void resetPendingProjectileSpawn() ;
+    bool getPendingExplosionSpawn() const;
+    void resetPendingExplosionSpawn();
+    int getFacingDirection() const;
 
     Jugador(const float x, const float y);
 
@@ -52,7 +65,7 @@ public:
     // Items & stats
     void addItem(ItemType item);
     void addPickup(PickupType pickup);
-    bool hasItem(ItemType item);
+    bool hasItem(ItemType item) const;
 
     virtual void recibirDanio(int danio);
 

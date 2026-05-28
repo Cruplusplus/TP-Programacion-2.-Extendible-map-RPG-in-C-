@@ -15,7 +15,10 @@ enum PickupType {
     PICKUP_HEART = 0,
     PICKUP_SPECTRAL_HEART,
     PICKUP_COIN,
-    PICKUP_STAT_UP
+    PICKUP_STAT_UP,
+    PICKUP_ITEM_BOW,
+    PICKUP_ITEM_KAMIKAZE,
+    PICKUP_ITEM_DASH
 };
 
 class Item : public Entity {

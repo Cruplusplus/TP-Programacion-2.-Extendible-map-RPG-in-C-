@@ -17,6 +17,16 @@ private:
     std::vector<sf::Vector2f> enemySpawns;
     std::vector<Proyectil*> proyectiles;
 
+    struct VisualExplosion {
+        sf::Vector2f pos;
+        sf::Clock timer;
+        float maxRadius;
+    };
+    std::vector<VisualExplosion> visualExplosions;
+
+    void triggerExplosion(sf::Vector2f pos, float damage, float radius = 100.f);
+
+
     //BG
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;

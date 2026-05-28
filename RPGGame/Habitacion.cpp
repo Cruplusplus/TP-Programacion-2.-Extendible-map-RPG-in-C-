@@ -1,6 +1,7 @@
 #include "Habitacion.h"
 #include "Enemigos.h"
 #include "Jugador.h"
+#include <cmath>
 
 Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data, int nivelPiso) {
   this->tileSheet = tile_sheet;
@@ -153,10 +154,10 @@ void Habitacion::initEnemigos() {
   }
 
   if (this->roomData.type == TREASURE) {
-    // Spawn items (representados como pickup por ahora)
-    this->pickups.push_back(new Pickup(PICKUP_COIN, 400.f, 300.f));
-    this->pickups.push_back(new Pickup(PICKUP_STAT_UP, 450.f, 300.f));
-    this->pickups.push_back(new Pickup(PICKUP_SPECTRAL_HEART, 350.f, 300.f));
+    // Spawn actual item pickups
+    this->pickups.push_back(new Pickup(PICKUP_ITEM_BOW, 400.f, 300.f));
+    this->pickups.push_back(new Pickup(PICKUP_ITEM_KAMIKAZE, 450.f, 300.f));
+    this->pickups.push_back(new Pickup(PICKUP_ITEM_DASH, 350.f, 300.f));
     return;
   }
 
@@ -181,8 +182,70 @@ void Habitacion::initEnemigos() {
   }
 }
 
+void Habitacion::triggerExplosion(sf::Vector2f pos, float damage, float radius) {
+    for (auto* e : this->enemigos) {
+        float dx = e->getPosition().x - pos.x;
+        float dy = e->getPosition().y - pos.y;
+        float dist = std::sqrt(dx*dx + dy*dy);
+        if (dist <= radius) {
+            e->recibirDanio(damage);
+        }
+    }
+    
+    VisualExplosion exp;
+    exp.pos = pos;
+    exp.timer.restart();
+    exp.maxRadius = radius;
+    this->visualExplosions.push_back(exp);
+}
+
+
 void Habitacion::update(Jugador *jugador) {
   this->tileMap->update();
+
+  // Spawn player projectiles if pending
+  if (jugador->getPendingProjectileSpawn()) {
+      sf::Vector2f dir(0.f, 0.f);
+      int facing = jugador->getFacingDirection();
+      if (facing == 0 /* DOWN */) dir.y = 1.f;
+      else if (facing == 1 /* LEFT */) dir.x = -1.f;
+      else if (facing == 2 /* RIGHT */) dir.x = 1.f;
+      else if (facing == 3 /* UP */) dir.y = -1.f;
+      
+      sf::FloatRect pb = jugador->getHitboxBounds();
+      float px = pb.left + pb.width/2.f - 5.f;
+      float py = pb.top + pb.height/2.f - 5.f;
+      
+      Proyectil* proj = new Proyectil(px, py, dir, 10.f, jugador->getDmg(), false);
+      if (jugador->hasItem(ITEM_ARCOMIKAZE)) {
+          proj->getSprite().setColor(sf::Color(255, 100, 0)); // Orange for explosive arrows
+          proj->getSprite().setScale(1.5f, 1.5f);
+      }
+      this->proyectiles.push_back(proj);
+      jugador->resetPendingProjectileSpawn();
+  }
+
+  // Spawn Kamikaze visual explosion if pending
+  if (jugador->getPendingExplosionSpawn()) {
+      sf::FloatRect pb = jugador->getHitboxBounds();
+      sf::Vector2f center(pb.left + pb.width/2.f, pb.top + pb.height/2.f);
+      
+      VisualExplosion exp;
+      exp.pos = center;
+      exp.timer.restart();
+      exp.maxRadius = 100.f; // 200px diameter
+      this->visualExplosions.push_back(exp);
+      
+      jugador->resetPendingExplosionSpawn();
+  }
+
+  // Update visual explosions
+  for (size_t i = 0; i < this->visualExplosions.size(); i++) {
+      if (this->visualExplosions[i].timer.getElapsedTime().asSeconds() > 0.25f) {
+          this->visualExplosions.erase(this->visualExplosions.begin() + i);
+          i--;
+      }
+  }
 
   //debug pickups
   if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T))
@@ -282,6 +345,41 @@ void Habitacion::update(Jugador *jugador) {
           }
       }
 
+      // Colision con enemigos (para proyectiles del jugador)
+      if (!this->proyectiles[i]->isEnemy()) {
+          bool hit = false;
+          for (auto* enemigo : this->enemigos) {
+              if (this->proyectiles[i]->getGlobalBounds().intersects(enemigo->getSprite().getGlobalBounds())) {
+                  hit = true;
+                  
+                  // Check Arcomikaze explosive synergy
+                  if (jugador->hasItem(ITEM_ARCOMIKAZE)) {
+                      this->triggerExplosion(this->proyectiles[i]->getPosition(), this->proyectiles[i]->getDamage() * 2, 100.f);
+                  } else {
+                      enemigo->recibirDanio(this->proyectiles[i]->getDamage());
+                  }
+                  break;
+              }
+          }
+          if (hit) {
+              delete this->proyectiles[i];
+              this->proyectiles.erase(this->proyectiles.begin() + i);
+              i--;
+              continue;
+          }
+
+          // Colision con paredes / obstaculos del mapa
+          if (this->tileMap->checkCollision(this->proyectiles[i]->getGlobalBounds())) {
+              if (jugador->hasItem(ITEM_ARCOMIKAZE)) {
+                  this->triggerExplosion(this->proyectiles[i]->getPosition(), this->proyectiles[i]->getDamage() * 2, 100.f);
+              }
+              delete this->proyectiles[i];
+              this->proyectiles.erase(this->proyectiles.begin() + i);
+              i--;
+              continue;
+          }
+      }
+
       // Eliminar si sale de pantalla (aprox)
       if (this->proyectiles[i]->getPosition().x < 0 || this->proyectiles[i]->getPosition().x > 800 ||
           this->proyectiles[i]->getPosition().y < 0 || this->proyectiles[i]->getPosition().y > 600) {
@@ -307,6 +405,29 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
 
   for (auto *p : this->proyectiles) {
       p->render(target);
+  }
+
+  // Draw expanding visual explosions
+  for (const auto& exp : this->visualExplosions) {
+      float t = exp.timer.getElapsedTime().asSeconds();
+      float currentRadius = exp.maxRadius * (t / 0.25f);
+      if (currentRadius > exp.maxRadius) currentRadius = exp.maxRadius;
+      
+      sf::CircleShape circle(currentRadius);
+      circle.setOrigin(currentRadius, currentRadius);
+      circle.setPosition(exp.pos);
+      
+      // Fading out fire colors
+      int alpha = 120 - static_cast<int>(120 * (t / 0.25f));
+      if (alpha < 0) alpha = 0;
+      int outlineAlpha = 200 - static_cast<int>(200 * (t / 0.25f));
+      if (outlineAlpha < 0) outlineAlpha = 0;
+      
+      circle.setFillColor(sf::Color(255, 100, 0, alpha));
+      circle.setOutlineColor(sf::Color(255, 0, 0, outlineAlpha));
+      circle.setOutlineThickness(2.f);
+      
+      target.draw(circle);
   }
 }
 

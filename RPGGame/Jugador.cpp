@@ -1,5 +1,6 @@
 #include "Jugador.h"
 #include <cmath>
+#include <algorithm>
 
 //================JUGADOR================{
 
@@ -11,6 +12,8 @@ void Jugador::initInventory() {
   this->lvl = 1;
 
   this->levelPiso = 0;
+  this->pendingProjectileSpawn = false;
+  this->pendingExplosionSpawn = false;
 }
 
 Jugador::Jugador(const float x, const float y)
@@ -67,21 +70,31 @@ void Jugador::resetAnimTimer() {
 
 //================MOVIMIENTO==================
 
+void Jugador::recalculateStatsFromItems() {
+    this->velocidad = 3.0f; // Base speed
+    for (auto item : this->inventory) {
+        if (item == ITEM_BOW || item == ITEM_KAMIKAZE || item == ITEM_ARCOMIKAZE) {
+            this->velocidad = 4.5f;
+        }
+    }
+}
+
 void Jugador::addItem(ItemType item) {
-  // Check synergy
   bool hasBow = hasItem(ITEM_BOW);
   bool hasKamikaze = hasItem(ITEM_KAMIKAZE);
 
-  if (item == ITEM_BOW && hasKamikaze) {
-    inventory.push_back(ITEM_ARCOMIKAZE);
-  } else if (item == ITEM_KAMIKAZE && hasBow) {
-    inventory.push_back(ITEM_ARCOMIKAZE);
+  if ((item == ITEM_BOW && hasKamikaze) || (item == ITEM_KAMIKAZE && hasBow)) {
+    this->inventory.push_back(ITEM_ARCOMIKAZE);
+    this->inventory.erase(std::remove(this->inventory.begin(), this->inventory.end(), ITEM_BOW), this->inventory.end());
+    this->inventory.erase(std::remove(this->inventory.begin(), this->inventory.end(), ITEM_KAMIKAZE), this->inventory.end());
   } else {
-    inventory.push_back(item);
+    this->inventory.push_back(item);
   }
+
+  this->recalculateStatsFromItems();
 }
 
-bool Jugador::hasItem(ItemType item) {
+bool Jugador::hasItem(ItemType item) const {
   for (auto i : inventory)
     if (i == item)
       return true;
@@ -99,6 +112,15 @@ void Jugador::addPickup(PickupType pickup) {
     break;
   case PICKUP_COIN:
     coins++;
+    break;
+  case PICKUP_ITEM_BOW:
+    addItem(ITEM_BOW);
+    break;
+  case PICKUP_ITEM_KAMIKAZE:
+    addItem(ITEM_KAMIKAZE);
+    break;
+  case PICKUP_ITEM_DASH:
+    addItem(ITEM_DASH);
     break;
   case PICKUP_STAT_UP:
     statsUp++;
@@ -169,23 +191,24 @@ void Jugador::updateMovement() {
       this->velocidadVector = this->dashDir * 5.0f;
       return;
     } else {
-      if(this->dashCooldown.getElapsedTime().asSeconds() > 2.f)
       this->isDashing = false;
     }
   }
 
-  // Active Items Input
-  if (sf::Keyboard::isKeyPressed(this->keybinds["DASH"]) && !isDashing) {
-    if (this->dashTimer.getElapsedTime().asSeconds() > 0.5f) {
+  sf::Vector2f inputDir(0.f, 0.f);
+  if (sf::Keyboard::isKeyPressed(this->keybinds["LEFT"]))  inputDir.x -= 1.f;
+  if (sf::Keyboard::isKeyPressed(this->keybinds["RIGHT"])) inputDir.x += 1.f;
+  if (sf::Keyboard::isKeyPressed(this->keybinds["UP"]))    inputDir.y -= 1.f;
+  if (sf::Keyboard::isKeyPressed(this->keybinds["DOWN"]))  inputDir.y += 1.f;
+
+  // Active Items Input (DASH)
+  if (sf::Keyboard::isKeyPressed(this->keybinds["DASH"]) && !this->isDashing && hasItem(ITEM_DASH)) {
+    if (this->dashTimer.getElapsedTime().asSeconds() > 7.0f) {
       this->isDashing = true;
       this->dashCooldown.restart();
       this->dashTimer.restart();
 
-      this->dashDir = sf::Vector2f(0.f, 0.f);
-      if (sf::Keyboard::isKeyPressed(this->keybinds["LEFT"]))  this->dashDir.x -= 1.f;
-      if (sf::Keyboard::isKeyPressed(this->keybinds["RIGHT"])) this->dashDir.x += 1.f;
-      if (sf::Keyboard::isKeyPressed(this->keybinds["UP"]))    this->dashDir.y -= 1.f;
-      if (sf::Keyboard::isKeyPressed(this->keybinds["DOWN"]))  this->dashDir.y += 1.f;
+      this->dashDir = inputDir;
 
       if (this->dashDir.x == 0.f && this->dashDir.y == 0.f) {
         if (this->facingDirection == DIRECTION::RIGHT) this->dashDir.x = 1.f;
@@ -200,13 +223,7 @@ void Jugador::updateMovement() {
     }
   }
 
-  this->velocidadVector.x = 0.f;
-  this->velocidadVector.y = 0.f;
-
-  if (sf::Keyboard::isKeyPressed(this->keybinds["LEFT"]))  this->velocidadVector.x -= 1.f;
-  if (sf::Keyboard::isKeyPressed(this->keybinds["RIGHT"])) this->velocidadVector.x += 1.f;
-  if (sf::Keyboard::isKeyPressed(this->keybinds["UP"]))    this->velocidadVector.y -= 1.f;
-  if (sf::Keyboard::isKeyPressed(this->keybinds["DOWN"]))  this->velocidadVector.y += 1.f;
+  this->velocidadVector = inputDir;
 
   if (this->velocidadVector.x != 0.f || this->velocidadVector.y != 0.f) {
       float length = std::sqrt(std::pow(this->velocidadVector.x, 2) + std::pow(this->velocidadVector.y, 2));
@@ -235,13 +252,24 @@ void Jugador::updateMovement() {
   }
 
   if (sf::Keyboard::isKeyPressed(this->keybinds["ATTACK"])) {
-    if (hasItem(ITEM_KAMIKAZE) || hasItem(ITEM_ARCOMIKAZE)) {
-      if (this->kamikazeTimer.getElapsedTime().asSeconds() > 7.0f) {
+    if (hasItem(ITEM_BOW) || hasItem(ITEM_ARCOMIKAZE)) {
+      // Bow / Arcomikaze attack (cooldown of 0.4s)
+      if (this->bowCooldown.getElapsedTime().asSeconds() > 0.4f) {
+        this->animState = PLAYER_ANIMATION_STATES::ATTACK;
+        this->resetAttack();
+        this->bowCooldown.restart();
+        this->pendingProjectileSpawn = true;
+      }
+    } else if (hasItem(ITEM_KAMIKAZE)) {
+      // Kamikaze explosion (cooldown of 3.0s)
+      if (this->kamikazeTimer.getElapsedTime().asSeconds() > 3.0f) {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;
         this->resetAttack();
         this->kamikazeTimer.restart();
+        this->pendingExplosionSpawn = true;
       }
     } else {
+      // Standard melee attack
       this->animState = PLAYER_ANIMATION_STATES::ATTACK;
       this->resetAttack();
     }
@@ -400,8 +428,20 @@ void Jugador::update() {
   }
 }
 
-void Jugador::render(sf::RenderTarget &target) { target.draw(this->sprite);
-target.draw(this->debugHb);
+void Jugador::render(sf::RenderTarget &target) {
+  target.draw(this->sprite);
+  target.draw(this->debugHb);
+
+  // Kamikaze visual feedback
+  if (this->isAttacking() && this->hasItem(ITEM_KAMIKAZE) && !this->hasItem(ITEM_BOW)) {
+    sf::FloatRect bounds = this->getAttackHitbox();
+    sf::CircleShape explosion(bounds.width / 2.f);
+    explosion.setPosition(bounds.left, bounds.top);
+    explosion.setFillColor(sf::Color(255, 128, 0, 100)); // Transparent orange
+    explosion.setOutlineColor(sf::Color(255, 0, 0, 180));
+    explosion.setOutlineThickness(2.f);
+    target.draw(explosion);
+  }
 }
 
 // Getters & Setters
@@ -428,8 +468,10 @@ void Jugador::setStats(int hp, int maxHp, int coins, int dmg,
   this->coins = coins;
   this->dmg = dmg;
   this->inventory.clear();
-  for (int i : inv)
+  for (int i : inv) {
     this->inventory.push_back((ItemType)i);
+  }
+  this->recalculateStatsFromItems();
 }
 
 void Jugador::resetAttack() { this->hitEnemies.clear(); }
@@ -448,6 +490,18 @@ bool Jugador::isAttacking() const {
 
 
 sf::FloatRect Jugador::getAttackHitbox() const {
+  if (hasItem(ITEM_BOW) || hasItem(ITEM_ARCOMIKAZE)) {
+    return sf::FloatRect(0, 0, 0, 0); // No melee attack if shooting arrows
+  }
+
+  if (hasItem(ITEM_KAMIKAZE)) {
+    sf::FloatRect playerBounds = this->getHitboxBounds();
+    float size = 200.f; // explosion range
+    return sf::FloatRect(playerBounds.left + playerBounds.width/2.f - size/2.f,
+                         playerBounds.top + playerBounds.height/2.f - size/2.f,
+                         size, size);
+  }
+
   sf::FloatRect swordHb = this->getHitboxBounds();
   swordHb.height -= 90.f;
   float range = 90.f; // Rango de la espada
@@ -478,4 +532,24 @@ sf::FloatRect Jugador::getAttackHitbox() const {
                          swordHb.top - 130.f, width, range);
   }
   return sf::FloatRect(0, 0, 0, 0);
+}
+
+bool Jugador::getPendingProjectileSpawn() const {
+  return this->pendingProjectileSpawn;
+}
+
+void Jugador::resetPendingProjectileSpawn() {
+  this->pendingProjectileSpawn = false;
+}
+
+bool Jugador::getPendingExplosionSpawn() const {
+  return this->pendingExplosionSpawn;
+}
+
+void Jugador::resetPendingExplosionSpawn() {
+  this->pendingExplosionSpawn = false;
+}
+
+int Jugador::getFacingDirection() const {
+  return this->facingDirection;
 }
