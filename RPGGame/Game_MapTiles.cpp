@@ -1,7 +1,5 @@
 #include "Game_MapTiles.h"
 
-//=============MAPA================
-
 Tile::Tile(const int& grid_pos_x, const int& grid_pos_y, const int& tile_size,
            sf::Texture* textureSheet, sf::IntRect textureRect)
 {
@@ -28,8 +26,6 @@ void Tile::render(sf::RenderTarget& target)
 {
     target.draw(this->sprite);
 }
-
-//===TileMap===
 
 TileMap::TileMap()
 {

@@ -24,7 +24,7 @@ public:
     void escalarDificultad(int pisoActual);
     virtual void updateIA(Jugador* jugador);
     virtual void update() override;
-    virtual void attack(Jugador* jugador); // Base attack (melee)
+    virtual void attack(Jugador* jugador);
     
     virtual void render(sf::RenderTarget& target) override;
 };
@@ -36,7 +36,6 @@ class Duende : public Enemigos
     Duende(float x, float y);
     virtual ~Duende();
 
-    //Funciones
     void updateIA(Jugador* jugador) override;
     void update() override;
     void attack(Jugador* jugador) override;
@@ -87,6 +86,6 @@ public:
     virtual ~Hechicero();
     void update() override;
     void updateIA(Jugador* jugador) override;
-    void attack(Jugador* jugador) override; // Overload/Override sin proyectiles (Melee)
-    void attack(Jugador* jugador, std::vector<Proyectil*>& proyectiles); // Ranged
+    void attack(Jugador* jugador) override; 
+    void attack(Jugador* jugador, std::vector<Proyectil*>& proyectiles);
 };

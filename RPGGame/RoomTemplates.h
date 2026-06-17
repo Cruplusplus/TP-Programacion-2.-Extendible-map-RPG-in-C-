@@ -7,13 +7,13 @@ namespace RoomTemplates {
     const int TEMPLATE_WIDTH = 16;
     const int TEMPLATE_HEIGHT = 12;
 
-    // Simbolos:
-    // . = Suelo
-    // # = Pared (Las paredes perimetrales se fuerzan en codigo)
-    // R = Roca
-    // E = Enemigo
-    // T = Tesoro (Opcional)
-
+    /* Simbolos:
+    . = Piso
+    # = Pared (Las paredes perimetrales se fuerzan en codigo)
+    R = Roca
+    E = Enemigo
+    T = Tesoro (Opcional)
+    */
     const std::array<std::array<std::string_view, TEMPLATE_HEIGHT>, 5> templates = {{
         {{
             "................",

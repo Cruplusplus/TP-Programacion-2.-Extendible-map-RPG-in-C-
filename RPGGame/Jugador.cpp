@@ -104,7 +104,7 @@ void Jugador::addPickup(PickupType pickup) {
       hp++;
     break;
   case PICKUP_SPECTRAL_HEART:
-    hp++; // Puede exceder maxHp
+    hp++;
     break;
   case PICKUP_COIN:
     coins++;
@@ -193,7 +193,6 @@ void Jugador::updateMovement() {
   if (sf::Keyboard::isKeyPressed(this->keybinds["UP"]))    inputDir.y -= 1.f;
   if (sf::Keyboard::isKeyPressed(this->keybinds["DOWN"]))  inputDir.y += 1.f;
 
-  // Active Items Input
   if (sf::Keyboard::isKeyPressed(this->keybinds["DASH"]) && !this->isDashing && hasItem(ITEM_DASH)) {
     if (this->dashTimer.getElapsedTime().asSeconds() > 7.0f) {
       this->isDashing = true;

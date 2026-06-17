@@ -18,7 +18,6 @@ protected:
 
     sf::Vector2f velocidadVector;
 
-    // Animacion
     short animState;
     sf::IntRect currentFrame;
 
@@ -26,7 +25,7 @@ protected:
     TipoPersonaje tipo;
 
     void initVariables();
-    void initSprite(); // Override/Extend
+    void initSprite();
     void initAnimations();
 
 public:

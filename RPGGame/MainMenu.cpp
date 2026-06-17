@@ -9,7 +9,6 @@ MainMenu::MainMenu(float width, float height) {
     state = MENU_MAIN;
     selectedIndex = 0;
     
-    // Main Options
     std::vector<std::string> mainOpts = {"Play Game", "Load Game", "Save Game", "Exit"};
     for(size_t i=0; i<mainOpts.size(); i++) {
         sf::Text text;
@@ -21,7 +20,6 @@ MainMenu::MainMenu(float width, float height) {
     }
     mainOptions[0].setFillColor(sf::Color::Red); // Selected
     
-    // Load Options
     std::vector<std::string> loadOpts = {"Slot 1", "Slot 2", "Slot 3", "Back"};
     for(size_t i=0; i<loadOpts.size(); i++) {
         sf::Text text;
@@ -32,7 +30,6 @@ MainMenu::MainMenu(float width, float height) {
         loadOptions.push_back(text);
     }
     
-    // Save Options
     std::vector<std::string> saveOpts = {"Save Slot 1", "Save Slot 2", "Save Slot 3", "Back"};
     for(size_t i=0; i<saveOpts.size(); i++) {
         sf::Text text;
@@ -84,7 +81,6 @@ void MainMenu::setState(MenuState s) {
     state = s;
     selectedIndex = 0;
     
-    // Reset colors
     for(auto& t : mainOptions) t.setFillColor(sf::Color::White);
     for(auto& t : loadOptions) t.setFillColor(sf::Color::White);
     for(auto& t : saveOptions) t.setFillColor(sf::Color::White);

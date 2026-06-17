@@ -63,7 +63,7 @@ GameData SaveManager::loadGame(int slot) {
     file.close();
   } else {
     std::cout << "Error loading game from " << filename << std::endl;
-    // Return default/empty data
+    // return default/empty data
     data.hp = 10;
     data.maxHp = 10;
     data.dmg = 1;

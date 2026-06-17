@@ -10,10 +10,9 @@
 #include <algorithm>
 #include <set>
 
-//Motor grafico del juego
 class Juego{
 private:
-//ventana
+
     VisualConfig visualConfig;
     sf::RenderWindow *window;
     sf::VideoMode videoMode;
@@ -21,11 +20,9 @@ private:
 
     sf::Texture tileSheet;
 
-//Logica del juego
     bool finalizarJuego;
     int vida;
 
-//objetos del juego
     Jugador* jugador;
     Habitacion* habitacionActual;
     DungeonGenerator* dungeonGen;
@@ -55,7 +52,6 @@ private:
     std::vector<sf::Keyboard::Key> konamiSequence;
     int konamiIndex;
 
-//Inicializadores
     void initVariables();
     void initWindow();
     void initInput();
@@ -64,26 +60,21 @@ private:
     void initHabitacion();
     void initFonts();
 public:
-    //Constrc - Destrc
     Juego();
     virtual ~Juego();
 
     void resetGame();
     void nextDungeonFloor();
 
-    //Accesors
     const bool gameRunning() const;
     const bool getFinalizarJuego() const;
     const sf::RenderWindow& getWindow() const;
 
-    //Funcs
-    //void spawnEnemigo();
     void updateInput();
     void handleMenuInput(sf::Keyboard::Key key);
 
     void pollEvents();
 
-    //Updates
     void updatePersonajes();
     void updateCollision();
 
@@ -91,7 +82,6 @@ public:
 
     void render();
 
-    //Getters
     int getPuntos();
     
     void saveGame(int slot);

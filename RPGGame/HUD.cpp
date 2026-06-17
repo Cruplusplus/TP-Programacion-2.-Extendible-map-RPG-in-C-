@@ -2,10 +2,6 @@
 #include <iostream>
 
 HUD::HUD() {
-    // Cargar fuente (usando fuente por defecto o una si está disponible, por ahora solo intento cargar una o morir)
-    // En un escenario real, se empaquetaría una fuente. Se renderizará texto si falla
-    // SFML necesita un archivo de fuente.
-    // Uso una del sistema
 
     if(!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cout << "Error loading font" << std::endl;

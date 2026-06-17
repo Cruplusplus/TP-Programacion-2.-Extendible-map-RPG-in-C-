@@ -1,8 +1,6 @@
 #include "Enemigos.h"
 #include <cmath>
 
-//================ENEMIGOS================
-
 Enemigos::Enemigos(int _id, int _hp, int _dmg, int _lvl, std::string _nombre)
     : Character(_id, _hp, _dmg, _lvl, _nombre)
 {
@@ -43,7 +41,6 @@ void Enemigos::updateIA(Jugador* jugador)
     float distJugador = std::sqrt(delta.x * delta.x + delta.y * delta.y);
     sf::Vector2f dirJugador = (distJugador != 0) ? (delta / distJugador) : sf::Vector2f(0,0);
 
-    // --- ATAQUE ---
     if (distJugador < this->getHitboxBounds().width + 5.f)
     {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;
@@ -57,11 +54,8 @@ void Enemigos::updateIA(Jugador* jugador)
         return;
     }
 
-    // -- ESTADOS --
-
     if (!this->enModoEvasion)
     {
-        // --- ESTADO NORMAL ---
         if (isStuck)
         {
             this->enModoEvasion = true;
@@ -81,7 +75,6 @@ void Enemigos::updateIA(Jugador* jugador)
     }
     else
     {
-        // --- ESTADO EVASION ---
         this->velocidadVector = this->dirEvasion;
 
         if (isStuck && this->timerEvasion.getElapsedTime().asSeconds() > 0.2f)
@@ -133,8 +126,6 @@ void Enemigos::render(sf::RenderTarget& target)
     target.draw(this->hitbox);
 }
 
-//================DUENDE================
-
 Duende::Duende(float x, float y)
         : Enemigos(2, 3, 1, 1, "Duende")
 {
@@ -149,7 +140,7 @@ Duende::Duende(float x, float y)
     this->velocidad = 1.f;
     //this->initAnimations();
     this->setPosition(x, y);
-    this->velocidad = 2.5f; // Fast
+    this->velocidad = 2.5f;
 }
 
 Duende::~Duende()
@@ -178,7 +169,6 @@ void Duende::updateIA(Jugador* jugador)
         this->velocidadVector.x = direction.x;
         this->velocidadVector.y = direction.y;
 
-        //Animacion
         if (direction.x > 0)
             this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
         else
@@ -208,7 +198,6 @@ void Duende::attack(Jugador* jugador)
         this->animationTimer.restart();
     }
 }
-//================ORCO================
 
 Orco::Orco(float x, float y)
     : Enemigos(3, 10, 3, 1, "Orco")
@@ -223,7 +212,7 @@ Orco::Orco(float x, float y)
     this->hitbox.setOrigin(this->sprite.getOrigin().x - 1.5f, this->sprite.getOrigin().y - 3.f);
 
     this->setPosition(x, y);
-    this->velocidad = 1.5f; // Slow
+    this->velocidad = 1.5f;
 }
 
 Orco::~Orco() {}
@@ -274,8 +263,6 @@ void Orco::attack(Jugador* jugador)
     }
 }
 
-//================HADA================
-
 Hada::Hada(float x, float y)
     : Enemigos(4, 2, 0, 1, "Hada")
 {
@@ -318,8 +305,7 @@ void Hada::curarAliados(std::vector<Enemigos*>& enemigos) {
 
 void Hada::updateIA(Jugador* jugador)
 {
-    // Hada: Huir del jugador
-    sf::Vector2f direction = this->sprite.getPosition() - jugador->getPosition(); // Vector opuesto
+    sf::Vector2f direction = this->sprite.getPosition() - jugador->getPosition();
     float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
     if (distance != 0) {
@@ -330,16 +316,14 @@ void Hada::updateIA(Jugador* jugador)
 
     if (distance < SAFE_DISTANCE)
     {
-        this->velocidadVector = direction; // Huir
+        this->velocidadVector = direction;
     }
     else
     {
-        // Deambular o quedarse quieta
         this->velocidadVector = sf::Vector2f(0,0);
         this->animState = PLAYER_ANIMATION_STATES::IDLE;
     }
     
-    // Animacion basica
     if (this->velocidadVector.x != 0 || this->velocidadVector.y != 0) {
          if (std::abs(this->velocidadVector.x) > std::abs(this->velocidadVector.y)) {
             if (this->velocidadVector.x > 0) this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
@@ -347,8 +331,6 @@ void Hada::updateIA(Jugador* jugador)
         }
     }
 }
-
-//================ESTATUA================
 
 Estatua::Estatua(float x, float y)
     : Enemigos(5, 999, 2, 1, "Estatua")
@@ -372,14 +354,11 @@ void Estatua::update() {
 
 void Estatua::updateIA(Jugador* jugador)
 {
-    // Estatua: No hace nada, solo existe.
     this->velocidadVector = sf::Vector2f(0,0);
     this->animState = PLAYER_ANIMATION_STATES::IDLE;
     
-    // Si el jugador la toca, quizas daño por contacto?
+    //deberia "molestar" al jugador empujandolo, placeholder
 }
-
-//================HECHICERO================
 
 Hechicero::Hechicero(float x, float y)
     : Enemigos(6, 4, 2, 1, "Hechicero")
@@ -403,7 +382,7 @@ void Hechicero::update() {
 
 void Hechicero::attack(Jugador* jugador)
 {
-    // Melee attack or empty
+    // Melee attack o vacio
 }
 
 void Hechicero::attack(Jugador* jugador, std::vector<Proyectil*>& proyectiles) {
@@ -412,7 +391,6 @@ void Hechicero::attack(Jugador* jugador, std::vector<Proyectil*>& proyectiles) {
         float len = std::sqrt(dir.x*dir.x + dir.y*dir.y);
         if(len != 0) dir /= len;
         
-        // Spawn proyectil
         proyectiles.push_back(new Proyectil(this->getPosition().x, this->getPosition().y, dir, 4.f, this->dmg, true));
         
         this->attackTimer.restart();
@@ -421,7 +399,6 @@ void Hechicero::attack(Jugador* jugador, std::vector<Proyectil*>& proyectiles) {
 
 void Hechicero::updateIA(Jugador* jugador)
 {
-    // Hechicero: Mantener distancia
     sf::Vector2f diff = jugador->getPosition() - this->getPosition();
     float dist = std::sqrt(diff.x*diff.x + diff.y*diff.y);
     sf::Vector2f dir = (dist != 0) ? (diff / dist) : sf::Vector2f(0,0);
@@ -431,18 +408,17 @@ void Hechicero::updateIA(Jugador* jugador)
 
     if (dist < OPTIMAL_DIST - TOLERANCE)
     {
-        this->velocidadVector = -dir; // Alejarse
+        this->velocidadVector = -dir;
     }
     else if (dist > OPTIMAL_DIST + TOLERANCE)
     {
-        this->velocidadVector = dir; // Acercarse
+        this->velocidadVector = dir;
     }
     else
     {
-        this->velocidadVector = sf::Vector2f(0,0); // Mantener posicion
+        this->velocidadVector = sf::Vector2f(0,0);
     }
     
-    // Animacion
     if (this->velocidadVector.x != 0 || this->velocidadVector.y != 0) {
          if (std::abs(this->velocidadVector.x) > std::abs(this->velocidadVector.y)) {
             if (this->velocidadVector.x > 0) this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;

@@ -108,14 +108,11 @@ Juego::~Juego()
     delete this->mainMenu;
 }
 
-// Accesors
 const bool Juego::gameRunning() const { return this->window->isOpen(); }
 
 const bool Juego::getFinalizarJuego() const { return this->finalizarJuego; }
 
 const sf::RenderWindow &Juego::getWindow() const { return *this->window; }
-
-// Functions
 
 void Juego::updateInput()
 {
@@ -128,12 +125,10 @@ void Juego::updateInput()
     const int mouseX = int(sf::Mouse::getPosition(this->getWindow()).x) / int(this->habitacionActual->getTileMap()->getTileSize());
     const int mouseY = int(sf::Mouse::getPosition(this->getWindow()).y) / int(this->habitacionActual->getTileMap()->getTileSize());
 
-    // Player movement
     if (sf::Keyboard::isKeyPressed(this->keyboardMappings["KEY_MOVE_LEFT"]))
     {
     }
 
-    // Tile funcs
     // debug
     if (sf::Mouse::isButtonPressed(this->mouseMappings["BTN_ADD_TILE"]))
     {
@@ -181,7 +176,7 @@ void Juego::pollEvents()
                 this->konamiIndex++;
                 if (this->konamiIndex == this->konamiSequence.size())
                 {
-                    std::cout << "¡CODIGO KONAMI ACTIVADO!" << std::endl;
+                    std::cout << "CODIGO KONAMI ACTIVADO" << std::endl;
                     std::vector<int> fullInventory;
                     
                     for (int i = 0; i<4; i++){
@@ -259,12 +254,10 @@ void Juego::updateCollision()
         bool isPlayer = (p == this->jugador);
         sf::Vector2f vel = p->getVelocidadVector();
 
-        // movimiento en X
         p->mover(vel.x, 0.f);
         sf::FloatRect boundsX = p->getHitboxBounds();
         bool colX = mapa->checkCollision(boundsX);
 
-        // bordes de la ventana en X
         if (boundsX.left < 0)
         {
             if (isPlayer && this->habitacionActual->getRoomData().doors[3] &&
@@ -303,12 +296,10 @@ void Juego::updateCollision()
             p->mover(-vel.x, 0.f);
         }
 
-        // movimiento en Y
         p->mover(0.f, vel.y);
         sf::FloatRect boundsY = p->getHitboxBounds();
         bool colY = mapa->checkCollision(boundsY);
 
-        // bordes de la ventana en Y
         if (boundsY.top < 0)
         {
             if (isPlayer && this->habitacionActual->getRoomData().doors[0] &&
@@ -400,7 +391,6 @@ void Juego::render()
     {
         this->habitacionActual->renderFondo(*this->window);
 
-        // todos en el vector
         std::vector<Character *> personajesParaRender;
         personajesParaRender.push_back(this->jugador);
 
@@ -409,14 +399,12 @@ void Juego::render()
             personajesParaRender.push_back(enemigo);
         }
 
-        // orden
         std::sort(personajesParaRender.begin(), personajesParaRender.end(),
                   [](Character *a, Character *b)
                   {
                       return a->getPosition().y < b->getPosition().y;
                   });
 
-        // draw
         for (auto *personaje : personajesParaRender)
         {
             personaje->render(*this->window);
@@ -613,7 +601,7 @@ void Juego::nextDungeonFloor()
     this->roomsMap.clear();
     this->clearedRooms.clear();
 
-    this->dungeonGen = new DungeonGenerator(10, 10, 10); // Genera uno completamente nuevo
+    this->dungeonGen = new DungeonGenerator(10, 10, 10);
     this->dungeonGen->generate(this->seed);
 
     this->currentRoomCoords.x = this->dungeonGen->getWidth() / 2;
@@ -622,6 +610,5 @@ void Juego::nextDungeonFloor()
     this->habitacionActual = new Habitacion(&this->tileSheet, this->dungeonGen->getRoom(this->currentRoomCoords.x, this->currentRoomCoords.y), this->jugador->getLevelPiso());
     this->roomsMap[std::make_pair(this->currentRoomCoords.x, this->currentRoomCoords.y)] = this->habitacionActual;
 
-    // Posicionar en el centro de la nueva START_ROOM sin perder su data
     this->jugador->setPosition(400.f, 300.f);
 }

@@ -31,17 +31,14 @@ Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data, int nivelPiso) {
 Habitacion::~Habitacion() {
   delete this->tileMap;
 
-  // Borramos todos los enemigos del vector
   for (auto *enemigo : this->enemigos) {
     delete enemigo;
   }
 
-  // Borramos todos los pickups
   for (auto *pickup : this->pickups) {
     delete pickup;
   }
 
-  // Borramos proyectiles
   for (auto *p : this->proyectiles) {
     delete p;
   }
@@ -54,7 +51,6 @@ void Habitacion::initTileMap() {
   const int MAP_WIDTH = 16;  // 16 * 50 = 800
   const int MAP_HEIGHT = 12; // 12 * 50 = 600
 
-  // Inicializar el piso
   int levelData[MAP_HEIGHT][MAP_WIDTH];
   for (int y = 0; y < MAP_HEIGHT; y++) {
     for (int x = 0; x < MAP_WIDTH; x++) {
@@ -69,59 +65,53 @@ void Habitacion::initTileMap() {
     int tIndex = rand() % RoomTemplates::templates.size();
     selectedTemplate = RoomTemplates::templates[tIndex];
   } else {
-    // Template vacio por defecto para boss/start/treasure
     for (int i = 0; i < MAP_HEIGHT; i++)
       selectedTemplate[i] = "................";
   }
 
-  // recorre el template y le da un valor a cada tile
   for (int y = 0; y < MAP_HEIGHT; y++) {
     for (int x = 0; x < MAP_WIDTH; x++) {
       char c = selectedTemplate[y][x];
 
       if (c == 'R')
-        levelData[y][x] = tipoTiles::ROCA; // Roca
+        levelData[y][x] = tipoTiles::ROCA;
       else if (c == 'E') {
-        // Guardar spawn de enemigo (centro del tile)
         this->enemySpawns.push_back(sf::Vector2f(
             x * TILE_SIZE + TILE_SIZE / 2, y * TILE_SIZE + TILE_SIZE / 2));
       }
     }
   }
 
-  // paredes (Sobrescriben template en bordes)
   for (int x = 0; x < MAP_WIDTH; x++) {
-    levelData[0][x] = 3;              // Top
-    levelData[MAP_HEIGHT - 1][x] = 3; // Bottom
+    levelData[0][x] = 3;
+    levelData[MAP_HEIGHT - 1][x] = 3;
   }
   for (int y = 0; y < MAP_HEIGHT; y++) {
-    levelData[y][0] = 3;             // Left
-    levelData[y][MAP_WIDTH - 1] = 3; // Right
+    levelData[y][0] = 3;
+    levelData[y][MAP_WIDTH - 1] = 3;
   }
 
-  // Esquinas
   levelData[0][0] = 4;
   levelData[0][MAP_WIDTH - 1] = 4;
   levelData[MAP_HEIGHT - 1][0] = 4;
   levelData[MAP_HEIGHT - 1][MAP_WIDTH - 1] = 4;
 
-  // puertas (Crear aberturas si existe puerta)
-  if (roomData.doors[0]) // Top
+  if (roomData.doors[0])
   {
     levelData[0][MAP_WIDTH / 2] = 0;
     levelData[0][MAP_WIDTH / 2 - 1] = 0;
   }
-  if (roomData.doors[1]) // Right
+  if (roomData.doors[1])
   {
     levelData[MAP_HEIGHT / 2][MAP_WIDTH - 1] = 0;
     levelData[MAP_HEIGHT / 2 - 1][MAP_WIDTH - 1] = 0;
   }
-  if (roomData.doors[2]) // Bottom
+  if (roomData.doors[2])
   {
     levelData[MAP_HEIGHT - 1][MAP_WIDTH / 2] = 0;
     levelData[MAP_HEIGHT - 1][MAP_WIDTH / 2 - 1] = 0;
   }
-  if (roomData.doors[3]) // Left
+  if (roomData.doors[3])
   {
     levelData[MAP_HEIGHT / 2][0] = 0;
     levelData[MAP_HEIGHT / 2 - 1][0] = 0;
@@ -154,14 +144,12 @@ void Habitacion::initEnemigos() {
   }
 
   if (this->roomData.type == TREASURE) {
-    // Spawn actual item pickups
     this->pickups.push_back(new Pickup(PICKUP_ITEM_BOW, 400.f, 300.f));
     this->pickups.push_back(new Pickup(PICKUP_ITEM_KAMIKAZE, 450.f, 300.f));
     this->pickups.push_back(new Pickup(PICKUP_ITEM_DASH, 350.f, 300.f));
     return;
   }
 
-  // Spawn enemies from template locations
   for (auto &pos : this->enemySpawns) {
     int type = rand() % 100;
     Enemigos* e = nullptr;
@@ -203,14 +191,13 @@ void Habitacion::triggerExplosion(sf::Vector2f pos, float damage, float radius) 
 void Habitacion::update(Jugador *jugador) {
   this->tileMap->update();
 
-  // Spawn player projectiles if pending
   if (jugador->getPendingProjectileSpawn()) {
       sf::Vector2f dir(0.f, 0.f);
       int facing = jugador->getFacingDirection();
-      if (facing == 0 /* DOWN */) dir.y = 1.f;
-      else if (facing == 1 /* LEFT */) dir.x = -1.f;
-      else if (facing == 2 /* RIGHT */) dir.x = 1.f;
-      else if (facing == 3 /* UP */) dir.y = -1.f;
+      if (facing == 0) dir.y = 1.f;
+      else if (facing == 1) dir.x = -1.f;
+      else if (facing == 2) dir.x = 1.f;
+      else if (facing == 3) dir.y = -1.f;
       
       sf::FloatRect pb = jugador->getHitboxBounds();
       float px = pb.left + pb.width/2.f - 5.f;
@@ -218,14 +205,13 @@ void Habitacion::update(Jugador *jugador) {
       
       Proyectil* proj = new Proyectil(px, py, dir, 10.f, jugador->getDmg(), false);
       if (jugador->hasItem(ITEM_ARCOMIKAZE)) {
-          proj->getSprite().setColor(sf::Color(255, 100, 0)); // Orange for explosive arrows
+          proj->getSprite().setColor(sf::Color(255, 100, 0));
           proj->getSprite().setScale(1.5f, 1.5f);
       }
       this->proyectiles.push_back(proj);
       jugador->resetPendingProjectileSpawn();
   }
 
-  // Spawn Kamikaze visual explosion if pending
   if (jugador->getPendingExplosionSpawn()) {
       sf::FloatRect pb = jugador->getHitboxBounds();
       sf::Vector2f center(pb.left + pb.width/2.f, pb.top + pb.height/2.f);
@@ -233,13 +219,12 @@ void Habitacion::update(Jugador *jugador) {
       VisualExplosion exp;
       exp.pos = center;
       exp.timer.restart();
-      exp.maxRadius = 100.f; // 200px diameter
+      exp.maxRadius = 100.f;
       this->visualExplosions.push_back(exp);
       
       jugador->resetPendingExplosionSpawn();
   }
 
-  // Update visual explosions
   for (size_t i = 0; i < this->visualExplosions.size(); i++) {
       if (this->visualExplosions[i].timer.getElapsedTime().asSeconds() > 0.25f) {
           this->visualExplosions.erase(this->visualExplosions.begin() + i);
@@ -271,7 +256,6 @@ void Habitacion::update(Jugador *jugador) {
 
     enemigo->updateIA(jugador);
 
-    // Player Attack Collision
     if (playerAttacking) {
       if (attackHb.intersects(enemigo->getSprite().getGlobalBounds())) {
         if (!jugador->hasHit(enemigo)) {
@@ -281,7 +265,6 @@ void Habitacion::update(Jugador *jugador) {
       }
     }
 
-    // Special updates
     if (Hada *hada = dynamic_cast<Hada *>(enemigo)) {
       hada->curarAliados(this->enemigos);
     }
@@ -289,24 +272,20 @@ void Habitacion::update(Jugador *jugador) {
       hechicero->attack(jugador, this->proyectiles);
     }
 
-    // animaciones y etc
     enemigo->update();
   }
 
-  // Condicion de la estatua
   if (otherEnemiesCount == 0 && statuesCount > 0) {
     for (size_t i = 0; i < this->enemigos.size(); i++) {
       if (dynamic_cast<Estatua *>(this->enemigos[i])) {
-        this->enemigos[i]->recibirDanio(9999); // mata la estatua
+        this->enemigos[i]->recibirDanio(9999);
       }
     }
   }
 
-  // Remueve enemigos muertos
   for (size_t i = 0; i < this->enemigos.size(); i++) {
     if (this->enemigos[i]->getHp() <= 0) {
-      // Chance de drop de pickup
-      if (rand() % 100 < 30) { // 30% chance
+      if (rand() % 100 < 30) {
         PickupType pt = (PickupType)(rand() % 4);
         this->pickups.push_back(new Pickup(pt,
                                            this->enemigos[i]->getPosition().x,
@@ -319,7 +298,6 @@ void Habitacion::update(Jugador *jugador) {
     }
   }
 
-  // Update Pickups
   for (size_t i = 0; i < this->pickups.size(); i++) {
     if (this->pickups[i]->getGlobalBounds().intersects(
             jugador->getHitboxBounds())) {
@@ -330,11 +308,9 @@ void Habitacion::update(Jugador *jugador) {
     }
   }
 
-  // Update Proyectiles
   for (size_t i = 0; i < this->proyectiles.size(); i++) {
       this->proyectiles[i]->update();
 
-      // Colision con jugador
       if (this->proyectiles[i]->isEnemy()) {
           if (this->proyectiles[i]->getGlobalBounds().intersects(jugador->getHitboxBounds())) {
               jugador->recibirDanio(this->proyectiles[i]->getDamage());
@@ -345,14 +321,12 @@ void Habitacion::update(Jugador *jugador) {
           }
       }
 
-      // Colision con enemigos (para proyectiles del jugador)
       if (!this->proyectiles[i]->isEnemy()) {
           bool hit = false;
           for (auto* enemigo : this->enemigos) {
               if (this->proyectiles[i]->getGlobalBounds().intersects(enemigo->getSprite().getGlobalBounds())) {
                   hit = true;
                   
-                  // Check Arcomikaze explosive synergy
                   if (jugador->hasItem(ITEM_ARCOMIKAZE)) {
                       this->triggerExplosion(this->proyectiles[i]->getPosition(), this->proyectiles[i]->getDamage() * 2, 100.f);
                   } else {
@@ -368,7 +342,6 @@ void Habitacion::update(Jugador *jugador) {
               continue;
           }
 
-          // Colision con paredes / obstaculos del mapa
           if (this->tileMap->checkCollision(this->proyectiles[i]->getGlobalBounds())) {
               if (jugador->hasItem(ITEM_ARCOMIKAZE)) {
                   this->triggerExplosion(this->proyectiles[i]->getPosition(), this->proyectiles[i]->getDamage() * 2, 100.f);
@@ -380,7 +353,6 @@ void Habitacion::update(Jugador *jugador) {
           }
       }
 
-      // Eliminar si sale de pantalla (aprox)
       if (this->proyectiles[i]->getPosition().x < 0 || this->proyectiles[i]->getPosition().x > 800 ||
           this->proyectiles[i]->getPosition().y < 0 || this->proyectiles[i]->getPosition().y > 600) {
           delete this->proyectiles[i];
@@ -407,7 +379,6 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
       p->render(target);
   }
 
-  // Draw expanding visual explosions
   for (const auto& exp : this->visualExplosions) {
       float t = exp.timer.getElapsedTime().asSeconds();
       float currentRadius = exp.maxRadius * (t / 0.25f);
@@ -417,7 +388,6 @@ void Habitacion::renderFondo(sf::RenderTarget &target) {
       circle.setOrigin(currentRadius, currentRadius);
       circle.setPosition(exp.pos);
       
-      // Fading out fire colors
       int alpha = 120 - static_cast<int>(120 * (t / 0.25f));
       if (alpha < 0) alpha = 0;
       int outlineAlpha = 200 - static_cast<int>(200 * (t / 0.25f));
