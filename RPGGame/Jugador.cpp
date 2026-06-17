@@ -2,8 +2,6 @@
 #include <cmath>
 #include <algorithm>
 
-//================JUGADOR================{
-
 void Jugador::initInventory() {
   this->inventory = std::vector<ItemType>();
   this->coins = 0;
@@ -68,8 +66,6 @@ void Jugador::resetAnimTimer() {
   this->animationSwitch = true;
 }
 
-//================MOVIMIENTO==================
-
 void Jugador::recalculateStatsFromItems() {
     this->velocidad = 3.0f; // Base speed
     for (auto item : this->inventory) {
@@ -125,7 +121,7 @@ void Jugador::addPickup(PickupType pickup) {
   case PICKUP_STAT_UP:
     statsUp++;
 
-    //beta random stat up
+    //random stat up
     int randomNum = rand()%3+1;
     switch(randomNum){
       case 1:
@@ -150,17 +146,13 @@ void Jugador::addPickup(PickupType pickup) {
   }
 }
 
-//================MOVIMIENTO==================
-
 void Jugador::updateMovement() {
-  // Lockea el movimiento durante el ataque
   if (this->animState == PLAYER_ANIMATION_STATES::ATTACK) {
     this->velocidadVector.x = 0.f;
     this->velocidadVector.y = 0.f;
     return;
   }
   
-  // Logica de Bloqueo
   if (this->isBlocking) {
       if (this->blockDuration.getElapsedTime().asSeconds() < 0.5f) {
           this->animState = PLAYER_ANIMATION_STATES::BLOCK;
@@ -185,7 +177,7 @@ void Jugador::updateMovement() {
       }
   }
 
-  // Dash Logic
+  // Dash
   if (this->isDashing) {
     if (this->dashTimer.getElapsedTime().asSeconds() < 0.2f) {
       this->velocidadVector = this->dashDir * 5.0f;
@@ -201,7 +193,7 @@ void Jugador::updateMovement() {
   if (sf::Keyboard::isKeyPressed(this->keybinds["UP"]))    inputDir.y -= 1.f;
   if (sf::Keyboard::isKeyPressed(this->keybinds["DOWN"]))  inputDir.y += 1.f;
 
-  // Active Items Input (DASH)
+  // Active Items Input
   if (sf::Keyboard::isKeyPressed(this->keybinds["DASH"]) && !this->isDashing && hasItem(ITEM_DASH)) {
     if (this->dashTimer.getElapsedTime().asSeconds() > 7.0f) {
       this->isDashing = true;
@@ -253,7 +245,6 @@ void Jugador::updateMovement() {
 
   if (sf::Keyboard::isKeyPressed(this->keybinds["ATTACK"])) {
     if (hasItem(ITEM_BOW) || hasItem(ITEM_ARCOMIKAZE)) {
-      // Bow / Arcomikaze attack (cooldown of 0.4s)
       if (this->bowCooldown.getElapsedTime().asSeconds() > 0.4f) {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;
         this->resetAttack();
@@ -261,7 +252,6 @@ void Jugador::updateMovement() {
         this->pendingProjectileSpawn = true;
       }
     } else if (hasItem(ITEM_KAMIKAZE)) {
-      // Kamikaze explosion (cooldown of 3.0s)
       if (this->kamikazeTimer.getElapsedTime().asSeconds() > 3.0f) {
         this->animState = PLAYER_ANIMATION_STATES::ATTACK;
         this->resetAttack();
@@ -269,20 +259,14 @@ void Jugador::updateMovement() {
         this->pendingExplosionSpawn = true;
       }
     } else {
-      // Standard melee attack
       this->animState = PLAYER_ANIMATION_STATES::ATTACK;
       this->resetAttack();
     }
   }
 }
 
-
-
-//================ANIMACIONES==================
-
 void Jugador::updateAnimations() {
   if (this->animState == PLAYER_ANIMATION_STATES::ATTACK) {
-    // Esperar 0.1s antes de mostrar el frame de ataque (windup)
     if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f) {
       this->currentFrame.width = 49;
       this->currentFrame.height = 36;
@@ -291,13 +275,10 @@ void Jugador::updateAnimations() {
       this->sprite.setTextureRect(this->currentFrame);
     }
 
-    // Terminar el ataque después de un tiempo total (ej. 0.5s)
     if (this->animationTimer.getElapsedTime().asSeconds() >= 0.2f) {
       this->animState = PLAYER_ANIMATION_STATES::IDLE;
-      this->resetAttack(); // Limpiar lista de enemigos golpeados
+      this->resetAttack();
 
-      // Opcional: Resetear tamaño del frame inmediatamente para evitar glitches
-      // visuales
       this->currentFrame.width = 19;
       this->currentFrame.height = 44;
       this->currentFrame.top = 45;
@@ -407,19 +388,17 @@ void Jugador::updateAnimations() {
   }
 }
 
-//=============UPDATE Y RENDER=============
-
 void Jugador::update() {
   this->updateMovement();
   this->updateAnimations();
 
-  // Debug Hitbox Logic
+  // Debug Hitbox
   if (this->isAttacking()) {
     sf::FloatRect ahb = this->getAttackHitbox();
     this->debugHb.setSize(sf::Vector2f(ahb.width, ahb.height));
     this->debugHb.setPosition(ahb.left, ahb.top);
     this->debugHb.setFillColor(
-        sf::Color(255, 0, 0, 100)); // Rojo semitransparente
+        sf::Color(255, 0, 0, 100));
     this->debugHb.setOutlineColor(sf::Color::Red);
     this->debugHb.setOutlineThickness(1.f);
   } else {
@@ -432,19 +411,18 @@ void Jugador::render(sf::RenderTarget &target) {
   target.draw(this->sprite);
   target.draw(this->debugHb);
 
-  // Kamikaze visual feedback
+  // Kamikaze visual
   if (this->isAttacking() && this->hasItem(ITEM_KAMIKAZE) && !this->hasItem(ITEM_BOW)) {
     sf::FloatRect bounds = this->getAttackHitbox();
     sf::CircleShape explosion(bounds.width / 2.f);
     explosion.setPosition(bounds.left, bounds.top);
-    explosion.setFillColor(sf::Color(255, 128, 0, 100)); // Transparent orange
+    explosion.setFillColor(sf::Color(255, 128, 0, 100));
     explosion.setOutlineColor(sf::Color(255, 0, 0, 180));
     explosion.setOutlineThickness(2.f);
     target.draw(explosion);
   }
 }
 
-// Getters & Setters
 std::vector<int> Jugador::getInventoryAsInt() const {
   std::vector<int> inv;
   for (auto i : inventory)
@@ -491,12 +469,12 @@ bool Jugador::isAttacking() const {
 
 sf::FloatRect Jugador::getAttackHitbox() const {
   if (hasItem(ITEM_BOW) || hasItem(ITEM_ARCOMIKAZE)) {
-    return sf::FloatRect(0, 0, 0, 0); // No melee attack if shooting arrows
+    return sf::FloatRect(0, 0, 0, 0);
   }
 
   if (hasItem(ITEM_KAMIKAZE)) {
     sf::FloatRect playerBounds = this->getHitboxBounds();
-    float size = 200.f; // explosion range
+    float size = 200.f; //range
     return sf::FloatRect(playerBounds.left + playerBounds.width/2.f - size/2.f,
                          playerBounds.top + playerBounds.height/2.f - size/2.f,
                          size, size);
@@ -504,8 +482,8 @@ sf::FloatRect Jugador::getAttackHitbox() const {
 
   sf::FloatRect swordHb = this->getHitboxBounds();
   swordHb.height -= 90.f;
-  float range = 90.f; // Rango de la espada
-  float width = 50.f; // Ancho de la espada
+  float range = 90.f; // Rango
+  float width = 50.f; // Ancho
 
   sf::FloatRect playerHb = this->getHitboxBounds();
   playerHb.width += range;

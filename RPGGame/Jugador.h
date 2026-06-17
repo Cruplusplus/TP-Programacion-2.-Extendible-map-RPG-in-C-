@@ -18,7 +18,6 @@ private:
 
     void initInventory();
 
-    // Cooldowns
     sf::Clock dashTimer;
     sf::Clock dashCooldown;
     sf::Clock kamikazeTimer;
@@ -28,8 +27,8 @@ private:
     bool isBlocking;
     sf::Vector2f dashDir;
     sf::RectangleShape debugHb;
-    // Attack Logic
-    int facingDirection; // 0: Down, 1: Left, 2: Right, 3: Up
+
+    int facingDirection;
     std::vector<Character*> hitEnemies;
     
     bool pendingProjectileSpawn;
@@ -50,19 +49,15 @@ public:
 
     Jugador(const float x, const float y);
 
-    //setters
     void resetAnimTimer();
     const bool getAnimSwitch();
     
-    // Attack
     sf::FloatRect getAttackHitbox() const;
     void resetAttack();
     bool hasHit(Character* target);
     void addHit(Character* target);
     bool isAttacking() const;
 
-    
-    // Items & stats
     void addItem(ItemType item);
     void addPickup(PickupType pickup);
     bool hasItem(ItemType item) const;

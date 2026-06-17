@@ -7,7 +7,7 @@ private:
     sf::Vector2f direction;
     float speed;
     int damage;
-    bool enemyProjectile; // True si es de enemigo, False si es del jugador
+    bool enemyProjectile;
     
 public:
     Proyectil(float x, float y, sf::Vector2f dir, float speed, int dmg, bool isEnemy);

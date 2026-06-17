@@ -19,10 +19,10 @@ Habitacion::Habitacion(sf::Texture *tile_sheet, RoomData data, int nivelPiso) {
   this->backgroundSprite.setPosition(5, 15);
 
   this->trapdoorShape.setSize(sf::Vector2f(50.f, 50.f));
-  this->trapdoorShape.setFillColor(sf::Color(20, 20, 20)); // Escotilla Oscura
-  this->trapdoorShape.setOutlineColor(sf::Color(100, 100, 100)); // Borde
+  this->trapdoorShape.setFillColor(sf::Color(20, 20, 20));
+  this->trapdoorShape.setOutlineColor(sf::Color(100, 100, 100));
   this->trapdoorShape.setOutlineThickness(3.f);
-  this->trapdoorShape.setPosition(375.f, 275.f); // Centro del mapa 800x600
+  this->trapdoorShape.setPosition(375.f, 275.f); //center
 
   this->initTileMap();
   this->initEnemigos();
@@ -166,15 +166,15 @@ void Habitacion::initEnemigos() {
     int type = rand() % 100;
     Enemigos* e = nullptr;
 
-    if (type < 40) // 40% Duende
+    if (type < 40)
       e = new Duende(pos.x, pos.y);
-    else if (type < 60) // 20% Orco
+    else if (type < 60)
       e = new Orco(pos.x, pos.y);
-    else if (type < 75) // 15% Hada
+    else if (type < 75)
       e = new Hada(pos.x, pos.y);
-    else if (type < 90) // 15% Hechicero
+    else if (type < 90)
       e = new Hechicero(pos.x, pos.y);
-    else // 10% Estatua
+    else
       e = new Estatua(pos.x, pos.y);
       
     e->escalarDificultad(this->pisoActual);
